@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <PackageId>AndreyAkaSkif.ServiceDefaults.Swagger</PackageId>
+        <Title>Service Defaults OpenApi Specification Via Swagger</Title>
+        <Description>Конфигурирование OpenApi спецификации для использования Swagger UI</Description>
+        <PackageProjectUrl>https://github.com/andrey-aka-skif/ServiceDefaults/src/AndeyAkaSkif.ServiceDefaults.Swagger</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+        <PackageReference Include="Swashbuckle.AspNetCore" />
+    </ItemGroup>
+
+</Project>
