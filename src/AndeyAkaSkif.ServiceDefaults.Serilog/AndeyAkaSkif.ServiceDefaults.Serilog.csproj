@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PackageId>AndreyAkaSkif.ServiceDefaults.Serilog</PackageId>
+		<Title>Service Defaults Logging with Serilog</Title>
+		<Description>Конфигурирование логирования с Serilog для WEB-API сервисов ASP.NET</Description>
+		<PackageProjectUrl>https://github.com/andrey-aka-skif/ServiceDefaults/src/AndeyAkaSkif.ServiceDefaults.Serilog</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<RootNamespace>AndeyAkaSkif.ServiceDefaults.Logging.Serilog</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Serilog.AspNetCore" />
+	</ItemGroup>
+
+</Project>

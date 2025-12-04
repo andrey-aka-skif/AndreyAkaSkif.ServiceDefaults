@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="LICENSE" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/AndeyAkaSkif.ServiceDefaults.Serilog/AndeyAkaSkif.ServiceDefaults.Serilog.csproj" Id="2ea59224-aabe-487f-8709-c629008dc5a9" />
+    <Project Path="src/AndeyAkaSkif.ServiceDefaults/AndeyAkaSkif.ServiceDefaults.csproj" />
+  </Folder>
+</Solution>
