@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AndeyAkaSkif.ServiceDefaults.Swagger;
+namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
 /// <summary>
 /// Предоставляет методы расширения для настройки OpenAPI через Swagger.
 /// </summary>
-public static class OpenApiViaSwaggerConfigureExtensions
+public static class SimpleOpenApiViaSwaggerConfigureExtensions
 {
     /// <summary>
     /// Добавляет стандартную конфигурацию OpenAPI с использованием Swagger.

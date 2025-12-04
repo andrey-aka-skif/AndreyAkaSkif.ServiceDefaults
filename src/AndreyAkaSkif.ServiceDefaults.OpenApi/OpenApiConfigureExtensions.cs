@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace AndeyAkaSkif.ServiceDefaults.OpenApi;
+namespace AndreyAkaSkif.ServiceDefaults.OpenApi;
 
 /// <summary>
 /// Предоставляет методы расширения для настройки OpenAPI в приложении.

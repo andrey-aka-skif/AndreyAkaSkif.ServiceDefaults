@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace AndeyAkaSkif.ServiceDefaults.Logging.Serilog;
+namespace AndreyAkaSkif.ServiceDefaults.Logging.Serilog;
 
 /// <summary>
 /// Предоставляет методы расширения для настройки логирования Serilog в приложении.
