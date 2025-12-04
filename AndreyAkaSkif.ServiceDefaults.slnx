@@ -8,6 +8,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/AndreyAkaSkif.ServiceDefaults.OpenApi/AndreyAkaSkif.ServiceDefaults.OpenApi.csproj" Id="cc766ec3-5188-44ab-9d59-b3b3559451ea" />
+    <Project Path="src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj" Id="93015a68-b60f-4731-bc67-f3f48375eefc" />
     <Project Path="src/AndreyAkaSkif.ServiceDefaults.Serilog/AndreyAkaSkif.ServiceDefaults.Serilog.csproj" Id="2ea59224-aabe-487f-8709-c629008dc5a9" />
     <Project Path="src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj" Id="9addccd3-ad15-4a6d-9ce7-85f9002c0934" />
     <Project Path="src/AndreyAkaSkif.ServiceDefaults/AndreyAkaSkif.ServiceDefaults.csproj" />
