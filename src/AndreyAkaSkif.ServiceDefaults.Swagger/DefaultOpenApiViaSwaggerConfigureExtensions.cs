@@ -7,7 +7,7 @@ namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 /// <summary>
 /// Предоставляет методы расширения для настройки OpenAPI через Swagger.
 /// </summary>
-public static class SimpleOpenApiViaSwaggerConfigureExtensions
+public static class DefaultOpenApiViaSwaggerConfigureExtensions
 {
     /// <summary>
     /// Добавляет стандартную конфигурацию OpenAPI с использованием Swagger.
