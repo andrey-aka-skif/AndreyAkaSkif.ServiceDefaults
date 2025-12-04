@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Build and Publish NuGet Package
+
+on:
+    push:
+        tags: ['v*.*.*']
+    workflow_dispatch:
+
+jobs:
+    ci-cd:
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            contents: read
+        strategy:
+            matrix:
+                project: [
+                    'src/AndreyAkaSkif.ServiceDefaults/AndreyAkaSkif.ServiceDefaults.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.OpenApi/AndreyAkaSkif.ServiceDefaults.OpenApi.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.Serilog/AndreyAkaSkif.ServiceDefaults.Serilog.csproj',
+                ]
+        steps:
+            - name: 🛒 Checkout
+              uses: actions/checkout@v4
+
+            - name: ✨ Setup .NET
+              uses: actions/setup-dotnet@v4
+
+            - name: 🚚 Restore
+              run: dotnet restore
+
+            - name: 🛠️ Build
+              run: dotnet build --configuration Release --no-restore
+
+            - name: 🧪 Test
+              run: echo "Empty tests"
+
+            - name: 📦 Pack ${{ matrix.project }}
+              run: dotnet pack ${{ matrix.project }} --configuration Release --output ./nupkgs
+
+            - name: 🚀 Publish ${{ matrix.project }} to GitHub Packages
+              run: |
+                  dotnet nuget push ./nupkgs/*.nupkg \
+                    --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+                    --api-key ${{ secrets.GH_PACKAGES_TOKEN }} \
+                    --skip-duplicate

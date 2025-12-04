@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: CI
+
+on:
+    push:
+        branches: ['**']
+    pull_request:
+        types: [opened, synchronize, reopened]
+    workflow_dispatch:
+
+jobs:
+    ci:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🛒 Checkout
+              uses: actions/checkout@v4
+
+            - name: ✨ Setup .NET
+              uses: actions/setup-dotnet@v4
+
+            - name: 🚚 Restore
+              run: dotnet restore
+
+            - name: 🛠️ Build
+              run: dotnet build --configuration Release --no-restore
+
+            - name: 🧪 Test
+              run: echo "Empty tests"
