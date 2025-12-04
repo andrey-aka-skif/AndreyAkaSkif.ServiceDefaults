@@ -6,13 +6,13 @@
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/andrey-aka-skif/ServiceDefaults</RepositoryUrl>
+		<RepositoryUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</RepositoryUrl>
 		<PackageTags>defaults;configure;config;extensions</PackageTags>
 		<PackageIcon>logo.png</PackageIcon>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Version Condition="'$(Version)' == ''">0.0.3</Version>
+		<Version Condition="'$(Version)' == ''">0.0.12</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 	</PropertyGroup>
