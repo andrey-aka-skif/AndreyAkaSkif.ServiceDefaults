@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Version Condition="'$(Version)' == ''">0.0.13</Version>
+		<Version Condition="'$(Version)' == ''">0.0.17</Version>
 		<FileVersion>$(Version)</FileVersion>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 	</PropertyGroup>
