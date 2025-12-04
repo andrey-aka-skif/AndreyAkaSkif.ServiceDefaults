@@ -4,7 +4,7 @@
 		<PackageId>AndreyAkaSkif.ServiceDefaults.Serilog</PackageId>
 		<Title>Service Defaults Logging with Serilog</Title>
 		<Description>Конфигурирование логирования с Serilog для WEB-API сервисов ASP.NET</Description>
-		<PackageProjectUrl>https://github.com/andrey-aka-skif/ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Serilog</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Serilog</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 

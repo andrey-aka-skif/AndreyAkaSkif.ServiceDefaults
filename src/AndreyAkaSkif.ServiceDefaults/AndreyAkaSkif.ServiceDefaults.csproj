@@ -4,7 +4,7 @@
 		<PackageId>AndreyAkaSkif.ServiceDefaults</PackageId>
 		<Title>Service Defaults</Title>
 		<Description>Конфигурирование WEB-API сервисов ASP.NET</Description>
-		<PackageProjectUrl>https://github.com/andrey-aka-skif/ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
