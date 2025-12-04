@@ -1,3 +1,4 @@
+using AndreyAkaSkif.ServiceDefaults.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,7 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// </exception>
     public static IHostApplicationBuilder AddConfiguredOpenApiViaSwagger(this IHostApplicationBuilder builder)
     {
-        var settings = SwaggerAppSettings.CreateValidated(builder.Configuration);
+        var settings = SettingsObjectFactory.CreateValidated<SwaggerAppSettings>(builder.Configuration);
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -84,7 +85,7 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
         if (!app.Environment.IsDevelopment())
             return app;
 
-        var settings = SwaggerAppSettings.CreateValidated(app.Configuration);
+        var settings = SettingsObjectFactory.CreateValidated<SwaggerAppSettings>(app.Configuration);
 
         app.UseSwagger();
 

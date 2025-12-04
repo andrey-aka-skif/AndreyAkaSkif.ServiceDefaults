@@ -1,25 +1,15 @@
-using Microsoft.Extensions.Configuration;
+using AndreyAkaSkif.ServiceDefaults.Settings;
 
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
-internal sealed record SwaggerAppSettings
+internal sealed record SwaggerAppSettings : IValidatableSettingsObject
 {
     public string Title { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public string ApiVersion { get; init; } = string.Empty;
     public List<string> Servers { get; init; } = [];
 
-    private SwaggerAppSettings() { }
-
-    public static SwaggerAppSettings CreateValidated(IConfiguration configuration)
-    {
-        var settings = new SwaggerAppSettings();
-        configuration.GetSection(nameof(SwaggerAppSettings)).Bind(settings);
-        settings.Validate();
-        return settings;
-    }
-
-    private void Validate()
+    public void Validate()
     {
         if (string.IsNullOrWhiteSpace(Title))
             throw new ArgumentException($"Требуется {nameof(SwaggerAppSettings)}:{nameof(Title)}");
