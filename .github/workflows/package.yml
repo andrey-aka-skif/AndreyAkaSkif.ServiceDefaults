@@ -20,6 +20,7 @@ jobs:
                     'src/AndreyAkaSkif.ServiceDefaults.OpenApi/AndreyAkaSkif.ServiceDefaults.OpenApi.csproj',
                     'src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj',
                     'src/AndreyAkaSkif.ServiceDefaults.Serilog/AndreyAkaSkif.ServiceDefaults.Serilog.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj',
                 ]
         steps:
             - name: 🛒 Checkout
