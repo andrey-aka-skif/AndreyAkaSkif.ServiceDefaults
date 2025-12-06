@@ -18,10 +18,7 @@ public static class SettingsExtensions
         this IHostApplicationBuilder builder)
             where T : class, IValidatableSettingsObject, new()
     {
-        builder.Services.AddSingleton(serviceProvider =>
-        {
-            return SettingsObjectFactory.CreateValidated<T>(builder.Configuration);
-        });
+        builder.Services.AddSingleton(_ => builder.Configuration.CreateValidated<T>());
 
         return builder;
     }

@@ -1,6 +1,6 @@
-# Удалите строку ниже, если вы хотите наследовать параметры .editorconfig из каталогов, расположенных выше в иерархии
 root = true
 
+# All files
 [*]
 charset = utf-8
 end_of_line = lf
@@ -9,3 +9,11 @@ trim_trailing_whitespace = true
 indent_size = 4
 indent_style = space
 tab_width = 4
+
+# XML project files
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
+indent_size = 2
+
+# XML config files
+[*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
+indent_size = 2

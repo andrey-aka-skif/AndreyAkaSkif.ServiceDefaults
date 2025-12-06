@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <PackageId>AndreyAkaSkif.ServiceDefaults.Swagger</PackageId>
-        <Title>Service Defaults OpenApi Specification Via Swagger</Title>
-        <Description>Конфигурирование OpenApi спецификации для использования Swagger UI</Description>
-        <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Swagger</PackageProjectUrl>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <PackageId>AndreyAkaSkif.ServiceDefaults.Swagger</PackageId>
+    <Title>Service Defaults OpenApi Specification Via Swagger</Title>
+    <Description>Конфигурирование OpenApi спецификации для использования Swagger UI</Description>
+    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Swagger</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -36,7 +36,7 @@ jobs:
               run: dotnet build --configuration Release --no-restore
 
             - name: 🧪 Test
-              run: echo "Empty tests"
+              run: dotnet test --no-build --configuration Release --verbosity normal
 
             - name: 📦 Pack ${{ matrix.project }}
               run: dotnet pack ${{ matrix.project }} --configuration Release --output ./nupkgs
