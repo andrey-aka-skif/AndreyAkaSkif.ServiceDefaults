@@ -1,24 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<PackageId>AndreyAkaSkif.ServiceDefaults.Serilog</PackageId>
-		<Title>Service Defaults Logging with Serilog</Title>
-		<Description>Конфигурирование логирования с Serilog для WEB-API сервисов ASP.NET</Description>
-		<PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Serilog</PackageProjectUrl>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-	</PropertyGroup>
+  <PropertyGroup>
+    <PackageId>AndreyAkaSkif.ServiceDefaults.Serilog</PackageId>
+    <Title>Service Defaults Logging with Serilog</Title>
+    <Description>Конфигурирование логирования с Serilog для WEB-API сервисов ASP.NET</Description>
+    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Serilog</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="README.md" Pack="true" PackagePath="\" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
-	<PropertyGroup>
-		<RootNamespace>AndreyAkaSkif.ServiceDefaults.Logging.Serilog</RootNamespace>
-	</PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>AndreyAkaSkif.ServiceDefaults.Logging.Serilog</RootNamespace>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-		<PackageReference Include="Serilog.AspNetCore" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" />
+  </ItemGroup>
 
 </Project>
