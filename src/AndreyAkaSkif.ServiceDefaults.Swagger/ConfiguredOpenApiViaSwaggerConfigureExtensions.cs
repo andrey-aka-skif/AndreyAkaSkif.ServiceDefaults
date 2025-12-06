@@ -41,7 +41,7 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// </exception>
     public static IHostApplicationBuilder AddConfiguredOpenApiViaSwagger(this IHostApplicationBuilder builder)
     {
-        var settings = SettingsObjectFactory.CreateValidated<SwaggerAppSettings>(builder.Configuration);
+        var settings = builder.Configuration.CreateValidated<SwaggerAppSettings>();
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -85,7 +85,7 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
         if (!app.Environment.IsDevelopment())
             return app;
 
-        var settings = SettingsObjectFactory.CreateValidated<SwaggerAppSettings>(app.Configuration);
+        var settings = app.Configuration.CreateValidated<SwaggerAppSettings>();
 
         app.UseSwagger();
 
