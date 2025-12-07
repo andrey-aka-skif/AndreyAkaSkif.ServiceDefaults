@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <!-- Версия NET для всех проектов в решении -->
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Настройки документирования -->
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Общие namespace -->
+    <AuthorPrefix>AndreyAkaSkif</AuthorPrefix>
+    <RootNamespace>$(AuthorPrefix).$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>$(AuthorPrefix).$(MSBuildProjectName)</AssemblyName>
+  </PropertyGroup>
+</Project>
