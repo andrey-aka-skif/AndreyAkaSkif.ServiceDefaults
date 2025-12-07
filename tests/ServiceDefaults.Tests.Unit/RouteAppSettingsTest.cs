@@ -60,7 +60,20 @@ public class RouteAppSettingsTests
     [InlineData("/path>test")]
     [InlineData("/path\"test")]
     [InlineData("/path\\test")]
+    [InlineData("/api[")]
+    [InlineData("/api]")]
+    [InlineData("/api(")]
+    [InlineData("/api)")]
     [InlineData("^/api")]
+    [InlineData("/api`")]
+    [InlineData("/api|")]
+    [InlineData("/api:")]
+    [InlineData("/api*")]
+    [InlineData("/api\"")]
+    [InlineData("/api\'")]
+    [InlineData("/api%")]
+    [InlineData("/api!")]
+    [InlineData("/api@")]
     public void Validate_ShouldThrowArgumentException_WhenPathBaseIsInvalidUri(string pathBase)
     {
         // Arrange

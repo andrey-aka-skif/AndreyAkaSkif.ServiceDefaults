@@ -39,7 +39,6 @@ internal sealed record RouteAppSettings : IValidatableSettingsObject
             '\\',
             ':',
             '*',
-            '?',
             '\"',
             '\'',
             '%',
