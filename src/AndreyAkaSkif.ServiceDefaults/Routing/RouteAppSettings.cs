@@ -20,33 +20,35 @@ internal sealed record RouteAppSettings : IValidatableSettingsObject
         if (!PathBase!.StartsWith('/'))
             ThrowValidateException();
 
-        // строка должна быть корректно сформированной и подходящей для построения относительного Uri
-        if (!Uri.IsWellFormedUriString(PathBase, UriKind.Relative))
+        // строка не должна содержать двойные слеши
+        if (PathBase.Contains("//"))
             ThrowValidateException();
 
-        // строка не должна быть абсолютным путем, UNC, путем к файлу или localhost
-        if (Uri.TryCreate(PathBase, UriKind.Absolute, out Uri? testUriResult))
-        {
-            if (testUriResult is not null)
-            {
-                if (testUriResult.IsAbsoluteUri
-                    || testUriResult.IsUnc
-                    || testUriResult.IsFile
-                    || testUriResult.IsLoopback)
-                {
-                    ThrowValidateException();
-                }
-            }
-        }
+        char[] invalidChars = [
+            '?',                // query-параметры
+            '#',                // фрагменты
+            '<',
+            '>',
+            '[',
+            ']',
+            '(',
+            ')',
+            '^',
+            '`',
+            '|',
+            '\\',
+            ':',
+            '*',
+            '?',
+            '\"',
+            '\'',
+            '%',
+            '!',
+            '@',
+            ' ',
+        ];
 
-        string fullUri = $"http://localhost{PathBase}";
-
-        // итоговый подмаршрут должен быть валидным
-        if (!Uri.TryCreate(fullUri, UriKind.Absolute, out Uri? uriResult))
-            ThrowValidateException();
-
-        // итоговый подмаршрут не должен содержать query-параметров и фрагментов
-        if (!string.IsNullOrEmpty(uriResult!.Query) || !string.IsNullOrEmpty(uriResult.Fragment))
+        if (PathBase.IndexOfAny(invalidChars) != -1)
             ThrowValidateException();
     }
 
