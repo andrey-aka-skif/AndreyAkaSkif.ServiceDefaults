@@ -13,4 +13,8 @@
     <Project Path="src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj" Id="9addccd3-ad15-4a6d-9ce7-85f9002c0934" />
     <Project Path="src/AndreyAkaSkif.ServiceDefaults/AndreyAkaSkif.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/ServiceDefaults.Tests.Unit/ServiceDefaults.Tests.Unit.csproj" />
+  </Folder>
 </Solution>

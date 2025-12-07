@@ -46,10 +46,6 @@ public static class CorsExtensions
     /// }
     /// </code>
     /// </remarks>
-    /// <returns>
-    /// Объект настроек типа <see cref="CorsPolicy"/>
-    /// </returns>
-
     public static IHostApplicationBuilder AddConfiguredCorsPolicy(this IHostApplicationBuilder builder)
     {
         var сorsPolicy = builder.Configuration.CreateValidated<CorsPolicy>();

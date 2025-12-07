@@ -4,12 +4,16 @@
     <PackageId>AndreyAkaSkif.ServiceDefaults</PackageId>
     <Title>Service Defaults</Title>
     <Description>Конфигурирование WEB-API сервисов ASP.NET</Description>
-    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="AndreyAkaSkif.ServiceDefaults.Tests.Unit"/>
   </ItemGroup>
 
   <ItemGroup>
