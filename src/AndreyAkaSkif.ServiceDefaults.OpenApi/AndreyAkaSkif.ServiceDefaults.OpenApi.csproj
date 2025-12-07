@@ -4,7 +4,7 @@
     <PackageId>AndreyAkaSkif.ServiceDefaults.OpenApi</PackageId>
     <Title>Service Defaults OpenApi Specification</Title>
     <Description>Конфигурирование OpenApi спецификации для использования стандартного пакета OpenApi без UI</Description>
-    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.OpenApi</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 

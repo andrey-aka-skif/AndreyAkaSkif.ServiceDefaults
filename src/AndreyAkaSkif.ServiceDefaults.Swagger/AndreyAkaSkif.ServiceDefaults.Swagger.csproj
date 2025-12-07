@@ -4,7 +4,7 @@
     <PackageId>AndreyAkaSkif.ServiceDefaults.Swagger</PackageId>
     <Title>Service Defaults OpenApi Specification Via Swagger</Title>
     <Description>Конфигурирование OpenApi спецификации для использования Swagger UI</Description>
-    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/src/AndreyAkaSkif.ServiceDefaults.Swagger</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
