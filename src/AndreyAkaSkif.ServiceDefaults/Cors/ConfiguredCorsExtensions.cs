@@ -6,33 +6,12 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.Cors;
 
 /// <summary>
-/// Методы расширения для регистрации политик CORS в DI-контейнере.
+/// Методы расширения для регистрации конфигурируемых политик CORS в DI-контейнере
 /// </summary>
-public static class CorsExtensions
+public static class ConfiguredCorsExtensions
 {
-    private const string ALLOW_ALL_POLICY_NAME = "AllowAll";
-
     /// <summary>
-    /// Добавить политику CORS, разрешающую все источники
-    /// </summary>
-    public static IHostApplicationBuilder AddPermissiveCorsPolicy(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy(
-                ALLOW_ALL_POLICY_NAME,
-                policy => policy
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-            );
-        });
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Добавить политику CORS, настроенную через конфигурацию.
+    /// Добавить политику CORS, настроенную через конфигурацию
     /// </summary>
     /// <remarks>
     /// Требует секцию конфигурации "CorsPolicy" следующего вида:
@@ -65,22 +44,12 @@ public static class CorsExtensions
     }
 
     /// <summary>
-    /// Использовать политику CORS, разрешающую все источники
-    /// </summary>
-    public static IApplicationBuilder UsePermissiveCorsPolicy(this WebApplication app)
-    {
-        app.UseCors(ALLOW_ALL_POLICY_NAME);
-
-        return app;
-    }
-
-    /// <summary>
     /// Использовать политику CORS, настроенную через конфигурацию
     /// </summary>
     /// <remarks>
     /// Требует секцию конфигурации "CorsPolicy"
     /// </remarks>
-    public static IApplicationBuilder UseConfiguredCorsPolicy(this WebApplication app)
+    public static WebApplication UseConfiguredCorsPolicy(this WebApplication app)
     {
         var сorsPolicy = app.Configuration.CreateValidated<CorsPolicy>();
         app.UseCors(сorsPolicy.Name);

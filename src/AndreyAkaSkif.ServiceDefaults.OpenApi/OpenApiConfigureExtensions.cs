@@ -37,7 +37,7 @@ public static class OpenApiConfigureExtensions
     /// </remarks>
     /// <param name="app">Экземпляр <see cref="WebApplication"/>.</param>
     /// <returns>Тот же экземпляр <see cref="IApplicationBuilder"/> для поддержки цепочки вызовов.</returns>
-    public static IApplicationBuilder UseDefaultOpenApi(this WebApplication app)
+    public static WebApplication UseDefaultOpenApi(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
             app.MapOpenApi();
