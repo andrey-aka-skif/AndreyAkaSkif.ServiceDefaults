@@ -37,7 +37,7 @@ public static class DefaultOpenApiViaSwaggerConfigureExtensions
     /// </remarks>
     /// <param name="app">Экземпляр <see cref="WebApplication"/>.</param>
     /// <returns>Тот же экземпляр <see cref="IApplicationBuilder"/> для поддержки цепочки вызовов.</returns>
-    public static IApplicationBuilder UseDefaultOpenApiViaSwagger(this WebApplication app)
+    public static WebApplication UseDefaultOpenApiViaSwagger(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {

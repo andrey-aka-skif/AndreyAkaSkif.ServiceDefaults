@@ -9,8 +9,7 @@ namespace AndreyAkaSkif.ServiceDefaults.Logging.Serilog;
 public static class LoggingConfigureExtensions
 {
     /// <summary>
-    /// Настраивает Serilog как систему логирования для приложения, 
-    /// используя конфигурацию из <see cref="IHostApplicationBuilder.Configuration"/>.
+    /// Добавляет и настраивает Serilog как систему логирования для приложения
     /// </summary>
     /// <remarks>
     /// В файле конфигурации приложения "appsettings.json" требуется секция "Serilog"
@@ -21,7 +20,7 @@ public static class LoggingConfigureExtensions
     /// <returns>
     /// Тот же экземпляр <see cref="IHostApplicationBuilder"/> для поддержки цепочки вызовов.
     /// </returns>
-    public static IHostApplicationBuilder SetupSerilogLogging(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddConfiguredLoggingViaSerilog(this IHostApplicationBuilder builder)
     {
         var logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)

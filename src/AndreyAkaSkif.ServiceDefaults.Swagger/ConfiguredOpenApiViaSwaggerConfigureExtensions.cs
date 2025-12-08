@@ -80,7 +80,7 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// <exception cref="ArgumentException">
     /// Выбрасывается, если секция "SwaggerAppSettings" отсутствует в конфигурации или содержит некорректные данные.
     /// </exception>
-    public static IApplicationBuilder UseConfiguredOpenApiViaSwagger(this WebApplication app)
+    public static WebApplication UseConfiguredOpenApiViaSwagger(this WebApplication app)
     {
         if (!app.Environment.IsDevelopment())
             return app;
