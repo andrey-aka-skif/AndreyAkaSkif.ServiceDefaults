@@ -1,6 +1,7 @@
 <Project>
 
   <PropertyGroup>
+    <!-- Общие свойства для всех проектов решения -->
     <Authors>Andrey-aka-Skif</Authors>
     <Copyright>© $([System.DateTime]::Now.Year) @andrey-aka-skif</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -12,13 +13,22 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Версионирование -->
     <Version Condition="'$(Version)' == ''">0.0.27</Version>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyVersion>$(Version)</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Версия NET для всех проектов в решении -->
     <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Общие namespace -->
+    <AuthorPrefix>AndreyAkaSkif</AuthorPrefix>
+    <RootNamespace>$(AuthorPrefix).$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>$(AuthorPrefix).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,12 +48,14 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <!-- Настройки компиляции -->
     <Nullable>enable</Nullable>
     <PublishWindowsPdb>false</PublishWindowsPdb>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Настройки документирования -->
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
