@@ -15,8 +15,6 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// <summary>
     /// Добавляет настройки OpenAPI/Swagger в приложение с использованием конфигурации из секции "SwaggerAppSettings".
     /// </summary>
-    /// <param name="builder">Построитель приложения.</param>
-    /// <returns>Построитель приложения для цепочки вызовов.</returns>
     /// <remarks>
     /// <para>
     /// Требует наличия в конфигурации секции "SwaggerAppSettings" со следующей структурой:
@@ -34,6 +32,12 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// <para>
     /// В случае отсутствия обязательных параметров или невалидных данных в секции конфигурации
     /// будет выброшено исключение <see cref="ArgumentException"/>.
+    /// </para>
+    /// <para>
+    /// <strong>Следует обратить внимание,</strong> что при использовании файлов конфигурации
+    /// секция должна быть указана в основном файле "appsettings.json".
+    /// <strong>Не следует</strong> выносить секцию в файлы, содержащие среду.
+    /// Например, в "appsettings.Development.json".
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentException">
