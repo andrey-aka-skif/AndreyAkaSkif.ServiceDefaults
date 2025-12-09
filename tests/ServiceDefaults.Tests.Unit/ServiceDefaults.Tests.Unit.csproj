@@ -7,7 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\src\ServiceDefaults\ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
