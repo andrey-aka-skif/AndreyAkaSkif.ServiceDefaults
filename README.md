@@ -1,5 +1,7 @@
 # <img alt="logo" src="./logo/logo.png" width="32"/> Базовая конфигурация WEB-API сервисов ASP.NET
 
+[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
+
 Набор вспомогательных библиотек для упрощённой конфигурации ASP.NET Web-API сервисов.  
 Проект предоставляет набор классов и методов расширения для настройки:
 
