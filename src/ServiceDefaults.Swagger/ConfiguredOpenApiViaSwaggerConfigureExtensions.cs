@@ -39,6 +39,12 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// <strong>Не следует</strong> выносить секцию в файлы, содержащие среду.
     /// Например, в "appsettings.Development.json".
     /// </para>
+    /// <para>
+    /// При использовании методов из библиотеки ServiceDefaults.Swagger
+    /// всегда устанавливается пакет Swashbuckle.AspNetCore.Annotations.
+    /// Даже, если в проекте не используются MVC контроллеры,
+    /// а только Minimal Api.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentException">
     /// Выбрасывается, если секция "SwaggerAppSettings" отсутствует в конфигурации или содержит некорректные данные.
@@ -57,6 +63,8 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
                     Version = settings.ApiVersion,
                     Description = settings.Description
                 });
+
+            options.EnableAnnotations();
 
             settings.Servers.ForEach(server =>
             {
