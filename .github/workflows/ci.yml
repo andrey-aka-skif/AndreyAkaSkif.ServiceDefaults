@@ -10,7 +10,7 @@ on:
     workflow_call: {}
 
 jobs:
-    ci:
+    run-ci:
         runs-on: ubuntu-latest
         steps:
             - name: 🛒 Checkout

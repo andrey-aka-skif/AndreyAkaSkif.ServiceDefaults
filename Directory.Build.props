@@ -14,7 +14,7 @@
 
   <PropertyGroup>
     <!-- Версионирование -->
-    <Version Condition="'$(Version)' == ''">0.0.31</Version>
+    <Version Condition="'$(Version)' == ''">0.0.32</Version>
     <FileVersion>$(Version)</FileVersion>
     <AssemblyVersion>$(Version)</AssemblyVersion>
   </PropertyGroup>
