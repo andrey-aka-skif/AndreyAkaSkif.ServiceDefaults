@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 
-name: Build and Publish NuGet Package
+name: Publish NuGet Package
 
 on:
     push:
@@ -8,7 +8,11 @@ on:
     workflow_dispatch:
 
 jobs:
-    ci-cd:
+    ci:
+        uses: ./.github/workflows/ci.yml
+
+    publish:
+        needs: ci
         runs-on: ubuntu-latest
         permissions:
             packages: write
@@ -29,14 +33,18 @@ jobs:
             - name: ✨ Setup .NET
               uses: actions/setup-dotnet@v4
 
+            - name: 💾 Cache NuGet packages
+              uses: actions/cache@v4
+              with:
+                path: ~/.nuget/packages
+                key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+                restore-keys: ${{ runner.os }}-nuget-
+
             - name: 🚚 Restore
               run: dotnet restore
 
             - name: 🛠️ Build
               run: dotnet build --configuration Release --no-restore
-
-            - name: 🧪 Test
-              run: dotnet test --no-build --configuration Release --verbosity normal
 
             - name: 📦 Pack ${{ matrix.project }}
               run: dotnet pack ${{ matrix.project }} --configuration Release --output ./nupkgs
