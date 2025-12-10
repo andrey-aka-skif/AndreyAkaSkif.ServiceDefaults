@@ -8,14 +8,6 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- Общие namespace -->
-    <AuthorPrefix>AndreyAkaSkif</AuthorPrefix>
-    <AppNamePrefix>ServiceDefaults</AppNamePrefix>
-    <RootNamespace>$(AuthorPrefix).$(AppNamePrefix)</RootNamespace>
-    <AssemblyName>$(AuthorPrefix).$(AppNamePrefix)</AssemblyName>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>

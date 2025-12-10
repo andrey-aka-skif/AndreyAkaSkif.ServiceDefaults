@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <!-- Общие свойства для всех проектов решения -->
-    <Authors>Andrey-aka-Skif</Authors>
+    <Authors>andrey-aka-skif</Authors>
+    <Company>AndreyAkaSkif</Company>
     <Copyright>© $([System.DateTime]::Now.Year) @andrey-aka-skif</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -26,9 +27,8 @@
 
   <PropertyGroup>
     <!-- Общие namespace -->
-    <AuthorPrefix>AndreyAkaSkif</AuthorPrefix>
-    <RootNamespace>$(AuthorPrefix).$(MSBuildProjectName)</RootNamespace>
-    <AssemblyName>$(AuthorPrefix).$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>$(Company).$(MSBuildProjectName)</RootNamespace>
+    <AssemblyName>$(Company).$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -61,6 +61,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Включение автоматической упаковки NuGet пакета при сборке проекта -->
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
