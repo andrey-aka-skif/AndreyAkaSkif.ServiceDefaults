@@ -61,7 +61,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
