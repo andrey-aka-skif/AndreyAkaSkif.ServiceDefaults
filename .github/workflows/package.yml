@@ -16,11 +16,11 @@ jobs:
         strategy:
             matrix:
                 project: [
-                    'src/AndreyAkaSkif.ServiceDefaults/AndreyAkaSkif.ServiceDefaults.csproj',
-                    'src/AndreyAkaSkif.ServiceDefaults.OpenApi/AndreyAkaSkif.ServiceDefaults.OpenApi.csproj',
-                    'src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj',
-                    'src/AndreyAkaSkif.ServiceDefaults.Serilog/AndreyAkaSkif.ServiceDefaults.Serilog.csproj',
-                    'src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj',
+                    'src/ServiceDefaults/ServiceDefaults.csproj',
+                    'src/ServiceDefaults.OpenApi/ServiceDefaults.OpenApi.csproj',
+                    'src/ServiceDefaults.Swagger/ServiceDefaults.Swagger.csproj',
+                    'src/ServiceDefaults.Serilog/ServiceDefaults.Serilog.csproj',
+                    'src/ServiceDefaults.PostgreSQL/ServiceDefaults.PostgreSQL.csproj',
                 ]
         steps:
             - name: 🛒 Checkout
