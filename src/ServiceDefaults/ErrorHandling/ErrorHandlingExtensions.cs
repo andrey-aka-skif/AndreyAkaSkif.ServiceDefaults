@@ -18,8 +18,11 @@ public static class ErrorHandlingExtensions
     /// <see cref="ProblemDetailsServiceCollectionExtensions.AddProblemDetails(IServiceCollection)"/>
     /// </para>
     /// <para>
-    /// При использовании MVC контроллеров обязательно вызвать
-    /// <see cref="UseErrorHandling(WebApplication)"/>
+    /// ⚠️ <strong>Внимание:</strong> При использовании обязательно вызвать <see cref="UseErrorHandling(WebApplication)"/>.
+    /// Если этого не сделать, поведение может оказаться неожиданным.
+    /// При использовании Swagger в ответе вернется полный stack trace ошибки, который
+    /// может содержать конфиденциальную информацию.
+    /// При вызове из стороннего сервиса ProblemDetails не будет возвращен.
     /// </para>
     /// </remarks>
     public static IHostApplicationBuilder AddDefaultErrorHandling(this IHostApplicationBuilder builder)
@@ -43,12 +46,11 @@ public static class ErrorHandlingExtensions
     /// <para>Дополнительное поле будет добавлено только в Development среде.
     /// Иначе будет возвращен объект, соответствующий RFC 7807</para>
     /// <para>
-    /// ⚠️ <strong>Внимание:</strong> Не используйте в Production среде, так как stack trace
-    /// может содержать конфиденциальную информацию
-    /// </para>
-    /// <para>
-    /// При использовании MVC контроллеров обязательно вызвать
-    /// <see cref="UseErrorHandling(WebApplication)"/>
+    /// ⚠️ <strong>Внимание:</strong> При использовании обязательно вызвать <see cref="UseErrorHandling(WebApplication)"/>.
+    /// Если этого не сделать, поведение может оказаться неожиданным.
+    /// При использовании Swagger в ответе вернется полный stack trace ошибки, который
+    /// может содержать конфиденциальную информацию.
+    /// При вызове из стороннего сервиса ProblemDetails не будет возвращен.
     /// </para>
     /// </remarks>
     public static IHostApplicationBuilder AddExtendedErrorHandling(this IHostApplicationBuilder builder)
@@ -78,9 +80,15 @@ public static class ErrorHandlingExtensions
     /// <remarks>
     /// <para>Обертка над
     /// <see cref="ExceptionHandlerExtensions.UseExceptionHandler(IApplicationBuilder)"/></para>
-    /// <para>Обязательно должен быть вызван при использовании MVC контроллеров</para>
-    /// <para>При использовании Minimal Api метод app.UseExceptionHandler() будет вызван автоматически.
-    /// Поэтому метод UseErrorHandling() допустимо не вызывать</para>
+    /// <para>
+    /// ⚠️ <strong>Внимание:</strong> метод обязательно должен быть вызван при использовании
+    /// <see cref="AddDefaultErrorHandling(IHostApplicationBuilder)"/> или
+    /// <see cref="AddExtendedErrorHandling(IHostApplicationBuilder)"/>.
+    /// Если этого не сделать, поведение может оказаться неожиданным.
+    /// При использовании Swagger в ответе вернется полный stack trace ошибки, который
+    /// может содержать конфиденциальную информацию.
+    /// При вызове из стороннего сервиса ProblemDetails не будет возвращен.
+    /// </para>
     /// </remarks>
     public static WebApplication UseErrorHandling(this WebApplication app)
     {
@@ -88,5 +96,4 @@ public static class ErrorHandlingExtensions
 
         return app;
     }
-
 }
