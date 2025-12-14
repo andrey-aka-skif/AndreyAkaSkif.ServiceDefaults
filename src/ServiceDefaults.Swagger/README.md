@@ -1,4 +1,4 @@
-# Service Defaults OpenAPI via Swagger
+# AndreyAkaSkif.ServiceDefaults.Swagger
 
 Расширение для `AndeyAkaSkif.ServiceDefaults`, добавляющее единообразную конфигурацию OpenAPI спецификации с использованием Swagger UI.
 
@@ -10,12 +10,14 @@ dotnet add package AndeyAkaSkif.ServiceDefaults.Swagger
 ## Возможности
 - конфигурация OpenAPI спецификации и Swagger UI с параметрами по умолчанию (`AddDefaultOpenApiViaSwagger()`, `UseDefaultOpenApiViaSwagger()`);
 - конфигурация OpenAPI спецификации и Swagger UI на основе конфигурации (`AddConfiguredOpenApiViaSwagger()`, `UseConfiguredOpenApiViaSwagger()`)
+- отображение конечной точки HealthCheck в Swagger UI (`AddSwaggerHealthChecksEndpoint()`).
 
 ## Пример использования
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDefaultOpenApiViaSwagger();
+builder.AddSimpleHealthCheckSwaggerDisplaying();
 
 var app = builder.Build();
 app.UseDefaultOpenApiViaSwagger();
@@ -45,5 +47,15 @@ app.Run();
 При использовании методов из библиотеки `ServiceDefaults.Swagger` всегда устанавливается пакет `Swashbuckle.AspNetCore.Annotations`.
 Даже, если в проекте не используются MVC контроллеры, а только Minimal Api.
 
-Дополнительная информация - в основном репозитории проекта:
-https://github.com/andrey-aka-skif/ServiceDefaults
+### Отображение конечной точки HealthCheck в Swagger UI
+Метод `AddSimpleHealthCheckSwaggerDisplaying()` только добавляет описание конечной точки в документацию Swagger.
+Для функционирования конечной точки необходимо добавить HealthCheck middleware в конвейер обработки запросов.
+В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку `404 Not Found`.
+Добавление HealthCheck middleware осуществляется с помощью метода `UseSimpleHealthCheck()` из пакета `AndreyAkaSkif.ServiceDefaults`:
+```csharp
+app.UseSimpleHealthCheck();
+```
+
+## Документация пакета
+Полное описание пакета и другие примеры:
+https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults
