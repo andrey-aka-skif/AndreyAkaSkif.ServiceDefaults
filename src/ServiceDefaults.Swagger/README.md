@@ -17,10 +17,20 @@ dotnet add package AndeyAkaSkif.ServiceDefaults.Swagger
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDefaultOpenApiViaSwagger();
+
+// раздельная регистрация Health Checks сервисов и отображение конечной точки в Swagger UI
+builder.AddHealthChecks();
 builder.AddHealthChecksSwagger();
 
+// или единая регистрация Health Checks сервисов и отображение конечной точки в Swagger UI
+builder.AddHealthChecksWithSwagger();
+
 var app = builder.Build();
+
 app.UseDefaultOpenApiViaSwagger();
+
+// добавление конечной точки HealthCheck в конвейер обработки запросов
+app.MapHealthChecksEndpoint();
 
 app.Run();
 ```
@@ -49,12 +59,14 @@ app.Run();
 
 ### Отображение конечной точки HealthCheck в Swagger UI
 Метод `AddHealthChecksSwagger()` только добавляет описание конечной точки в документацию Swagger.
-Для функционирования конечной точки необходимо добавить HealthCheck middleware в конвейер обработки запросов.
+Для функционирования конечной точки необходимо включить HealthCheck сервисы и добавить HealthCheck middleware в конвейер обработки запросов
 В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку `404 Not Found`.
+Включение HealthCheck сервисов осуществляется с помощью метода `AddHealthChecks()` из пакета `AndreyAkaSkif.ServiceDefaults`.
 Добавление HealthCheck middleware осуществляется с помощью метода `MapHealthChecksEndpoint()` из пакета `AndreyAkaSkif.ServiceDefaults`:
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddHealthChecks();
 builder.AddHealthChecksSwagger();
 
 var app = builder.Build();
@@ -63,6 +75,8 @@ app.MapHealthChecksEndpoint();
 
 app.Run();
 ```
+
+Альтернативно, можно использовать единый метод `AddHealthChecksWithSwagger()`, который включает регистрацию HealthCheck сервисов.
 
 ## Документация пакета
 Полное описание пакета и другие примеры:
