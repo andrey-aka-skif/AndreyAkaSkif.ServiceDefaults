@@ -15,6 +15,7 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
     - настройка политик CORS
     - саброутинг (PathBase)
     - обработка ошибок с использованием ProblemDetails
+    - упрощенный Health Checks (конечная точка `/health`)
 - Регистрация конфигураций и аргументов
     - упрощённая регистрация валидируемых настроек в DI контейнере через единый extension-метод
     - упрощенная регистрация произвольного экземпляра класса в DI контейнере через единый extension-метод
@@ -33,6 +34,7 @@ var app = builder.Build();
 app.UseConfiguredCorsPolicy();          // подключение политики CORS, настроенной через конфигурацию
 app.UseErrorHandling();                 // подключение промежуточного ПО для обработки исключений в конвейере запросов
 app.UseConfiguredPathBase();            // добавление базового пути на основе конфигурации
+app.UseSimpleHealthCheck();             // добавление упрощенной проверки состояния
 
 app.Run();
 ```
