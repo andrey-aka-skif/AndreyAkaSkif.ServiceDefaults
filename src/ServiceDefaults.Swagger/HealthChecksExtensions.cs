@@ -6,7 +6,7 @@ namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 /// <summary>
 /// Методы расширения для отображения HealthCheck конечных точек в Swagger
 /// </summary>
-public static class HealthCheckingSwaggerExtensions
+public static class HealthChecksExtensions
 {
     /// <summary>
     /// Добавить в Swagger отображение HealthCheck конечной точки
@@ -18,11 +18,11 @@ public static class HealthCheckingSwaggerExtensions
     /// В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку 404 Not Found
     /// </para>
     /// </remarks>
-    public static IHostApplicationBuilder AddSimpleHealthCheckSwaggerDisplaying(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddHealthChecksSwagger(this IHostApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen(options =>
         {
-            options.DocumentFilter<HealthCheckDocumentFilter>();
+            options.DocumentFilter<HealthChecksDocumentFilter>();
         });
 
         return builder;

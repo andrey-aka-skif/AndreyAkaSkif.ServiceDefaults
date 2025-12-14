@@ -34,7 +34,7 @@ var app = builder.Build();
 app.UseConfiguredCorsPolicy();          // подключение политики CORS, настроенной через конфигурацию
 app.UseErrorHandling();                 // подключение промежуточного ПО для обработки исключений в конвейере запросов
 app.UseConfiguredPathBase();            // добавление базового пути на основе конфигурации
-app.UseSimpleHealthCheck();             // добавление упрощенной проверки состояния
+app.MapHealthChecksEndpoint();          // добавление упрощенной проверки состояния
 
 app.Run();
 ```

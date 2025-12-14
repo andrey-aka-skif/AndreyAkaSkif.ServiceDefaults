@@ -8,16 +8,11 @@ namespace AndreyAkaSkif.ServiceDefaults.HealthChecking;
 public static class HealthCheckingExtensions
 {
     /// <summary>
-    /// Конечная точка HealthCheck
-    /// </summary>
-    public const string HEALTH_ENDPOINT = "/health";
-
-    /// <summary>
     /// Добавить HealthCheck middleware
     /// </summary>
-    public static WebApplication UseSimpleHealthCheck(this WebApplication app)
+    public static WebApplication MapHealthChecksEndpoint(this WebApplication app)
     {
-        app.MapHealthChecks(HEALTH_ENDPOINT);
+        app.MapHealthChecks(HealthCheckDefaults.Endpoint);
 
         return app;
     }

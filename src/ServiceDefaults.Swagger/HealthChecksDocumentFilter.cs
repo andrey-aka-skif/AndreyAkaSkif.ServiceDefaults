@@ -13,7 +13,7 @@ namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 /// Контракт конечной точки требует актуализации в случае изменения реализации HealthCheck middleware
 /// </strong>
 /// </remarks>
-public class HealthCheckDocumentFilter : IDocumentFilter
+public class HealthChecksDocumentFilter : IDocumentFilter
 {
     /// <summary>Применить фильтр к документации Swagger</summary>
     /// <param name="swaggerDoc">Документ Swagger</param>
@@ -26,7 +26,7 @@ public class HealthCheckDocumentFilter : IDocumentFilter
         {
             Tags = [new() { Name = "Health" }],
             Summary = "Health Check",
-            Description = $"Отображение конечной точки {HealthCheckingExtensions.HEALTH_ENDPOINT}, добавляемой через HealthCheck middleware",
+            Description = $"Отображение конечной точки {HealthCheckDefaults.Endpoint}, добавляемой через HealthCheck middleware",
             Responses = new OpenApiResponses
             {
                 ["200"] = new OpenApiResponse
@@ -69,6 +69,6 @@ public class HealthCheckDocumentFilter : IDocumentFilter
             }
         });
 
-        swaggerDoc.Paths.Add(HealthCheckingExtensions.HEALTH_ENDPOINT, path);
+        swaggerDoc.Paths.Add(HealthCheckDefaults.Endpoint, path);
     }
 }
