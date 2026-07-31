@@ -10,27 +10,32 @@ namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 public static class HealthChecksExtensions
 {
     /// <summary>
-    /// Добавить HealthCheck сервисы и отображение HealthCheck конечной точки в Swagger
+    /// Добавить сервисы конечной точки проверки жизнеспособности приложения
+    /// и её отображение в Swagger
     /// </summary>
-    public static IHostApplicationBuilder AddHealthChecksWithSwagger(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddHealthCheckEndpointWithSwagger(this IHostApplicationBuilder builder)
     {
-        builder.AddHealthChecks();
-        builder.AddHealthChecksSwagger();
+        builder.AddHealthCheckEndpoint();
+        builder.AddHealthCheckEndpointSwagger();
 
         return builder;
     }
 
     /// <summary>
-    /// Добавить в Swagger отображение HealthCheck конечной точки
+    /// Добавить в Swagger отображение конечной точки проверки жизнеспособности приложения
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// В документацию добавляется конечная точка <c>/health</c>
+    /// (константа <see cref="HealthCheckDefaults.Endpoint"/>) с единственным ответом <c>200 Healthy</c>
+    /// </para>
     /// <para>
     /// Обратить внимание, что метод только добавляет описание конечной точки в документацию Swagger.
     /// Для функционирования конечной точки необходимо включить HealthCheck сервисы и добавить HealthCheck middleware в конвейер обработки запросов.
     /// В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку 404 Not Found
     /// </para>
     /// </remarks>
-    public static IHostApplicationBuilder AddHealthChecksSwagger(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddHealthCheckEndpointSwagger(this IHostApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen(options =>
         {

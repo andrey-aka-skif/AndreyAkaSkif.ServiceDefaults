@@ -15,7 +15,7 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
     - настройка политик CORS
     - саброутинг (PathBase)
     - обработка ошибок с использованием ProblemDetails
-    - упрощенный Health Checks (конечная точка `/health`)
+    - конечная точка проверки жизнеспособности приложения для оркестратора (`/health`)
 - Регистрация конфигураций и аргументов
     - упрощённая регистрация валидируемых настроек в DI контейнере через единый extension-метод
     - упрощенная регистрация произвольного экземпляра класса в DI контейнере через единый extension-метод
@@ -26,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddConfiguredCorsPolicy();      // добавление политики CORS, настроенной через конфигурацию
 builder.AddExtendedErrorHandling();     // регистрация стандартной обработки ошибок с использованием ProblemDetails
-builder.AddHealthChecks();              // регистрация Health Checks сервисов (унифицированная обертка над builder.Services.AddHealthChecks())
+builder.AddHealthCheckEndpoint();       // регистрация сервисов конечной точки проверки жизнеспособности приложения
 
 builder.AddServiceArgFromValidatedSettingsObject<ExampleSettingsArgs>();    // регистрация валидированного объекта настроек как singleton в DI-контейнере
 
@@ -35,9 +35,42 @@ var app = builder.Build();
 app.UseConfiguredCorsPolicy();          // подключение политики CORS, настроенной через конфигурацию
 app.UseErrorHandling();                 // подключение промежуточного ПО для обработки исключений в конвейере запросов
 app.UseConfiguredPathBase();            // добавление базового пути на основе конфигурации
-app.MapHealthChecksEndpoint();          // добавление Health Checks конечной точки (/health)
+app.MapHealthCheckEndpoint();           // добавление конечной точки проверки жизнеспособности (/health)
 
 app.Run();
+```
+
+## Health Checks
+Пара методов `AddHealthCheckEndpoint()` / `MapHealthCheckEndpoint()` регистрирует минимальную
+инфраструктуру ASP.NET Core Health Checks и одну конечную точку `/health`, достаточную для
+использования Docker Compose, Kubernetes или другого оркестратора.
+
+Назначение конечной точки — сообщить оркестратору, что приложение запустилось и принимает
+HTTP-запросы. Никаких проверок она не выполняет и отвечает `200 Healthy` самим фактом ответа
+приложения.
+
+Адрес конечной точки — `/health`. Он задан константой `HealthCheckDefaults.Endpoint`
+и не конфигурируется: то же значение использует фильтр документации Swagger из пакета
+`AndreyAkaSkif.ServiceDefaults.Swagger`, и параметризация пути развела бы их между собой.
+Если нужен другой адрес, добавьте свою конечную точку вызовом `app.MapHealthChecks()`
+вместо `MapHealthCheckEndpoint()`.
+
+Методы **не предназначены** для регистрации пользовательских проверок.
+Для добавления проверок БД, Redis и других зависимостей используйте стандартный API
+`builder.Services.AddHealthChecks()`.
+Такие проверки сознательно не попадают в `/health`: недоступность зависимости не является поводом
+перезапускать работающее приложение. Если проверки зависимостей нужно опубликовать, добавьте
+для них отдельную конечную точку вызовом `app.MapHealthChecks()`:
+
+```csharp
+builder.AddHealthCheckEndpoint();                       // /health — приложение живо
+builder.Services.AddHealthChecks()                      // проверки зависимостей
+       .AddNpgSql(connectionString);
+
+var app = builder.Build();
+
+app.MapHealthCheckEndpoint();                           // /health
+app.MapHealthChecks("/ready");                          // /ready — зависимости доступны
 ```
 
 ## ⚠️ Важно

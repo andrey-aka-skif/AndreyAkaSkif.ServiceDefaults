@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -10,12 +11,21 @@ namespace AndreyAkaSkif.ServiceDefaults.HealthChecking;
 public static class HealthCheckingExtensions
 {
     /// <summary>
-    /// Добавить HealthCheck сервисы
+    /// Добавить сервисы, необходимые для конечной точки проверки жизнеспособности приложения
     /// </summary>
     /// <remarks>
-    /// Метод является унифицированной оберткой над вызовом <c>builder.Services.AddHealthChecks()</c>
+    /// <para>
+    /// Метод регистрирует минимальную инфраструктуру ASP.NET Core Health Checks, достаточную
+    /// для использования Docker Compose, Kubernetes или другого оркестратора.
+    /// Саму конечную точку <c>/health</c> добавляет <see cref="MapHealthCheckEndpoint"/>
+    /// </para>
+    /// <para>
+    /// Метод не предназначен для регистрации пользовательских проверок.
+    /// Для добавления проверок БД, Redis и других зависимостей используйте стандартный API
+    /// <c>builder.Services.AddHealthChecks()</c>
+    /// </para>
     /// </remarks>
-    public static IHostApplicationBuilder AddHealthChecks(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddHealthCheckEndpoint(this IHostApplicationBuilder builder)
     {
         builder.Services.AddHealthChecks();
 
@@ -23,11 +33,31 @@ public static class HealthCheckingExtensions
     }
 
     /// <summary>
-    /// Добавить HealthCheck middleware
+    /// Добавить конечную точку проверки жизнеспособности приложения по адресу <c>/health</c>
     /// </summary>
-    public static WebApplication MapHealthChecksEndpoint(this WebApplication app)
+    /// <remarks>
+    /// <para>
+    /// Конечная точка позволяет оркестратору определить, что приложение запустилось и принимает
+    /// HTTP-запросы. Она не исполняет зарегистрированные проверки и отвечает <c>200 Healthy</c>
+    /// самим фактом ответа приложения.
+    /// </para>
+    /// <para>
+    /// Адрес конечной точки задан константой <see cref="HealthCheckDefaults.Endpoint"/>
+    /// и не конфигурируется: то же значение использует фильтр документации Swagger
+    /// из пакета <c>AndreyAkaSkif.ServiceDefaults.Swagger</c>
+    /// </para>
+    /// <para>
+    /// Проверки, добавленные через стандартный API <c>builder.Services.AddHealthChecks()</c>,
+    /// сознательно не попадают в эту конечную точку: недоступность БД или другой зависимости
+    /// не является поводом для перезапуска работающего приложения.
+    /// Для таких проверок регистрируйте отдельную конечную точку вызовом <c>app.MapHealthChecks()</c>
+    /// </para>
+    /// </remarks>
+    public static WebApplication MapHealthCheckEndpoint(this WebApplication app)
     {
-        app.MapHealthChecks(HealthCheckDefaults.Endpoint);
+        app.MapHealthChecks(
+            HealthCheckDefaults.Endpoint,
+            new HealthCheckOptions { Predicate = _ => false });
 
         return app;
     }
