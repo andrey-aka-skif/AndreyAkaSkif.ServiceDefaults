@@ -6,3 +6,34 @@ updates:
       interval: weekly
     commit-message:
       prefix: ci
+
+  # Мажоры поднимаем вручную, вместе с TargetFramework в Directory.Build.props:
+  # часть Microsoft.Extensions.* мультитаргетится на netstandard2.0, поэтому
+  # мажор встал бы на net10.0 без ошибки restore, а у Npgsql мажор привязан
+  # к мажору EF Core.
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: build
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      dotnet:
+        patterns:
+          - "Microsoft.AspNetCore.*"
+          - "Microsoft.Extensions.*"
+          - "Microsoft.EntityFrameworkCore*"
+          - "Microsoft.OpenApi"
+          - "Npgsql.*"
+      third-party:
+        patterns:
+          - "Serilog.*"
+          - "Swashbuckle.*"
+      test:
+        patterns:
+          - "xunit*"
+          - "Microsoft.NET.Test.Sdk"
