@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>AndreyAkaSkif.ServiceDefaults.Serilog</PackageId>
-    <Title>Service Defaults Logging with Serilog</Title>
-    <Description>Конфигурирование логирования с Serilog для WEB-API сервисов ASP.NET</Description>
+    <PackageId>AndreyAkaSkif.ServiceDefaults.PostgreSQL</PackageId>
+    <Title>Service Defaults simple PostgreSQL Context</Title>
+    <Description>Добавление простого PostgreSQL контекста</Description>
     <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
+    <PackageTags>defaults;configure;config;extensions;postgresql;efcore</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -14,16 +15,12 @@
     </None>
   </ItemGroup>
 
-  <PropertyGroup>
-    <RootNamespace>$(Company).ServiceDefaults.Logging.Serilog</RootNamespace>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
 
 </Project>

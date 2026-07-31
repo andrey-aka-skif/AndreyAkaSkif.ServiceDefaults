@@ -20,11 +20,11 @@ jobs:
         strategy:
             matrix:
                 project: [
-                    'src/ServiceDefaults/ServiceDefaults.csproj',
-                    'src/ServiceDefaults.OpenApi/ServiceDefaults.OpenApi.csproj',
-                    'src/ServiceDefaults.Swagger/ServiceDefaults.Swagger.csproj',
-                    'src/ServiceDefaults.Serilog/ServiceDefaults.Serilog.csproj',
-                    'src/ServiceDefaults.PostgreSQL/ServiceDefaults.PostgreSQL.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults/AndreyAkaSkif.ServiceDefaults.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.OpenApi/AndreyAkaSkif.ServiceDefaults.OpenApi.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.Serilog/AndreyAkaSkif.ServiceDefaults.Serilog.csproj',
+                    'src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj',
                 ]
         steps:
             - name: 🛒 Checkout
@@ -32,6 +32,8 @@ jobs:
 
             - name: ✨ Setup .NET
               uses: actions/setup-dotnet@v4
+              with:
+                dotnet-version: '10.0.x'
 
             - name: 💾 Cache NuGet packages
               uses: actions/cache@v4
