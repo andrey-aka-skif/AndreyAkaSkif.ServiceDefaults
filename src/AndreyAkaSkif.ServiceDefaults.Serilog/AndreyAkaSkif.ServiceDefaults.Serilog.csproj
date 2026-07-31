@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Serilog.AspNetCore" />
   </ItemGroup>
 

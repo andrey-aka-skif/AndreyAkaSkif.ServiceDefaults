@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <!-- Явная ссылка ради версии: транзитивно приходит Microsoft.OpenApi 2.0.0
          с NU1903 (GHSA-v5pm-xwqc-g5wc), первая исправленная версия — 2.7.5 -->
