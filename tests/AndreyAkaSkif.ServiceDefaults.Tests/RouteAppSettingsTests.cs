@@ -1,6 +1,3 @@
-using AndreyAkaSkif.ServiceDefaults.Routing;
-using System;
-
 namespace AndreyAkaSkif.ServiceDefaults.Tests;
 
 public class RouteAppSettingsTests

@@ -14,7 +14,6 @@
     <Project Path="src/AndreyAkaSkif.ServiceDefaults.Swagger/AndreyAkaSkif.ServiceDefaults.Swagger.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <File Path="tests/Directory.Build.props" />
     <Project Path="tests/AndreyAkaSkif.ServiceDefaults.Tests/AndreyAkaSkif.ServiceDefaults.Tests.csproj" />
   </Folder>
 </Solution>

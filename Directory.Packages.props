@@ -21,12 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Версии пакетов для тестов -->
-    <PackageVersion Include="AndreyAkaSkif.ServiceDefaults" Version="0.0.19" />
-    <PackageVersion Include="AndreyAkaSkif.ServiceDefaults.Swagger" Version="0.0.19" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="xunit" Version="2.9.2" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <!-- Тестирование (xUnit v3). Ассерты — встроенные. -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
 </Project>
