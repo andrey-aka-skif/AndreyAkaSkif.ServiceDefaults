@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AndreyAkaSkif.ServiceDefaults.Settings;
 
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
@@ -8,16 +9,16 @@ internal sealed record RouteAppSettings : IValidatableSettingsObject
 
     public void Validate()
     {
-        // пустая строка - допустима
-        if (PathBase == string.Empty)
-            return;
-
         // строка не должна быть null
         if (PathBase is null)
             ThrowValidateException();
 
+        // пустая строка - допустима
+        if (PathBase == string.Empty)
+            return;
+
         // строка должна начинаться со слеша
-        if (!PathBase!.StartsWith('/'))
+        if (!PathBase.StartsWith('/'))
             ThrowValidateException();
 
         // строка не должна содержать двойные слеши
@@ -51,6 +52,7 @@ internal sealed record RouteAppSettings : IValidatableSettingsObject
             ThrowValidateException();
     }
 
+    [DoesNotReturn]
     private void ThrowValidateException() =>
         throw new ArgumentException(
                 $"Недопустимые символы в {nameof(RouteAppSettings)}:{nameof(PathBase)}: '{PathBase}'",

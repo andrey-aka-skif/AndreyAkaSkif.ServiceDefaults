@@ -27,14 +27,14 @@ public static class ConfiguredCorsExtensions
     /// </remarks>
     public static IHostApplicationBuilder AddConfiguredCorsPolicy(this IHostApplicationBuilder builder)
     {
-        var сorsPolicy = builder.Configuration.CreateValidated<CorsPolicy>();
+        var corsPolicy = builder.Configuration.CreateValidated<CorsPolicy>();
 
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(
-                сorsPolicy.Name,
+                corsPolicy.Name,
                 policy => policy
-                    .WithOrigins(сorsPolicy.Origins)
+                    .WithOrigins(corsPolicy.Origins)
                     .AllowAnyMethod()
                     .AllowAnyHeader()
             );
@@ -51,8 +51,8 @@ public static class ConfiguredCorsExtensions
     /// </remarks>
     public static WebApplication UseConfiguredCorsPolicy(this WebApplication app)
     {
-        var сorsPolicy = app.Configuration.CreateValidated<CorsPolicy>();
-        app.UseCors(сorsPolicy.Name);
+        var corsPolicy = app.Configuration.CreateValidated<CorsPolicy>();
+        app.UseCors(corsPolicy.Name);
 
         return app;
     }

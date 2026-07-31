@@ -14,11 +14,21 @@ public static class SettingsExtensions
     /// <typeparam name="T">Тип регистрируемых настроек.</typeparam>
     /// <param name="builder">Построитель приложения.</param>
     /// <returns>Построитель приложения для цепочки вызовов.</returns>
+    /// <remarks>
+    /// Привязка секции конфигурации и валидация выполняются <strong>в момент вызова</strong>,
+    /// а не при первом разрешении сервиса из DI. Некорректная конфигурация обнаруживается
+    /// на старте приложения, до вызова <c>Build()</c>.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// Выбрасывается, если секция конфигурации отсутствует или содержит некорректные данные.
+    /// </exception>
     public static IHostApplicationBuilder AddServiceArgFromValidatedSettingsObject<T>(
         this IHostApplicationBuilder builder)
             where T : class, IValidatableSettingsObject, new()
     {
-        builder.Services.AddSingleton(_ => builder.Configuration.CreateValidated<T>());
+        var settings = builder.Configuration.CreateValidated<T>();
+
+        builder.Services.AddSingleton(settings);
 
         return builder;
     }
@@ -32,9 +42,9 @@ public static class SettingsExtensions
     /// <returns>Построитель приложения для цепочки вызовов.</returns>
     public static IHostApplicationBuilder AddServiceArg<T>(
         this IHostApplicationBuilder builder,
-        T arg) where T : class, new()
+        T arg) where T : class
     {
-        builder.Services.AddSingleton(_ => arg);
+        builder.Services.AddSingleton(arg);
 
         return builder;
     }
