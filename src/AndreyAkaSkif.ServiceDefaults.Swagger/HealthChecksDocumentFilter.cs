@@ -26,12 +26,13 @@ public class HealthChecksDocumentFilter : IDocumentFilter
         {
             Tags = [new() { Name = "Health" }],
             Summary = "Health Check",
-            Description = $"Отображение конечной точки {HealthCheckDefaults.Endpoint}, добавляемой через HealthCheck middleware",
+            Description = $"Проверка жизнеспособности приложения для оркестратора. "
+                + $"Отображение конечной точки {HealthCheckDefaults.Endpoint}, добавляемой через HealthCheck middleware",
             Responses = new OpenApiResponses
             {
                 ["200"] = new OpenApiResponse
                 {
-                    Description = "Healthy or Degraded",
+                    Description = "Healthy",
                     Content =
                     {
                         ["text/plain"] = new OpenApiMediaType
@@ -41,26 +42,7 @@ public class HealthChecksDocumentFilter : IDocumentFilter
                                 Type = "string",
                                 Enum =
                                 [
-                                    new OpenApiString("Healthy"),
-                                    new OpenApiString("Degraded")
-                                ]
-                            }
-                        }
-                    }
-                },
-                ["503"] = new OpenApiResponse
-                {
-                    Description = "Unhealthy",
-                    Content =
-                    {
-                        ["text/plain"] = new OpenApiMediaType
-                        {
-                            Schema = new OpenApiSchema
-                            {
-                                Type = "string",
-                                Enum =
-                                [
-                                    new OpenApiString("Unhealthy")
+                                    new OpenApiString("Healthy")
                                 ]
                             }
                         }

@@ -10,7 +10,7 @@ dotnet add package AndeyAkaSkif.ServiceDefaults.Swagger
 ## Возможности
 - конфигурация OpenAPI спецификации и Swagger UI с параметрами по умолчанию (`AddDefaultOpenApiViaSwagger()`, `UseDefaultOpenApiViaSwagger()`);
 - конфигурация OpenAPI спецификации и Swagger UI на основе конфигурации (`AddConfiguredOpenApiViaSwagger()`, `UseConfiguredOpenApiViaSwagger()`)
-- отображение конечной точки HealthCheck в Swagger UI (`AddHealthChecksSwagger()`).
+- отображение конечной точки проверки жизнеспособности в Swagger UI (`AddHealthCheckEndpointSwagger()`).
 
 ## Пример использования
 ```csharp
@@ -18,19 +18,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddDefaultOpenApiViaSwagger();
 
-// раздельная регистрация Health Checks сервисов и отображение конечной точки в Swagger UI
-builder.AddHealthChecks();
-builder.AddHealthChecksSwagger();
+// раздельная регистрация сервисов конечной точки и её отображения в Swagger UI
+builder.AddHealthCheckEndpoint();
+builder.AddHealthCheckEndpointSwagger();
 
-// или единая регистрация Health Checks сервисов и отображение конечной точки в Swagger UI
-builder.AddHealthChecksWithSwagger();
+// или единая регистрация сервисов конечной точки и её отображения в Swagger UI
+builder.AddHealthCheckEndpointWithSwagger();
 
 var app = builder.Build();
 
 app.UseDefaultOpenApiViaSwagger();
 
-// добавление конечной точки HealthCheck в конвейер обработки запросов
-app.MapHealthChecksEndpoint();
+// добавление конечной точки проверки жизнеспособности в конвейер обработки запросов
+app.MapHealthCheckEndpoint();
 
 app.Run();
 ```
@@ -57,26 +57,33 @@ app.Run();
 При использовании методов из библиотеки `ServiceDefaults.Swagger` всегда устанавливается пакет `Swashbuckle.AspNetCore.Annotations`.
 Даже, если в проекте не используются MVC контроллеры, а только Minimal Api.
 
-### Отображение конечной точки HealthCheck в Swagger UI
-Метод `AddHealthChecksSwagger()` только добавляет описание конечной точки в документацию Swagger.
+### Отображение конечной точки проверки жизнеспособности в Swagger UI
+Метод `AddHealthCheckEndpointSwagger()` только добавляет описание конечной точки в документацию Swagger.
 Для функционирования конечной точки необходимо включить HealthCheck сервисы и добавить HealthCheck middleware в конвейер обработки запросов
 В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку `404 Not Found`.
-Включение HealthCheck сервисов осуществляется с помощью метода `AddHealthChecks()` из пакета `AndreyAkaSkif.ServiceDefaults`.
-Добавление HealthCheck middleware осуществляется с помощью метода `MapHealthChecksEndpoint()` из пакета `AndreyAkaSkif.ServiceDefaults`:
+Включение HealthCheck сервисов осуществляется с помощью метода `AddHealthCheckEndpoint()` из пакета `AndreyAkaSkif.ServiceDefaults`.
+Добавление HealthCheck middleware осуществляется с помощью метода `MapHealthCheckEndpoint()` из пакета `AndreyAkaSkif.ServiceDefaults`:
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddHealthChecks();
-builder.AddHealthChecksSwagger();
+builder.AddHealthCheckEndpoint();
+builder.AddHealthCheckEndpointSwagger();
 
 var app = builder.Build();
 
-app.MapHealthChecksEndpoint();
+app.MapHealthCheckEndpoint();
 
 app.Run();
 ```
 
-Альтернативно, можно использовать единый метод `AddHealthChecksWithSwagger()`, который включает регистрацию HealthCheck сервисов.
+Альтернативно, можно использовать единый метод `AddHealthCheckEndpointWithSwagger()`, который включает регистрацию HealthCheck сервисов.
+
+В Swagger UI описывается конечная точка `/health` (константа `HealthCheckDefaults.Endpoint`
+из пакета `AndreyAkaSkif.ServiceDefaults`) с единственным ответом `200 Healthy`: конечная точка
+не выполняет зарегистрированные проверки и отвечает успехом самим фактом ответа приложения.
+Адрес не конфигурируется — он должен совпадать с адресом, который регистрирует
+`MapHealthCheckEndpoint()`.
+Подробнее о контракте — в README пакета `AndreyAkaSkif.ServiceDefaults`.
 
 ## Документация пакета
 Полное описание пакета и другие примеры:
