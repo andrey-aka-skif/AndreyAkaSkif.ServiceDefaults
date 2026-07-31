@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults.Swagger\AndreyAkaSkif.ServiceDefaults.Swagger.csproj" />
   </ItemGroup>
 
 </Project>

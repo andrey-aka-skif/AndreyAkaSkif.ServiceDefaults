@@ -34,10 +34,8 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// будет выброшено исключение <see cref="ArgumentException"/>.
     /// </para>
     /// <para>
-    /// <strong>Следует обратить внимание,</strong> что при использовании файлов конфигурации
-    /// секция должна быть указана в основном файле "appsettings.json".
-    /// <strong>Не следует</strong> выносить секцию в файлы, содержащие среду.
-    /// Например, в "appsettings.Development.json".
+    /// Валидированные настройки регистрируются в DI-контейнере,
+    /// откуда их берёт <see cref="UseConfiguredOpenApiViaSwagger"/>.
     /// </para>
     /// <para>
     /// При использовании методов из библиотеки ServiceDefaults.Swagger
@@ -52,6 +50,8 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     public static IHostApplicationBuilder AddConfiguredOpenApiViaSwagger(this IHostApplicationBuilder builder)
     {
         var settings = builder.Configuration.CreateValidated<SwaggerAppSettings>();
+
+        builder.AddServiceArg(settings);
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -83,21 +83,23 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// <remarks>
     /// <para>
     /// Метод активирует Swagger и Swagger UI только в development среде.
-    /// Для корректной работы требуется наличие валидной секции конфигурации "SwaggerAppSettings".
+    /// Для корректной работы требуется предварительный вызов
+    /// <see cref="AddConfiguredOpenApiViaSwagger"/>: настройки берутся из
+    /// DI-контейнера, конфигурация повторно не читается.
     /// </para>
     /// <para>
     /// Дополнительно настраивает маршрут "/" для автоматического перенаправления на страницу Swagger UI ("/swagger").
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentException">
-    /// Выбрасывается, если секция "SwaggerAppSettings" отсутствует в конфигурации или содержит некорректные данные.
+    /// <exception cref="InvalidOperationException">
+    /// Выбрасывается, если <see cref="AddConfiguredOpenApiViaSwagger"/> не был вызван.
     /// </exception>
     public static WebApplication UseConfiguredOpenApiViaSwagger(this WebApplication app)
     {
         if (!app.Environment.IsDevelopment())
             return app;
 
-        var settings = app.Configuration.CreateValidated<SwaggerAppSettings>();
+        var settings = app.Services.GetRequiredService<SwaggerAppSettings>();
 
         app.UseSwagger();
 

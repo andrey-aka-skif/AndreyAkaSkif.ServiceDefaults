@@ -24,10 +24,17 @@ public static class ConfiguredCorsExtensions
     ///   ]
     /// }
     /// </code>
+    /// Валидированные настройки регистрируются в DI-контейнере,
+    /// откуда их берёт <see cref="UseConfiguredCorsPolicy"/>.
     /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// Выбрасывается, если секция "CorsPolicy" отсутствует в конфигурации или содержит некорректные данные.
+    /// </exception>
     public static IHostApplicationBuilder AddConfiguredCorsPolicy(this IHostApplicationBuilder builder)
     {
         var corsPolicy = builder.Configuration.CreateValidated<CorsPolicy>();
+
+        builder.AddServiceArg(corsPolicy);
 
         builder.Services.AddCors(options =>
         {
@@ -47,11 +54,15 @@ public static class ConfiguredCorsExtensions
     /// Использовать политику CORS, настроенную через конфигурацию
     /// </summary>
     /// <remarks>
-    /// Требует секцию конфигурации "CorsPolicy"
+    /// Требует предварительного вызова <see cref="AddConfiguredCorsPolicy"/>:
+    /// настройки берутся из DI-контейнера, конфигурация повторно не читается.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// Выбрасывается, если <see cref="AddConfiguredCorsPolicy"/> не был вызван.
+    /// </exception>
     public static WebApplication UseConfiguredCorsPolicy(this WebApplication app)
     {
-        var corsPolicy = app.Configuration.CreateValidated<CorsPolicy>();
+        var corsPolicy = app.Services.GetRequiredService<CorsPolicy>();
         app.UseCors(corsPolicy.Name);
 
         return app;
