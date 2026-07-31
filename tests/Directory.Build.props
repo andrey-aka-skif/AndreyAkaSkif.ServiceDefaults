@@ -13,9 +13,5 @@
     <IsPackable>False</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <!-- CA1707: подчёркивания в именах тестов — это принятая конвенция
-         Method_ShouldDoX_WhenY, переименовывать не нужно -->
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
-  </PropertyGroup>
+  <!-- CA1707 для тестов отключён в корневом .editorconfig, секция [tests/**/*.cs] -->
 </Project>
