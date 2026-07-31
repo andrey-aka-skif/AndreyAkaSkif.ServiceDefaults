@@ -1,8 +1,7 @@
 <Project>
-  <PropertyGroup>
-    <!-- Версия NET для всех проектов в решении -->
-    <TargetFramework>net9.0</TargetFramework>
-  </PropertyGroup>
+  <!-- MSBuild останавливается на ближайшем Directory.Build.props, поэтому корневой
+       нужно импортировать явно — иначе тесты не получат ни TargetFramework, ни анализаторы -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
   <PropertyGroup>
     <!-- Настройки документирования -->
@@ -10,9 +9,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Общие namespace -->
-    <AuthorPrefix>AndreyAkaSkif</AuthorPrefix>
-    <RootNamespace>$(AuthorPrefix).$(MSBuildProjectName)</RootNamespace>
-    <AssemblyName>$(AuthorPrefix).$(MSBuildProjectName)</AssemblyName>
+    <!-- Тестовые проекты не пакуются -->
+    <IsPackable>False</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- CA1707: подчёркивания в именах тестов — это принятая конвенция
+         Method_ShouldDoX_WhenY, переименовывать не нужно -->
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
   </PropertyGroup>
 </Project>

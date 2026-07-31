@@ -1,7 +1,7 @@
 using AndreyAkaSkif.ServiceDefaults.Routing;
 using System;
 
-namespace AndreyAkaSkif.ServiceDefaults.Tests.Unit;
+namespace AndreyAkaSkif.ServiceDefaults.Tests;
 
 public class RouteAppSettingsTests
 {
@@ -88,7 +88,8 @@ public class RouteAppSettingsTests
     public void Validate_ShouldThrowArgumentException_WhenPathBaseIsNull()
     {
         // Arrange
-        var settings = new RouteAppSettings { PathBase = null };
+        // намеренная передача null в non-nullable свойство — проверяем защиту Validate
+        var settings = new RouteAppSettings { PathBase = null! };
 
         // Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => settings.Validate());

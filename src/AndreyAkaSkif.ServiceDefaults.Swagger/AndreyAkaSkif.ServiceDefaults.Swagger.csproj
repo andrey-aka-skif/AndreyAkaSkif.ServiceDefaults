@@ -5,6 +5,7 @@
     <Title>Service Defaults OpenApi Specification Via Swagger</Title>
     <Description>Конфигурирование OpenApi спецификации для использования Swagger UI</Description>
     <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
+    <PackageTags>defaults;configure;config;extensions;swagger;openapi</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -20,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" />
+    <ProjectReference Include="..\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <PackageId>AndreyAkaSkif.ServiceDefaults.OpenApi</PackageId>
-    <Title>Service Defaults OpenApi Specification</Title>
-    <Description>Конфигурирование OpenApi спецификации для использования стандартного пакета OpenApi без UI</Description>
+    <PackageId>AndreyAkaSkif.ServiceDefaults</PackageId>
+    <Title>Service Defaults</Title>
+    <Description>Конфигурирование WEB-API сервисов ASP.NET</Description>
     <PackageProjectUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</PackageProjectUrl>
+    <PackageTags>defaults;configure;config;extensions</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -15,11 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <InternalsVisibleTo Include="AndreyAkaSkif.ServiceDefaults.Tests" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>
