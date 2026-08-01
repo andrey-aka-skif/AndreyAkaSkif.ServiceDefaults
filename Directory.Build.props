@@ -27,11 +27,15 @@
     <Authors>andrey-aka-skif</Authors>
     <Company>AndreyAkaSkif</Company>
     <Copyright>© $([System.DateTime]::Now.Year) @andrey-aka-skif</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults</RepositoryUrl>
     <PackageIcon>logo.png</PackageIcon>
+    <!-- PackageIconUrl помечен deprecated, но VS показывает PackageIcon только для
+         folder-based источников; для http-фидов иконка берётся из iconUrl. NU5048
+         возникает только когда задан один лишь PackageIconUrl, без PackageIcon -->
+    <PackageIconUrl>https://raw.githubusercontent.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/master/logo/logo.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>

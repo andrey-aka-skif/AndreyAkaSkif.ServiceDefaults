@@ -96,3 +96,6 @@ app.MapHealthChecks("/ready");                          // /ready — завис
 ## Документация пакета
 Полное описание пакета и другие примеры:
 https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults
+
+## Сообщить о проблеме
+https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues
