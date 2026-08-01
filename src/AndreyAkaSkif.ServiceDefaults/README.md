@@ -12,13 +12,16 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
 
 ## Возможности
 - Инициализация API окружения
-    - настройка политик CORS
-    - саброутинг (PathBase)
-    - обработка ошибок с использованием ProblemDetails
-    - конечная точка проверки жизнеспособности приложения для оркестратора (`/health`)
+    - политика CORS, настроенная через конфигурацию (`AddConfiguredCorsPolicy()` / `UseConfiguredCorsPolicy()`)
+    - разрешительная политика CORS «всё со всех источников» (`AddPermissiveCorsPolicy()` / `UsePermissiveCorsPolicy()`)
+    - саброутинг — базовый путь из конфигурации (`UseConfiguredPathBase()`)
+    - обработка ошибок с использованием ProblemDetails — стандартная (`AddDefaultErrorHandling()`)
+      и расширенная (`AddExtendedErrorHandling()`), подключение в конвейер — `UseErrorHandling()`
+    - конечная точка проверки жизнеспособности приложения для оркестратора
+      (`AddHealthCheckEndpoint()` / `MapHealthCheckEndpoint()`, адрес `/health`)
 - Регистрация конфигураций и аргументов
-    - упрощённая регистрация валидируемых настроек в DI контейнере через единый extension-метод
-    - упрощенная регистрация произвольного экземпляра класса в DI контейнере через единый extension-метод
+    - регистрация валидируемых настроек в DI-контейнере (`AddServiceArgFromValidatedSettingsObject<T>()`)
+    - регистрация готового экземпляра класса в DI-контейнере (`AddServiceArg<T>(instance)`)
 
 ## Пример
 ```csharp
@@ -39,6 +42,91 @@ app.MapHealthCheckEndpoint();           // добавление конечной
 
 app.Run();
 ```
+
+## CORS
+Пакет предлагает две политики, взаимозаменяемые по вызову:
+
+- `AddConfiguredCorsPolicy()` / `UseConfiguredCorsPolicy()` — источники берутся из конфигурации,
+  разрешены любые методы и заголовки. Настройки читаются один раз при регистрации и попадают
+  в DI-контейнер, откуда их берёт `Use*`-метод;
+- `AddPermissiveCorsPolicy()` / `UsePermissiveCorsPolicy()` — политика `AllowAll`: любой источник,
+  любой метод, любой заголовок. Конфигурация не требуется.
+
+> [!WARNING]
+> Разрешительная политика предназначена для локальной разработки. В продуктовой среде
+> список источников следует задавать явно через `AddConfiguredCorsPolicy()`.
+
+## Обработка ошибок
+`AddDefaultErrorHandling()` — обёртка над стандартным `AddProblemDetails()`: ответ соответствует
+RFC 7807 в любой среде.
+
+`AddExtendedErrorHandling()` дополнительно добавляет в ответ поле `exception` с типом, сообщением
+и stack trace исключения — **только в Development**. В остальных средах ответ тот же, что
+у стандартного варианта.
+
+Оба метода требуют вызова `UseErrorHandling()` — см. раздел «⚠️ Важно».
+
+## Секции конфигурации
+Имя секции всегда совпадает с именем типа настроек: привязка выполняется через
+`IConfiguration.CreateValidated<T>()`, который читает секцию `typeof(T).Name`.
+Правило действует и для собственных настроек приложения.
+
+Политика CORS — секция `CorsPolicy`, оба параметра обязательны:
+```json
+"CorsPolicy": {
+    "Name": "string",             // Имя политики
+    "Origins": [                  // Разрешённые источники, минимум один
+        "http://localhost:5001"
+    ]
+}
+```
+
+Базовый путь — секция `RouteAppSettings`:
+```json
+"RouteAppSettings": {
+    "PathBase": "/api"
+}
+```
+
+Пустая строка в `PathBase` допустима — базовый путь не добавляется. Непустое значение
+должно начинаться с `/`, не содержать `//` и не содержать запрещённых символов:
+
+```
+? # < > [ ] ( ) ^ ` | \ : * " ' % ! @ и пробел
+```
+
+Иначе выбрасывается `ArgumentException`.
+
+`UseConfiguredPathBase()` читает конфигурацию сам, парного `Add*`-метода у него нет —
+это единственный метод пакета, выпадающий из схемы `Add*` / `Use*`.
+
+Базовый путь не заменяет основной: приложение остаётся доступным и по исходным адресам.
+В спецификацию OpenAPI базовый путь автоматически не попадает — его нужно указать
+в списке серверов (см. `Servers` в README пакета `AndreyAkaSkif.ServiceDefaults.Swagger`).
+
+## Собственные настройки
+Чтобы подключить свой класс настроек, достаточно реализовать `IValidatableSettingsObject`
+и зарегистрировать его одним вызовом:
+
+```csharp
+public sealed record DemoAppSettings : IValidatableSettingsObject
+{
+    public string Greeting { get; init; } = string.Empty;
+
+    public void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(Greeting))
+            throw new ArgumentException($"Требуется {nameof(DemoAppSettings)}:{nameof(Greeting)}");
+    }
+}
+
+builder.AddServiceArgFromValidatedSettingsObject<DemoAppSettings>();
+```
+
+Секция конфигурации в этом случае — `DemoAppSettings`. Готовый экземпляр доступен
+из DI-контейнера как singleton. Рабочий образец — `DemoAppSettings` в `samples/`.
+
+Если объект уже создан и валидировать его не нужно, используйте `AddServiceArg(instance)`.
 
 ## Настройки и fail fast
 Методы `Add*`, читающие конфигурацию, привязывают секцию и валидируют объект настроек
