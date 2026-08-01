@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <Title>Service Defaults Sample Api</Title>
+    <Description>Демонстрационный Web-API, использующий пакеты AndreyAkaSkif.ServiceDefaults</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.Serilog\AndreyAkaSkif.ServiceDefaults.Serilog.csproj" />
+    <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.Swagger\AndreyAkaSkif.ServiceDefaults.Swagger.csproj" />
+
+    <!-- Раскомментировать вместе с блоком OpenApi в Program.cs.
+         Пакет является альтернативой AndreyAkaSkif.ServiceDefaults.Swagger -->
+    <!-- <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.OpenApi\AndreyAkaSkif.ServiceDefaults.OpenApi.csproj" /> -->
+
+    <!-- Раскомментировать вместе с блоком PostgreSQL в Program.cs -->
+    <!-- <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.PostgreSQL\AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj" /> -->
+  </ItemGroup>
+
+</Project>

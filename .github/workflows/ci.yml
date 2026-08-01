@@ -36,3 +36,7 @@ jobs:
 
             - name: 🧪 Test
               run: dotnet test --configuration Release --no-build --verbosity normal
+
+            # Отдельный solution: корневой restore его не видит, поэтому без --no-restore
+            - name: 🧩 Build samples
+              run: dotnet build samples/AndreyAkaSkif.ServiceDefaults.Samples.slnx --configuration Release

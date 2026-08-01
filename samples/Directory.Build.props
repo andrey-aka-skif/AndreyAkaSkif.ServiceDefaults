@@ -1,0 +1,24 @@
+<Project>
+
+  <!-- MSBuild берёт ближайший Directory.Build.props и выше не поднимается,
+       поэтому корневой файл импортируется явно -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <!-- Примеры не являются nuget-пакетами -->
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Публичный API примеров документировать не требуется -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- LICENSE и логотип нужны только пакетам -->
+    <None Remove="$(MSBuildThisFileDirectory)../LICENSE" />
+    <None Remove="$(MSBuildThisFileDirectory)../logo/logo.png" />
+  </ItemGroup>
+
+</Project>
