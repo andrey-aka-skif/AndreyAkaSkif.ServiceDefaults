@@ -85,4 +85,7 @@ builder.Logging.AddConsole();
 
 ## Документация
 Подробности и примеры:
-https://github.com/andrey-aka-skif/ServiceDefaults
+https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults
+
+## Сообщить о проблеме
+https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues
