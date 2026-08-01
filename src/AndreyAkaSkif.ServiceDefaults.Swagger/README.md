@@ -1,16 +1,18 @@
 # AndreyAkaSkif.ServiceDefaults.Swagger
 
-Расширение для `AndeyAkaSkif.ServiceDefaults`, добавляющее единообразную конфигурацию OpenAPI спецификации с использованием Swagger UI.
+Расширение для `AndreyAkaSkif.ServiceDefaults`, добавляющее единообразную конфигурацию OpenAPI спецификации с использованием Swagger UI.
 
 ## Установка
 ```sh
-dotnet add package AndeyAkaSkif.ServiceDefaults.Swagger
+dotnet add package AndreyAkaSkif.ServiceDefaults.Swagger
 ```
 
 ## Возможности
 - конфигурация OpenAPI спецификации и Swagger UI с параметрами по умолчанию (`AddDefaultOpenApiViaSwagger()`, `UseDefaultOpenApiViaSwagger()`);
 - конфигурация OpenAPI спецификации и Swagger UI на основе конфигурации (`AddConfiguredOpenApiViaSwagger()`, `UseConfiguredOpenApiViaSwagger()`)
-- отображение конечной точки проверки жизнеспособности в Swagger UI (`AddHealthCheckEndpointSwagger()`).
+- отображение конечной точки проверки жизнеспособности в Swagger UI (`AddHealthCheckEndpointSwagger()`);
+- совместная регистрация сервисов конечной точки проверки жизнеспособности и её отображения
+  в Swagger UI одним вызовом (`AddHealthCheckEndpointWithSwagger()`).
 
 ## Пример использования
 ```csharp
