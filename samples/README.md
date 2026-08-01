@@ -45,15 +45,8 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 Относительный адрес OpenAPI 3 допускает, и UI резолвит его от origin страницы: работают
 оба профиля, а запрос остаётся same-origin, то есть CORS вообще не участвует.
 
-## Два обязательных вызова рядом с библиотекой
-
-В `Program.cs` есть два вызова, которые пакеты за приложение не делают:
-
-- `builder.Services.AddEndpointsApiExplorer()` — без него `AddConfiguredOpenApiViaSwagger`
-  падает на старте: `SwaggerGenerator` строится поверх ApiExplorer, а для minimal API
-  тот не регистрируется сам;
-- `builder.Logging.ClearProviders()` — `AddConfiguredLoggingViaSerilog` добавляет Serilog
-  к уже настроенным провайдерам, поэтому без очистки каждая запись уходит в консоль дважды.
+Список необязателен: при пустом или отсутствующем `Servers` пакет подставляет `"/"`.
+В примере он задан явно, чтобы был виден и сам параметр, и формат адресов.
 
 ## Что закомментировано
 
