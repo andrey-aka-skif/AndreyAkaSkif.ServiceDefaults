@@ -2,7 +2,7 @@
 
 [![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
 [![CI](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml)
-[![NuGet Publish](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/package.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/package.yml)
+[![Release](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/release.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/release.yml)
 
 Набор вспомогательных библиотек для упрощённой конфигурации ASP.NET Web-API сервисов.  
 Проект предоставляет набор классов и методов расширения для настройки:

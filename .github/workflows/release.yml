@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+# Публикация пакетов в GitHub Packages. Каноничный путь — создание GitHub Release
+# (событие release: published). Голый git push тега НЕ публикует — это осознанно
+# (релиз = преднамеренный акт с release notes). Ручной перезапуск по тегу — через
+# workflow_dispatch (запасной/восстановительный путь). Два входа — одна job (DRY).
+name: release
+
+on:
+    release:
+        types: [published]
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: 'Тег релиза (vX.Y.Z)'
+                required: true
+
+env:
+    DOTNET_VERSION: '10.0.x'
+    PACKAGE_OUTPUT_DIR: ./nupkg
+
+jobs:
+    publish-package:
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            contents: read
+        steps:
+            - name: 🔢 Resolve & validate version
+              id: version
+              run: |
+                  TAG="${{ github.event.inputs.tag || github.event.release.tag_name }}"
+                  if ! printf '%s' "$TAG" | grep -Eq '^v?[0-9]+\.[0-9]+\.[0-9]+$'; then
+                    echo "Тег '$TAG' не соответствует vX.Y.Z" >&2
+                    exit 1
+                  fi
+                  echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+                  echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+            - name: 🛒 Checkout release tag
+              uses: actions/checkout@v7
+              with:
+                ref: ${{ steps.version.outputs.tag }}
+                fetch-depth: 0
+
+            - name: ✨ Setup .NET
+              uses: actions/setup-dotnet@v6
+              with:
+                dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - name: 🚚 Restore
+              run: dotnet restore
+
+            - name: 🛠️ Build
+              run: dotnet build --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
+
+            - name: 🧪 Test
+              run: dotnet test --configuration Release --no-build
+
+            # Пакуется всё решение: у тестового проекта IsPackable=false, а samples —
+            # отдельное решение, поэтому на выходе только пакеты из src/
+            - name: 📦 Pack
+              run: dotnet pack --configuration Release --no-build --output ${{ env.PACKAGE_OUTPUT_DIR }} -p:Version=${{ steps.version.outputs.version }}
+
+            - name: 🚀 Publish to GitHub Packages
+              run: |
+                  for package in ${{ env.PACKAGE_OUTPUT_DIR }}/*.nupkg; do
+                    dotnet nuget push "$package" \
+                      --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+                      --api-key ${{ secrets.GH_PACKAGES_TOKEN }} \
+                      --skip-duplicate
+                  done
