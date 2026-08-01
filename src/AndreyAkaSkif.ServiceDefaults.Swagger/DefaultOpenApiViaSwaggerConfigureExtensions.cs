@@ -13,8 +13,14 @@ public static class DefaultOpenApiViaSwaggerConfigureExtensions
     /// Добавляет стандартную конфигурацию OpenAPI с использованием Swagger.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Swagger UI доступен по адресу "/swagger/index.html".
     /// JSON-файл спецификации доступен по пути "/swagger/v1/swagger.json".
+    /// </para>
+    /// <para>
+    /// Метод регистрирует ApiExplorer, на котором строится генерация спецификации:
+    /// отдельный вызов <c>AddEndpointsApiExplorer()</c> в приложении не требуется.
+    /// </para>
     /// </remarks>
     /// <param name="builder">Экземпляр <see cref="IHostApplicationBuilder"/></param>
     /// <returns>
@@ -22,6 +28,8 @@ public static class DefaultOpenApiViaSwaggerConfigureExtensions
     /// </returns>
     public static IHostApplicationBuilder AddDefaultOpenApiViaSwagger(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddEndpointsApiExplorer();
+
         builder.Services.AddSwaggerGen();
 
         return builder;

@@ -34,9 +34,15 @@ public static class HealthChecksExtensions
     /// Для функционирования конечной точки необходимо включить HealthCheck сервисы и добавить HealthCheck middleware в конвейер обработки запросов.
     /// В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку 404 Not Found
     /// </para>
+    /// <para>
+    /// Метод регистрирует ApiExplorer, на котором строится генерация спецификации:
+    /// отдельный вызов <c>AddEndpointsApiExplorer()</c> в приложении не требуется.
+    /// </para>
     /// </remarks>
     public static IHostApplicationBuilder AddHealthCheckEndpointSwagger(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddEndpointsApiExplorer();
+
         builder.Services.AddSwaggerGen(options =>
         {
             options.DocumentFilter<HealthChecksDocumentFilter>();

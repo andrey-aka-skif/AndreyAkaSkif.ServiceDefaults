@@ -11,9 +11,7 @@ using AndreyAkaSkif.ServiceDefaults.Swagger;
 var builder = WebApplication.CreateBuilder(args);
 
 // Логирование через Serilog. Конфигурация — секция "Serilog".
-// Пакет добавляет Serilog к уже настроенным провайдерам, поэтому провайдеры
-// по умолчанию убираются явно — иначе каждая запись попадёт в консоль дважды
-builder.Logging.ClearProviders();
+// По умолчанию Serilog ставится монопольно: провайдеры по умолчанию не пишут
 builder.AddConfiguredLoggingViaSerilog();
 
 // Настройки приложения: секция "DemoAppSettings" валидируется здесь же,
@@ -23,10 +21,7 @@ builder.AddServiceArgFromValidatedSettingsObject<DemoAppSettings>();
 // ProblemDetails. В Development в ответ добавляется поле "exception"
 builder.AddExtendedErrorHandling();
 
-// OpenApi через Swagger. Конфигурация — секция "SwaggerAppSettings".
-// SwaggerGen строит спецификацию поверх ApiExplorer, а пакет его не регистрирует,
-// поэтому для minimal API вызов AddEndpointsApiExplorer() обязателен
-builder.Services.AddEndpointsApiExplorer();
+// OpenApi через Swagger. Конфигурация — секция "SwaggerAppSettings"
 builder.AddConfiguredOpenApiViaSwagger();
 
 // Политика CORS. Конфигурация — секция "CorsPolicy"

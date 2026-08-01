@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace AndreyAkaSkif.ServiceDefaults.Tests;
 
@@ -44,6 +45,43 @@ public class ConfiguredOpenApiViaSwaggerConfigureExtensionsTests
         // Act & Assert
         // валидация выполняется в момент регистрации, а не при разрешении сервиса
         Assert.Throws<ArgumentException>(() => builder.AddConfiguredOpenApiViaSwagger());
+    }
+
+    [Fact]
+    public void AddConfiguredOpenApiViaSwagger_ShouldRegisterApiExplorer_WhenCalled()
+    {
+        // Arrange
+        // SwaggerGenerator строится поверх ApiExplorer, а для minimal API тот не
+        // регистрируется сам; в development среде хост проверяет граф зависимостей
+        // при Build(), поэтому нехватка провайдера выявляется здесь же
+        var builder = CreateBuilderWith(ValidConfiguration, Environments.Development);
+
+        // Act
+        builder.AddConfiguredOpenApiViaSwagger();
+        using var app = builder.Build();
+
+        // Assert
+        Assert.NotNull(app.Services.GetRequiredService<ISwaggerProvider>());
+    }
+
+    [Fact]
+    public void AddConfiguredOpenApiViaSwagger_ShouldUseRelativeServer_WhenServersAreNotConfigured()
+    {
+        // Arrange
+        var builder = CreateBuilderWith(new Dictionary<string, string?>
+        {
+            ["SwaggerAppSettings:Title"] = "Title",
+            ["SwaggerAppSettings:Description"] = "Description",
+            ["SwaggerAppSettings:ApiVersion"] = "1.0",
+        });
+
+        // Act
+        builder.AddConfiguredOpenApiViaSwagger();
+        using var app = builder.Build();
+
+        // Assert
+        var settings = app.Services.GetRequiredService<SwaggerAppSettings>();
+        Assert.Equal([SwaggerAppSettings.DefaultServer], settings.Servers);
     }
 
     [Fact]
@@ -91,10 +129,6 @@ public class ConfiguredOpenApiViaSwaggerConfigureExtensionsTests
         var builder = WebApplication.CreateSlimBuilder(
             new WebApplicationOptions { EnvironmentName = environmentName });
         builder.Configuration.AddInMemoryCollection(configuration);
-
-        // SwaggerGen требует ApiExplorer; в development среде хост проверяет
-        // граф зависимостей при Build(), поэтому регистрируем его как в реальном приложении
-        builder.Services.AddEndpointsApiExplorer();
 
         return builder;
     }

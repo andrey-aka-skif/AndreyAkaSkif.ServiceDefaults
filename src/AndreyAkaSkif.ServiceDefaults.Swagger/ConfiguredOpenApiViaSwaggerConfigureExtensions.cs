@@ -23,7 +23,7 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     ///     "Title": "string",            // Название API
     ///     "Description": "string",      // Описание API
     ///     "ApiVersion": "string",       // Версия API
-    ///     "Servers": [                  // Массив серверов (URL)
+    ///     "Servers": [                  // Массив адресов серверов, необязательный
     ///         "string"
     ///     ]
     /// }
@@ -34,8 +34,21 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// будет выброшено исключение <see cref="ArgumentException"/>.
     /// </para>
     /// <para>
+    /// Адреса в "Servers" следует задавать относительными ("/", "/api"). Swagger UI берёт
+    /// базовый адрес запросов из первого элемента списка, поэтому абсолютный адрес ломает
+    /// работу UI везде, кроме прописанного адреса: за reverse proxy, на другом хосте, а также
+    /// при открытии страницы по https рядом с http-адресом в конфигурации — браузер режет
+    /// такой запрос как mixed content. Относительный адрес допускается OpenAPI 3, и UI
+    /// резолвит его от адреса страницы. Если список пуст или отсутствует,
+    /// подставляется адрес "/".
+    /// </para>
+    /// <para>
     /// Валидированные настройки регистрируются в DI-контейнере,
     /// откуда их берёт <see cref="UseConfiguredOpenApiViaSwagger"/>.
+    /// </para>
+    /// <para>
+    /// Метод регистрирует ApiExplorer, на котором строится генерация спецификации:
+    /// отдельный вызов <c>AddEndpointsApiExplorer()</c> в приложении не требуется.
     /// </para>
     /// <para>
     /// При использовании методов из библиотеки ServiceDefaults.Swagger
@@ -51,7 +64,12 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     {
         var settings = builder.Configuration.CreateValidated<SwaggerAppSettings>();
 
+        if (settings.Servers.Count == 0)
+            settings = settings with { Servers = [SwaggerAppSettings.DefaultServer] };
+
         builder.AddServiceArg(settings);
+
+        builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddSwaggerGen(options =>
         {
