@@ -1,22 +1,26 @@
 # Service Defaults Logging with Serilog
 
-Расширение для `ServiceDefaults`, добавляющее единообразную конфигурацию Serilog.
+Единообразное подключение Serilog одним вызовом.
+
+Пакет самостоятельный: зависимости от `AndreyAkaSkif.ServiceDefaults` у него нет,
+он может использоваться отдельно.
 
 ## Установка
 
 ```sh
-dotnet add package AndeyAkaSkif.ServiceDefaults.Serilog
+dotnet add package AndreyAkaSkif.ServiceDefaults.Serilog
 ```
 
 ## Возможности
-- Готовая конфигурация Serilog “из коробки”
-- Консольный логгер с форматированием
-- Support for Request Logging
-- Структурированное логирование
-- Enricher'ы (machine, env, correlation ids)
-- Лучшая интеграция с ASP.NET минимальными API
+- `AddConfiguredLoggingViaSerilog()` — логгер собирается целиком из секции `Serilog`
+  конфигурации приложения (`ReadFrom.Configuration`) и подключается к хосту.
+- Параметр `exclusive` управляет тем, вытесняет ли Serilog остальные провайдеры
+  логирования или добавляется к ним.
 
-Пример
+Стоки, уровни, enricher'ы и шаблоны вывода задаются в той же секции конфигурации —
+в коде пакета ничего из этого не зашито. См. раздел «Файлы конфигурации».
+
+## Пример
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +29,15 @@ builder.AddConfiguredLoggingViaSerilog(); // включает Serilog
 var app = builder.Build();
 
 app.Run();
+```
+
+## Логирование запросов
+Пакет не вызывает `UseSerilogRequestLogging()`. Если нужен единый лог входящих HTTP-запросов
+вместо стандартных записей ASP.NET, приложение подключает его само:
+
+```csharp
+var app = builder.Build();
+app.UseSerilogRequestLogging();
 ```
 
 ## Монопольная установка
