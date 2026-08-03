@@ -24,13 +24,13 @@
 Репозиторий содержит пять NuGet-пакетов. Базовым является `AndreyAkaSkif.ServiceDefaults`;
 остальные подключаются по мере надобности.
 
-| Пакет | Назначение | README |
-| --- | --- | --- |
-| `AndreyAkaSkif.ServiceDefaults` | CORS, обработка ошибок, PathBase, ограничения маршрутов, Health Checks, валидируемые настройки | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md) |
-| `AndreyAkaSkif.ServiceDefaults.OpenApi` | Спецификация OpenAPI средствами ASP.NET, без UI | [README](./src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md) |
-| `AndreyAkaSkif.ServiceDefaults.Swagger` | Спецификация OpenAPI и Swagger UI | [README](./src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md) |
-| `AndreyAkaSkif.ServiceDefaults.PostgreSQL` | Простой контекст PostgreSQL на EF Core | [README](./src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/README.md) |
-| `AndreyAkaSkif.ServiceDefaults.Serilog` | Логирование через Serilog | [README](./src/AndreyAkaSkif.ServiceDefaults.Serilog/README.md) |
+| Пакет                                      | Назначение                                                                                     | README                                                             |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `AndreyAkaSkif.ServiceDefaults`            | CORS, обработка ошибок, PathBase, ограничения маршрутов, Health Checks, валидируемые настройки | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md)            |
+| `AndreyAkaSkif.ServiceDefaults.OpenApi`    | Спецификация OpenAPI средствами ASP.NET, без UI                                                | [README](./src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md)    |
+| `AndreyAkaSkif.ServiceDefaults.Swagger`    | Спецификация OpenAPI и Swagger UI                                                              | [README](./src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md)    |
+| `AndreyAkaSkif.ServiceDefaults.PostgreSQL` | Простой контекст PostgreSQL на EF Core                                                         | [README](./src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/README.md) |
+| `AndreyAkaSkif.ServiceDefaults.Serilog`    | Логирование через Serilog: запись в файл, в JSON и во внешние системы                          | [README](./src/AndreyAkaSkif.ServiceDefaults.Serilog/README.md)    |
 
 Зависимость от базового пакета есть только у `.Swagger`: он описывает в спецификации
 конечную точку `/health` и берёт её адрес из константы `HealthCheckDefaults.Endpoint`.
