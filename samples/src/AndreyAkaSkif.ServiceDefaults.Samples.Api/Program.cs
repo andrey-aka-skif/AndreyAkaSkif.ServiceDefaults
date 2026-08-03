@@ -30,6 +30,11 @@ builder.AddConfiguredCorsPolicy();
 // Конечная точка /health и её отображение в Swagger UI
 builder.AddHealthCheckEndpointWithSwagger();
 
+// Перечисление как сегмент пути: ограничение доступно в шаблоне как "demoChannel" —
+// имя по умолчанию от имени типа. Заодно включается сериализация перечислений
+// именами, иначе в теле ответа и в спецификации они выглядели бы как 0, 1, 2
+builder.AddEnumRouteConstraint<DemoChannel>();
+
 // --- OpenApi без Swagger -----------------------------------------------------
 // Альтернатива паре AddConfiguredOpenApiViaSwagger/UseConfiguredOpenApiViaSwagger:
 // встроенная в ASP.NET генерация спецификации без Swagger UI.

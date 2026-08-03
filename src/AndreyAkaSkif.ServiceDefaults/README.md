@@ -15,6 +15,9 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
     - политика CORS, настроенная через конфигурацию (`AddConfiguredCorsPolicy()` / `UseConfiguredCorsPolicy()`)
     - разрешительная политика CORS «всё со всех источников» (`AddPermissiveCorsPolicy()` / `UsePermissiveCorsPolicy()`)
     - саброутинг — базовый путь из конфигурации (`UseConfiguredPathBase()`)
+    - перечисление как сегмент пути со строковой сериализацией (`AddEnumRouteConstraint<T>()`);
+      отдельно доступны сериализация перечислений именами (`AddStringEnumJsonSerialization()`)
+      и регистрация собственного ограничения маршрута (`AddRouteConstraint<T>(name)`)
     - обработка ошибок с использованием ProblemDetails — стандартная (`AddDefaultErrorHandling()`)
       и расширенная (`AddExtendedErrorHandling()`), подключение в конвейер — `UseErrorHandling()`
     - конечная точка проверки жизнеспособности приложения для оркестратора
@@ -65,6 +68,89 @@ RFC 7807 в любой среде.
 у стандартного варианта.
 
 Оба метода требуют вызова `UseErrorHandling()` — см. раздел «⚠️ Важно».
+
+## Перечисление как сегмент пути
+Перечисление в маршруте по умолчанию неинформативно: спецификация OpenAPI объявляет его
+целочисленным, Swagger UI предлагает ввести `0`, `1`, `2`, и в адресе оказывается
+`/channel/2` вместо `/channel/Torque`. Решается одним вызовом:
+
+```csharp
+builder.AddEnumRouteConstraint<ChannelType>();
+
+app.MapGet("channel/{channel:channelType}", (ChannelType channel) => channel);
+```
+
+Имя ограничения по умолчанию — имя типа со строчной первой буквы, для `ChannelType` это
+`channelType`. Другое имя задаётся параметром: `AddEnumRouteConstraint<ChannelType>("channel")`.
+
+Поведение:
+
+| Запрос | Результат |
+| --- | --- |
+| `/channel/Torque` | 200 |
+| `/channel/torque` | 200 — сопоставление регистронезависимо |
+| `/channel/2` | 200 — числовые значения допустимы |
+| `/channel/999` | 404 — значения нет в перечислении |
+| `/channel/unknown` | 404 |
+
+Значение приводится к каноническому имени элемента до привязки аргумента. Это важно:
+привязка в минимальных API регистрозависима, поэтому без приведения `/channel/torque`
+совпал бы с маршрутом и упал с 400 при разборе аргумента. Некорректное значение даёт 404
+от маршрутизации, а не 400 от привязки.
+
+Работает одинаково и для минимальных API, и для контроллеров: `ConstraintMap` живёт
+в `RouteOptions`, который читает общий для обоих стилей резолвер ограничений.
+
+```csharp
+[HttpGet("channel/{channel:channelType}")]
+public IActionResult Get(ChannelType channel) => Ok(channel);
+```
+
+Приведение к каноническому имени для контроллеров избыточно — привязка модели там идёт
+через `EnumConverter` и уже регистронезависима, — но поведение от этого не меняется.
+
+Заодно метод включает сериализацию перечислений именами — иначе тела ответов и
+спецификация остались бы с числами и задача решилась бы наполовину. Настраиваются оба
+набора параметров: `Microsoft.AspNetCore.Http.Json` для минимальных API и
+`Microsoft.AspNetCore.Mvc.Json` для контроллеров. Второй нужен ещё и потому, что генератор
+спецификации Swashbuckle читает именно его. Приложению без контроллеров это не вредит.
+
+Если перечисления встречаются только в телах ответов и ограничение маршрута не нужно,
+та же настройка доступна отдельно:
+
+```csharp
+builder.AddStringEnumJsonSerialization();
+```
+
+Вызов идемпотентен, поэтому регистрация нескольких перечислений его не дублирует.
+
+### Собственные ограничения
+`AddEnumRouteConstraint<T>()` построен поверх метода общего назначения, которым
+регистрируется любая реализация `IRouteConstraint`. Сам по себе он задачу не решает —
+он нужен, когда ограничение написано своё:
+
+```csharp
+public sealed class EvenNumberRouteConstraint : IRouteConstraint
+{
+    public bool Match(
+        HttpContext? httpContext,
+        IRouter? route,
+        string routeKey,
+        RouteValueDictionary values,
+        RouteDirection routeDirection)
+        => values.TryGetValue(routeKey, out var value)
+           && int.TryParse(value?.ToString(), out var number)
+           && number % 2 == 0;
+}
+
+builder.AddRouteConstraint<EvenNumberRouteConstraint>("even");
+
+app.MapGet("items/{id:even}", (int id) => id);
+```
+
+Повторная регистрация того же типа под тем же именем допустима и ничего не меняет.
+Регистрация другого типа под занятым именем — `InvalidOperationException`. Встроенные
+ограничения (`int`, `guid`, `alpha` и прочие) остаются доступны.
 
 ## Секции конфигурации
 Имя секции всегда совпадает с именем типа настроек: привязка выполняется через
