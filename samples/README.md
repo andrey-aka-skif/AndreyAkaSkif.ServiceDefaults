@@ -26,7 +26,7 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 | `/swagger` | Swagger UI, только в Development |
 | `/swagger/1.0.0/swagger.json` | Спецификация из секции `SwaggerAppSettings` |
 | `/health` | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointWithSwagger` |
-| `/api/health` | Тот же обработчик через базовый путь из `RouteAppSettings` (`UseConfiguredPathBase`) |
+| `/api/health` | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`) |
 | `/demo/greeting` | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI |
 | `/demo/echo?message=hi` | Обычный маршрут minimal API |
 | `/demo/boom` | `ProblemDetails` от `AddExtendedErrorHandling`: в Development с полем `exception` |

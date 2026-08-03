@@ -6,29 +6,34 @@ namespace AndreyAkaSkif.ServiceDefaults.Routing;
 /// <summary>
 /// Методы расширения для регистрации middleware, добавляющего базовый путь в DI-контейнере.
 /// </summary>
-public static class RouteAppSettingsExtensions
+public static class PathBaseExtensions
 {
     /// <summary>
     /// Добавить базовый путь на основе конфигурации
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Требует секцию конфигурации "RouteAppSettings" следующего вида:
+    /// Требует секцию конфигурации "PathBaseAppSettings" следующего вида:
     /// <code>
-    /// "RouteAppSettings": {
-    ///   "PathBase": "/api"
+    /// "PathBaseAppSettings": {
+    ///   "Path": "/api"
     /// }
     /// </code>
     /// </para>
     /// <para>
-    /// Параметр <see cref="RouteAppSettings.PathBase"/> должен быть валидно сформированной Uri-строкой
-    /// и начинаться с лидирующего "/"
+    /// Допустимый формат <see cref="PathBaseAppSettings.Path"/> — пустая строка либо путь
+    /// вида "/segment[/segment...]", где сегмент состоит из unreserved-символов RFC 3986:
+    /// <code>
+    /// A-Za-z0-9 - . _ ~
+    /// </code>
+    /// Пустая строка означает, что базовый путь не добавляется. Хвостовой слеш допустим —
+    /// <c>UsePathBase</c> срезает его сам.
     /// </para>
     /// <para>
-    /// Для базового пути <strong>запрещены</strong> следующие символы:
-    /// <code>
-    /// '?', '#', '&lt;', '&gt;', '[', ']', '(', ')', '^', '`', '|', '\', ':', '*', '"', ''', '%', '!', '@', ' '
-    /// </code>
+    /// Percent-encoding не поддерживается: базовый путь сравнивается с уже раскодированным
+    /// путём запроса, поэтому "%D0%B0" останется буквальными символами. Не-ASCII символы
+    /// также запрещены — базовый путь попадает в спецификацию OpenApi, в конфигурацию
+    /// обратного прокси и в логи, где становится источником двойного кодирования.
     /// </para>
     /// <para>
     /// <strong>Важно:</strong>
@@ -49,10 +54,13 @@ public static class RouteAppSettingsExtensions
     /// </code>
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// если значение <see cref="PathBaseAppSettings.Path"/> не проходит валидацию
+    /// </exception>
     public static WebApplication UseConfiguredPathBase(this WebApplication app)
     {
-        var routeAppSettings = app.Configuration.CreateValidated<RouteAppSettings>();
-        app.UsePathBase(routeAppSettings.PathBase);
+        var settings = app.Configuration.CreateValidated<PathBaseAppSettings>();
+        app.UsePathBase(settings.Path);
 
         return app;
     }
