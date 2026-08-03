@@ -24,6 +24,12 @@ internal static class DemoEndpoints
             .WithName("GetEcho")
             .WithSummary("Эхо query-параметра");
 
+        // Ограничение "demoChannel" зарегистрировал AddEnumRouteConstraint<DemoChannel>().
+        // Значение вне перечисления сюда не доходит: маршрут не выбирается, ответ 404
+        demo.MapGet("/channel/{channel:demoChannel}", (DemoChannel channel) => Results.Ok(new { channel }))
+            .WithName("GetChannel")
+            .WithSummary("Перечисление как сегмент пути: /demo/channel/CurrentA");
+
         // Исключение перехватывает middleware из UseErrorHandling() и возвращает
         // ProblemDetails. В Development к нему добавляется поле "exception" —
         // это делает AddExtendedErrorHandling()

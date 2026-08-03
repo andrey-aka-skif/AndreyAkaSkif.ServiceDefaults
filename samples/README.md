@@ -29,6 +29,7 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 | `/api/health` | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`) |
 | `/demo/greeting` | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI |
 | `/demo/echo?message=hi` | Обычный маршрут minimal API |
+| `/demo/channel/CurrentA` | Перечисление как сегмент пути (`AddEnumRouteConstraint<DemoChannel>`). `currenta` и `0` тоже работают и приводятся к `CurrentA`, `999` и `unknown` дают 404 |
 | `/demo/boom` | `ProblemDetails` от `AddExtendedErrorHandling`: в Development с полем `exception` |
 
 Логи пишет Serilog (`AddConfiguredLoggingViaSerilog`), конфигурация — секция `Serilog`.

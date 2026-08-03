@@ -10,6 +10,7 @@
 - политик CORS — настраиваемой через конфигурацию и разрешительной,
 - обработки ошибок через `ProblemDetails`,
 - базового пути API (PathBase),
+- ограничений параметров маршрута, включая перечисление как сегмент пути,
 - конечной точки проверки жизнеспособности (`/health`),
 - валидируемых объектов настроек, проверяемых до старта приложения,
 - спецификации OpenAPI — без UI и через Swagger UI,
@@ -25,7 +26,7 @@
 
 | Пакет | Назначение | README |
 | --- | --- | --- |
-| `AndreyAkaSkif.ServiceDefaults` | CORS, обработка ошибок, PathBase, Health Checks, валидируемые настройки | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md) |
+| `AndreyAkaSkif.ServiceDefaults` | CORS, обработка ошибок, PathBase, ограничения маршрутов, Health Checks, валидируемые настройки | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md) |
 | `AndreyAkaSkif.ServiceDefaults.OpenApi` | Спецификация OpenAPI средствами ASP.NET, без UI | [README](./src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md) |
 | `AndreyAkaSkif.ServiceDefaults.Swagger` | Спецификация OpenAPI и Swagger UI | [README](./src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md) |
 | `AndreyAkaSkif.ServiceDefaults.PostgreSQL` | Простой контекст PostgreSQL на EF Core | [README](./src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/README.md) |
@@ -52,7 +53,6 @@
 ## 🚧 В планах
 
 - [конфигурация http-клиентов](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues/6),
-- [пользовательские Constraints](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues/29),
 - [документация DocFX](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues/22).
 
 ---
