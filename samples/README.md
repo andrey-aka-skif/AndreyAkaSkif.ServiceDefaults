@@ -20,19 +20,22 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 
 ## Что посмотреть
 
-| Адрес | Что демонстрирует |
-| --- | --- |
-| `/` | Редирект на Swagger UI (`UseConfiguredOpenApiViaSwagger`) |
-| `/swagger` | Swagger UI, только в Development |
-| `/swagger/1.0.0/swagger.json` | Спецификация из секции `SwaggerAppSettings` |
-| `/health` | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointWithSwagger` |
-| `/api/health` | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`) |
-| `/demo/greeting` | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI |
-| `/demo/echo?message=hi` | Обычный маршрут minimal API |
-| `/demo/channel/CurrentA` | Перечисление как сегмент пути (`AddEnumRouteConstraint<DemoChannel>`). `currenta` и `0` тоже работают и приводятся к `CurrentA`, `999` и `unknown` дают 404 |
-| `/demo/boom` | `ProblemDetails` от `AddExtendedErrorHandling`: в Development с полем `exception` |
+| Адрес                         | Что демонстрирует                                                                                                                                           |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                           | Редирект на Swagger UI (`UseConfiguredOpenApiViaSwagger`)                                                                                                   |
+| `/swagger`                    | Swagger UI, только в Development                                                                                                                            |
+| `/swagger/1.0.0/swagger.json` | Спецификация из секции `SwaggerAppSettings`                                                                                                                 |
+| `/health`                     | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointWithSwagger`                                                                |
+| `/api/health`                 | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`)                                                                     |
+| `/demo/greeting`              | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI                                                                                  |
+| `/demo/echo?message=hi`       | Обычный маршрут minimal API                                                                                                                                 |
+| `/demo/channel/CurrentA`      | Перечисление как сегмент пути (`AddEnumRouteConstraint<DemoChannel>`). `currenta` и `0` тоже работают и приводятся к `CurrentA`, `999` и `unknown` дают 404 |
+| `/demo/boom`                  | `ProblemDetails` от `AddExtendedErrorHandling`: в Development с полем `exception`                                                                           |
 
 Логи пишет Serilog (`AddConfiguredLoggingViaSerilog`), конфигурация — секция `Serilog`.
+Логи идут в консоль, чтобы пример запускался одной командой и не оставлял после себя
+файлов. Ради консоли отдельный пакет не нужен — её умеет и встроенный провайдер; Serilog
+подключают, когда логи нужно писать куда-то ещё, см. README пакета.
 Политика CORS берётся из секции `CorsPolicy`.
 
 ## Почему адреса в `SwaggerAppSettings.Servers` относительные
