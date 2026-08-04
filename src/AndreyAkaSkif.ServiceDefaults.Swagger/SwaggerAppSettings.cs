@@ -1,11 +1,6 @@
-using AndreyAkaSkif.ServiceDefaults.Settings;
-
-// переезд на конвейер параметров выполняется отдельным шагом
-#pragma warning disable CS0618
-
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
-internal sealed record SwaggerAppSettings : IValidatableSettingsObject
+internal sealed record SwaggerAppSettings
 {
     /// <summary>
     /// Адрес сервера, подставляемый при пустом списке <see cref="Servers"/>.
@@ -20,16 +15,4 @@ internal sealed record SwaggerAppSettings : IValidatableSettingsObject
     public string Description { get; init; } = string.Empty;
     public string ApiVersion { get; init; } = string.Empty;
     public List<string> Servers { get; init; } = [];
-
-    public void Validate()
-    {
-        if (string.IsNullOrWhiteSpace(Title))
-            throw new ArgumentException($"Требуется {nameof(SwaggerAppSettings)}:{nameof(Title)}");
-
-        if (string.IsNullOrWhiteSpace(Description))
-            throw new ArgumentException($"Требуется {nameof(SwaggerAppSettings)}:{nameof(Description)}");
-
-        if (!System.Version.TryParse(ApiVersion, out _))
-            throw new ArgumentException($"Требуется валидный формат {nameof(SwaggerAppSettings)}:{nameof(ApiVersion)}");
-    }
 }

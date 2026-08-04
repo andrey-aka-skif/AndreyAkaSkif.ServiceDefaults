@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace AndreyAkaSkif.ServiceDefaults.Tests;
@@ -17,7 +18,7 @@ public class ConfiguredOpenApiViaSwaggerConfigureExtensionsTests
     };
 
     [Fact]
-    public void AddConfiguredOpenApiViaSwagger_ShouldRegisterValidatedSettings_WhenConfigurationIsValid()
+    public void AddConfiguredOpenApiViaSwagger_ShouldBindSettings_WhenConfigurationIsValid()
     {
         // Arrange
         var builder = CreateBuilderWith(ValidConfiguration);
@@ -27,14 +28,14 @@ public class ConfiguredOpenApiViaSwaggerConfigureExtensionsTests
         using var app = builder.Build();
 
         // Assert
-        var settings = app.Services.GetRequiredService<SwaggerAppSettings>();
+        var settings = app.Services.GetRequiredService<IOptions<SwaggerAppSettings>>().Value;
         Assert.Equal("Title", settings.Title);
         Assert.Equal("1.0", settings.ApiVersion);
         Assert.Equal(["http://localhost:5001"], settings.Servers);
     }
 
     [Fact]
-    public void AddConfiguredOpenApiViaSwagger_ShouldThrowArgumentException_WhenConfigurationIsInvalid()
+    public void AddConfiguredOpenApiViaSwagger_ShouldThrowOptionsValidationException_WhenConfigurationIsInvalid()
     {
         // Arrange
         var builder = CreateBuilderWith(new Dictionary<string, string?>
@@ -42,9 +43,14 @@ public class ConfiguredOpenApiViaSwaggerConfigureExtensionsTests
             ["SwaggerAppSettings:Title"] = "Title",
         });
 
-        // Act & Assert
-        // валидация выполняется в момент регистрации, а не при разрешении сервиса
-        Assert.Throws<ArgumentException>(() => builder.AddConfiguredOpenApiViaSwagger());
+        // Act
+        // регистрация не падает: валидация выполняется конвейером параметров
+        builder.AddConfiguredOpenApiViaSwagger();
+        using var app = builder.Build();
+
+        // Assert
+        Assert.Throws<OptionsValidationException>(
+            () => app.Services.GetRequiredService<IOptions<SwaggerAppSettings>>().Value);
     }
 
     [Fact]
@@ -80,8 +86,26 @@ public class ConfiguredOpenApiViaSwaggerConfigureExtensionsTests
         using var app = builder.Build();
 
         // Assert
-        var settings = app.Services.GetRequiredService<SwaggerAppSettings>();
+        var settings = app.Services.GetRequiredService<IOptions<SwaggerAppSettings>>().Value;
         Assert.Equal([SwaggerAppSettings.DefaultServer], settings.Servers);
+    }
+
+    [Fact]
+    public void AddConfiguredOpenApiViaSwagger_ShouldDescribeApiFromSettings_WhenSpecificationIsGenerated()
+    {
+        // Arrange
+        var builder = CreateBuilderWith(ValidConfiguration, Environments.Development);
+
+        // Act
+        builder.AddConfiguredOpenApiViaSwagger();
+        using var app = builder.Build();
+
+        // Assert
+        // спецификация собирается лениво, поэтому проверяется результат, а не регистрация
+        var document = app.Services.GetRequiredService<ISwaggerProvider>().GetSwagger("1.0");
+        Assert.Equal("Title", document.Info.Title);
+        Assert.Equal("Description", document.Info.Description);
+        Assert.Equal(["http://localhost:5001"], document.Servers.Select(server => server.Url));
     }
 
     [Fact]

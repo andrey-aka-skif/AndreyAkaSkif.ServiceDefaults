@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-
-// переезд на конвейер параметров выполняется отдельным шагом
-#pragma warning disable CS0618
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
@@ -33,8 +32,8 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// </code>
     /// </para>
     /// <para>
-    /// В случае отсутствия обязательных параметров или невалидных данных в секции конфигурации
-    /// будет выброшено исключение <see cref="ArgumentException"/>.
+    /// Отсутствующая или некорректная секция роняет приложение при старте хоста,
+    /// до первого запроса.
     /// </para>
     /// <para>
     /// Адреса в "Servers" следует задавать относительными ("/", "/api"). Swagger UI берёт
@@ -46,8 +45,8 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// подставляется адрес "/".
     /// </para>
     /// <para>
-    /// Валидированные настройки регистрируются в DI-контейнере,
-    /// откуда их берёт <see cref="UseConfiguredOpenApiViaSwagger"/>.
+    /// Настройки регистрируются в конвейере параметров, откуда их берёт
+    /// <see cref="UseConfiguredOpenApiViaSwagger"/>.
     /// </para>
     /// <para>
     /// Метод регистрирует ApiExplorer, на котором строится генерация спецификации:
@@ -60,38 +59,47 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// а только Minimal Api.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentException">
-    /// Выбрасывается, если секция "SwaggerAppSettings" отсутствует в конфигурации или содержит некорректные данные.
-    /// </exception>
     public static IHostApplicationBuilder AddConfiguredOpenApiViaSwagger(this IHostApplicationBuilder builder)
     {
-        var settings = builder.Configuration.CreateValidated<SwaggerAppSettings>();
+        ArgumentNullException.ThrowIfNull(builder);
 
-        if (settings.Servers.Count == 0)
-            settings = settings with { Servers = [SwaggerAppSettings.DefaultServer] };
+        builder.AddValidatedOptions<SwaggerAppSettings, SwaggerAppSettingsValidator>();
 
-        builder.AddServiceArg(settings);
+        // дефолтизация живёт между привязкой и валидацией: порядок
+        // configure → postConfigure → validate гарантирован конвейером
+        builder.Services.PostConfigure<SwaggerAppSettings>(settings =>
+        {
+            if (settings.Servers.Count == 0)
+                settings.Servers.Add(SwaggerAppSettings.DefaultServer);
+        });
 
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.AddSwaggerGen(options =>
-        {
-            options.SwaggerDoc(
-                settings.ApiVersion,
-                new OpenApiInfo
-                {
-                    Title = settings.Title,
-                    Version = settings.ApiVersion,
-                    Description = settings.Description
-                });
+        builder.Services.AddSwaggerGen();
 
-            options.EnableAnnotations();
-
-            settings.Servers.ForEach(server =>
+        // спецификация собирается лениво: на момент вызова настройки ещё не привязаны
+        builder.Services
+            .AddOptions<SwaggerGenOptions>()
+            .Configure<IOptions<SwaggerAppSettings>>((options, appSettings) =>
             {
-                options.AddServer(new OpenApiServer { Url = server });
+                var settings = appSettings.Value;
+
+                options.SwaggerDoc(
+                    settings.ApiVersion,
+                    new OpenApiInfo
+                    {
+                        Title = settings.Title,
+                        Version = settings.ApiVersion,
+                        Description = settings.Description
+                    });
+
+                options.EnableAnnotations();
+
+                settings.Servers.ForEach(server =>
+                {
+                    options.AddServer(new OpenApiServer { Url = server });
+                });
             });
-        });
 
         return builder;
     }
@@ -117,10 +125,18 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// </exception>
     public static WebApplication UseConfiguredOpenApiViaSwagger(this WebApplication app)
     {
+        ArgumentNullException.ThrowIfNull(app);
+
         if (!app.Environment.IsDevelopment())
             return app;
 
-        var settings = app.Services.GetRequiredService<SwaggerAppSettings>();
+        // без парного Add* конвейер отдал бы пустые настройки, поэтому наличие
+        // правил валидации проверяется явно
+        if (app.Services.GetService<IValidateOptions<SwaggerAppSettings>>() is null)
+            throw new InvalidOperationException(
+                $"Требуется вызов {nameof(AddConfiguredOpenApiViaSwagger)}()");
+
+        var settings = app.Services.GetRequiredService<IOptions<SwaggerAppSettings>>().Value;
 
         app.UseSwagger();
 
