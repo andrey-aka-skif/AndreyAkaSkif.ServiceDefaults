@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using CorsOptions = Microsoft.AspNetCore.Cors.Infrastructure.CorsOptions;
 
 namespace AndreyAkaSkif.ServiceDefaults.Tests;
 
@@ -13,7 +15,7 @@ public class ConfiguredCorsExtensionsTests
     };
 
     [Fact]
-    public void AddConfiguredCorsPolicy_ShouldRegisterValidatedSettings_WhenConfigurationIsValid()
+    public void AddConfiguredCorsPolicy_ShouldBindSettings_WhenConfigurationIsValid()
     {
         // Arrange
         var builder = CreateBuilderWith(ValidConfiguration);
@@ -23,13 +25,29 @@ public class ConfiguredCorsExtensionsTests
         using var app = builder.Build();
 
         // Assert
-        var corsPolicy = app.Services.GetRequiredService<CorsPolicy>();
+        var corsPolicy = app.Services.GetRequiredService<IOptions<CorsPolicy>>().Value;
         Assert.Equal("PolicyName", corsPolicy.Name);
         Assert.Equal(["http://localhost:5001"], corsPolicy.Origins);
     }
 
     [Fact]
-    public void AddConfiguredCorsPolicy_ShouldThrowArgumentException_WhenConfigurationIsInvalid()
+    public void AddConfiguredCorsPolicy_ShouldRegisterPolicyUnderConfiguredName()
+    {
+        // Arrange
+        var builder = CreateBuilderWith(ValidConfiguration);
+
+        // Act
+        builder.AddConfiguredCorsPolicy();
+        using var app = builder.Build();
+
+        // Assert
+        var policy = app.Services.GetRequiredService<IOptions<CorsOptions>>().Value.GetPolicy("PolicyName");
+        Assert.NotNull(policy);
+        Assert.Equal(["http://localhost:5001"], policy.Origins);
+    }
+
+    [Fact]
+    public void AddConfiguredCorsPolicy_ShouldThrowOptionsValidationException_WhenConfigurationIsInvalid()
     {
         // Arrange
         var builder = CreateBuilderWith(new Dictionary<string, string?>
@@ -37,9 +55,14 @@ public class ConfiguredCorsExtensionsTests
             ["CorsPolicy:Name"] = "PolicyName",
         });
 
-        // Act & Assert
-        // валидация выполняется в момент регистрации, а не при разрешении сервиса
-        Assert.Throws<ArgumentException>(() => builder.AddConfiguredCorsPolicy());
+        // Act
+        // регистрация не падает: валидация выполняется конвейером параметров
+        builder.AddConfiguredCorsPolicy();
+        using var app = builder.Build();
+
+        // Assert
+        Assert.Throws<OptionsValidationException>(
+            () => app.Services.GetRequiredService<IOptions<CorsPolicy>>().Value);
     }
 
     [Fact]
