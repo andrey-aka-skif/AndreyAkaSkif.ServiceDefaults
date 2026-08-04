@@ -27,7 +27,7 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 | `/swagger/1.0.0/swagger.json` | Спецификация из секции `SwaggerAppSettings`                                                                                                                 |
 | `/health`                     | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointWithSwagger`                                                                |
 | `/api/health`                 | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`)                                                                     |
-| `/demo/greeting`              | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI                                                                                  |
+| `/demo/greeting`              | Настройки `DemoAppSettings`, провалидированные на старте хоста и взятые из DI голым типом                                                                   |
 | `/demo/greeting/Мир`          | Сервис с собственным объектом-параметром `GreetingServiceArgs` вместо объекта секции                                                                        |
 | `/demo/echo?message=hi`       | Обычный маршрут minimal API                                                                                                                                 |
 | `/demo/repository`            | Типизированный API-клиент к GitHub (`AddApiClient<GitHubApiClient, GitHubApiClientOptions>`). Единственная точка, которой нужен доступ в интернет            |

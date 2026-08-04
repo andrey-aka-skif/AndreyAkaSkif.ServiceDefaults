@@ -12,7 +12,7 @@
 - базового пути API (PathBase),
 - ограничений параметров маршрута, включая перечисление как сегмент пути,
 - конечной точки проверки жизнеспособности (`/health`),
-- валидируемых объектов настроек, проверяемых до старта приложения,
+- объектов настроек с обязательной валидацией, проверяемых до первого запроса,
 - типизированных API-клиентов к внешним REST-сервисам,
 - спецификации OpenAPI — без UI и через Swagger UI,
 - контекста PostgreSQL на Entity Framework Core,
@@ -27,7 +27,7 @@
 
 | Пакет                                      | Назначение                                                                                     | README                                                             |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `AndreyAkaSkif.ServiceDefaults`            | CORS, обработка ошибок, PathBase, ограничения маршрутов, Health Checks, валидируемые настройки, API-клиенты | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md)            |
+| `AndreyAkaSkif.ServiceDefaults`            | CORS, обработка ошибок, PathBase, ограничения маршрутов, Health Checks, настройки с валидацией, API-клиенты | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md)            |
 | `AndreyAkaSkif.ServiceDefaults.OpenApi`    | Спецификация OpenAPI средствами ASP.NET, без UI                                                | [README](./src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md)    |
 | `AndreyAkaSkif.ServiceDefaults.Swagger`    | Спецификация OpenAPI и Swagger UI                                                              | [README](./src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md)    |
 | `AndreyAkaSkif.ServiceDefaults.PostgreSQL` | Простой контекст PostgreSQL на EF Core                                                         | [README](./src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/README.md) |
