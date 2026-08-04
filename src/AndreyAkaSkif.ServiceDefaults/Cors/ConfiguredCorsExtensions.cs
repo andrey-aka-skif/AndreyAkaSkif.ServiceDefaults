@@ -2,9 +2,8 @@ using AndreyAkaSkif.ServiceDefaults.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-// переезд на конвейер параметров выполняется отдельным шагом
-#pragma warning disable CS0618
+using Microsoft.Extensions.Options;
+using CorsOptions = Microsoft.AspNetCore.Cors.Infrastructure.CorsOptions;
 
 namespace AndreyAkaSkif.ServiceDefaults.Cors;
 
@@ -17,6 +16,7 @@ public static class ConfiguredCorsExtensions
     /// Добавить политику CORS, настроенную через конфигурацию
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Требует секцию конфигурации "CorsPolicy" следующего вида:
     /// <code>
     /// "CorsPolicy": {
@@ -27,28 +27,31 @@ public static class ConfiguredCorsExtensions
     ///   ]
     /// }
     /// </code>
-    /// Валидированные настройки регистрируются в DI-контейнере,
-    /// откуда их берёт <see cref="UseConfiguredCorsPolicy"/>.
+    /// </para>
+    /// <para>
+    /// Настройки регистрируются в конвейере параметров, откуда их берут и сама политика,
+    /// и <see cref="UseConfiguredCorsPolicy"/>. Отсутствующая или некорректная секция
+    /// роняет приложение при старте хоста, до первого запроса.
+    /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentException">
-    /// Выбрасывается, если секция "CorsPolicy" отсутствует в конфигурации или содержит некорректные данные.
-    /// </exception>
     public static IHostApplicationBuilder AddConfiguredCorsPolicy(this IHostApplicationBuilder builder)
     {
-        var corsPolicy = builder.Configuration.CreateValidated<CorsPolicy>();
+        ArgumentNullException.ThrowIfNull(builder);
 
-        builder.AddServiceArg(corsPolicy);
+        builder.AddValidatedOptions<CorsPolicy, CorsPolicyValidator>();
 
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy(
-                corsPolicy.Name,
-                policy => policy
-                    .WithOrigins(corsPolicy.Origins)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-            );
-        });
+        builder.Services.AddCors();
+
+        // политика собирается лениво: на момент вызова настройки ещё не привязаны
+        builder.Services
+            .AddOptions<CorsOptions>()
+            .Configure<IOptions<CorsPolicy>>((corsOptions, corsPolicy) =>
+                corsOptions.AddPolicy(
+                    corsPolicy.Value.Name,
+                    policy => policy
+                        .WithOrigins(corsPolicy.Value.Origins)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()));
 
         return builder;
     }
@@ -65,7 +68,15 @@ public static class ConfiguredCorsExtensions
     /// </exception>
     public static WebApplication UseConfiguredCorsPolicy(this WebApplication app)
     {
-        var corsPolicy = app.Services.GetRequiredService<CorsPolicy>();
+        ArgumentNullException.ThrowIfNull(app);
+
+        // без парного Add* конвейер отдал бы пустые настройки и политика применилась
+        // бы молча, поэтому наличие правил валидации проверяется явно
+        if (app.Services.GetService<IValidateOptions<CorsPolicy>>() is null)
+            throw new InvalidOperationException(
+                $"Требуется вызов {nameof(AddConfiguredCorsPolicy)}()");
+
+        var corsPolicy = app.Services.GetRequiredService<IOptions<CorsPolicy>>().Value;
         app.UseCors(corsPolicy.Name);
 
         return app;
