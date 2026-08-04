@@ -87,11 +87,36 @@ public class HttpApiClientExtensionsTests
     }
 
     [Theory]
+    [InlineData("http://api.example.com/")]
+    [InlineData("https://api.example.com/")]
+    public void AddApiClient_ShouldAcceptBaseAddress_WhenSchemeIsHttpOrHttps(string baseAddress)
+    {
+        // Arrange
+        var builder = CreateBuilderWith(new Dictionary<string, string?>
+        {
+            ["TestApiClientOptions:BaseAddress"] = baseAddress,
+        });
+
+        // Act
+        builder.AddApiClient<TestApiClient, TestApiClientOptions>();
+        using var host = builder.Build();
+
+        // Assert
+        var client = host.Services.GetRequiredService<TestApiClient>();
+        Assert.Equal(new Uri(baseAddress), client.BaseAddress);
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData("   ")]
     [InlineData("api.example.com")]
+    // "/api" в Unix разбирается как путь файловой системы и даёт валидный file:///api,
+    // в Windows не разбирается вовсе. Схема проверяется явно, поэтому обе платформы
+    // отвергают значение одинаково
     [InlineData("/api")]
-    public void AddApiClient_ShouldThrowOptionsValidationException_WhenBaseAddressIsNotAbsolute(
+    [InlineData("file:///api")]
+    [InlineData("ftp://api.example.com/")]
+    public void AddApiClient_ShouldThrowOptionsValidationException_WhenBaseAddressIsNotHttpAddress(
         string baseAddress)
     {
         // Arrange
