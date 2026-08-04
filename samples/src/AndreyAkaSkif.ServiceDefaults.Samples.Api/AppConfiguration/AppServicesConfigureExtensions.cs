@@ -21,8 +21,9 @@ internal static class AppServicesConfigureExtensions
     /// <see cref="DemoAppSettings"/> знает про секцию конфигурации,
     /// <see cref="GreetingServiceArgs"/> — нет, и переход между ними происходит
     /// в composition root, а не внутри сервиса. Если аргумент не зависит от других
-    /// сервисов, его можно собрать сразу и зарегистрировать короче:
-    /// <c>builder.AddServiceArg(new GreetingServiceArgs("Привет"))</c>.
+    /// сервисов, его можно собрать сразу: <c>builder.Services.AddSingleton(
+    /// new GreetingServiceArgs("Привет"))</c> — готовый объект конфигурацией не является
+    /// и отдельного API не требует.
     /// </para>
     /// <para>
     /// Когда регистраций становится много, этот файл делится по темам —

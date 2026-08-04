@@ -1,9 +1,6 @@
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
 using AndreyAkaSkif.ServiceDefaults.Settings;
 
-// переезд на конвейер параметров выполняется отдельным шагом
-#pragma warning disable CS0618
-
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 
 /// <summary>
@@ -12,13 +9,15 @@ namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 internal static class AppSettingsConfigureExtensions
 {
     /// <summary>
-    /// Зарегистрировать объекты настроек приложения
+    /// Зарегистрировать все объекты настроек приложения
     /// </summary>
     /// <remarks>
     /// <para>
     /// Сюда добавляются все собственные типы настроек приложения. Каждый читается
-    /// из одноимённой секции конфигурации, валидируется в момент вызова — то есть
-    /// до <c>Build()</c> — и попадает в DI-контейнер готовым экземпляром.
+    /// из одноимённой секции конфигурации, валидируется на старте хоста — то есть
+    /// до первого запроса — и попадает в DI-контейнер готовым значением, а не
+    /// как <c>IOptions&lt;T&gt;</c>: этим <c>AddAppSettings&lt;T, TValidator&gt;()</c>
+    /// и отличается от <c>AddValidatedOptions&lt;T, TValidator&gt;()</c>.
     /// </para>
     /// <para>
     /// Это типы границы приложения; они лежат в каталоге <c>AppSettings</c>.
@@ -26,9 +25,9 @@ internal static class AppSettingsConfigureExtensions
     /// см. <c>AppServicesConfigureExtensions</c>.
     /// </para>
     /// </remarks>
-    public static IHostApplicationBuilder AddAppSettings(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddAllAppSettings(this IHostApplicationBuilder builder)
     {
-        builder.AddServiceArgFromValidatedSettingsObject<DemoAppSettings>();
+        builder.AddAppSettings<DemoAppSettings, DemoAppSettingsValidator>();
 
         return builder;
     }

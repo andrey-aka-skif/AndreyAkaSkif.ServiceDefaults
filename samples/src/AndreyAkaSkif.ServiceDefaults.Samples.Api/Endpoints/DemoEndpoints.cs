@@ -16,8 +16,8 @@ internal static class DemoEndpoints
     {
         var demo = app.MapGroup("/demo").WithTags("Demo");
 
-        // Настройки резолвятся из DI: их туда положил
-        // AddServiceArgFromValidatedSettingsObject<DemoAppSettings>()
+        // Настройки резолвятся из DI голым типом, без IOptions: их туда положил
+        // AddAppSettings<DemoAppSettings, DemoAppSettingsValidator>()
         demo.MapGet("/greeting", (DemoAppSettings settings) => Results.Ok(new { settings.Greeting }))
             .WithName("GetGreeting")
             .WithSummary("Приветствие из секции конфигурации DemoAppSettings");

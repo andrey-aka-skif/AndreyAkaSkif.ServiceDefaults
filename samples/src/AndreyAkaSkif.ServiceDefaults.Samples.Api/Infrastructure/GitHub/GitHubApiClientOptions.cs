@@ -12,9 +12,9 @@ namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Infrastructure.GitHub;
 /// <c>AddApiClient&lt;GitHubApiClient, GitHubApiClientOptions&gt;()</c>.
 /// </para>
 /// <para>
-/// Класс лежит рядом с клиентом, а не в каталоге <c>AppSettings</c>: там собраны объекты
-/// секций на <c>IValidatableSettingsObject</c>, а эти настройки живут по правилам
-/// конвейера параметров и принадлежат инфраструктурному адаптеру.
+/// Класс лежит рядом с клиентом, а не в каталоге <c>AppSettings</c>: там собраны настройки
+/// границы приложения, а эти принадлежат инфраструктурному адаптеру и в домен не попадают —
+/// клиенту они достаются как <c>IOptions&lt;T&gt;</c>.
 /// </para>
 /// </remarks>
 internal sealed class GitHubApiClientOptions : IHttpApiClientOptions

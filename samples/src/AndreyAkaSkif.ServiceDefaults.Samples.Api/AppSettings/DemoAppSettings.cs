@@ -1,26 +1,15 @@
-using AndreyAkaSkif.ServiceDefaults.Settings;
-
-// переезд на конвейер параметров выполняется отдельным шагом
-#pragma warning disable CS0618
-
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
 
 /// <summary>
 /// Настройки приложения. Секция конфигурации называется так же, как тип
 /// </summary>
 /// <remarks>
-/// Объект границы приложения: знает имя секции конфигурации и реализует
-/// <see cref="IValidatableSettingsObject"/>. Домену такой тип отдавать не обязательно —
-/// сервис объявляет собственный объект-параметр рядом с собой, см.
-/// <c>Services/GreetingServiceArgs.cs</c>
+/// Чистый POCO: ни интерфейсов, ни атрибутов, ни ссылки на пакет ServiceDefaults.
+/// Правила валидации живут отдельно, см. <see cref="DemoAppSettingsValidator"/>.
+/// Домену такой тип отдавать не обязательно — сервис объявляет собственный
+/// объект-параметр рядом с собой, см. <c>Services/GreetingServiceArgs.cs</c>
 /// </remarks>
-public sealed record DemoAppSettings : IValidatableSettingsObject
+public sealed record DemoAppSettings
 {
     public string Greeting { get; init; } = string.Empty;
-
-    public void Validate()
-    {
-        if (string.IsNullOrWhiteSpace(Greeting))
-            throw new ArgumentException($"Требуется {nameof(DemoAppSettings)}:{nameof(Greeting)}");
-    }
 }
