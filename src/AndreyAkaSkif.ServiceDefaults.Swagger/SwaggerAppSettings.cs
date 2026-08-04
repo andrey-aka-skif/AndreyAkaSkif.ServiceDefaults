@@ -1,5 +1,8 @@
 using AndreyAkaSkif.ServiceDefaults.Settings;
 
+// переезд на конвейер параметров выполняется отдельным шагом
+#pragma warning disable CS0618
+
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
 internal sealed record SwaggerAppSettings : IValidatableSettingsObject

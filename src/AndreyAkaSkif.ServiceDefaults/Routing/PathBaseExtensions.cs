@@ -1,6 +1,9 @@
 using AndreyAkaSkif.ServiceDefaults.Settings;
 using Microsoft.AspNetCore.Builder;
 
+// переезд на конвейер параметров выполняется отдельным шагом
+#pragma warning disable CS0618
+
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
 /// <summary>
