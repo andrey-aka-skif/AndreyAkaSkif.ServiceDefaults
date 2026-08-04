@@ -30,8 +30,8 @@ public static class HttpApiClientExtensions
     /// </para>
     /// <para>
     /// Метод регистрирует настройки в конвейере параметров, проверяет, что
-    /// <see cref="IHttpApiClientOptions.BaseAddress"/> задан и является абсолютным адресом,
-    /// и подставляет его в <c>HttpClient.BaseAddress</c> клиента:
+    /// <see cref="IHttpApiClientOptions.BaseAddress"/> задан и является абсолютным
+    /// http- или https-адресом, и подставляет его в <c>HttpClient.BaseAddress</c> клиента:
     /// <code>
     /// public sealed class GitHubApiClientOptions : IHttpApiClientOptions
     /// {
@@ -100,10 +100,10 @@ public static class HttpApiClientExtensions
             .Validate(
                 options =>
                 {
-                    return Uri.TryCreate(options.BaseAddress, UriKind.Absolute, out _);
+                    return IsHttpAddress(options.BaseAddress);
                 },
                 $"Требуется {section}:{nameof(IHttpApiClientOptions.BaseAddress)} — " +
-                $"абсолютный адрес вида \"https://api.example.com/\"")
+                $"абсолютный http- или https-адрес вида \"https://api.example.com/\"")
             .ValidateOnStart();
 
         builder.Services.AddHttpClient<TClient>((serviceProvider, client) =>
@@ -113,4 +113,14 @@ public static class HttpApiClientExtensions
 
         return builder;
     }
+
+    /// <summary>
+    /// Проверить, что значение является абсолютным http- или https-адресом
+    /// </summary>
+    private static bool IsHttpAddress(string? value)
+        // Одного UriKind.Absolute мало: в Unix путь вида "/api" разбирается как путь
+        // файловой системы и даёт валидный file:///api, а в Windows — не разбирается
+        // вовсе. Схема проверяется явно, иначе поведение зависело бы от платформы
+        => Uri.TryCreate(value, UriKind.Absolute, out var uri)
+           && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 }
