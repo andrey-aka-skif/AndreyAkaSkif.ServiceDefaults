@@ -1,4 +1,5 @@
-using AndreyAkaSkif.ServiceDefaults.Samples.Api.Settings;
+using AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
+using AndreyAkaSkif.ServiceDefaults.Samples.Api.Services;
 
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
 
@@ -19,6 +20,14 @@ internal static class DemoEndpoints
         demo.MapGet("/greeting", (DemoAppSettings settings) => Results.Ok(new { settings.Greeting }))
             .WithName("GetGreeting")
             .WithSummary("Приветствие из секции конфигурации DemoAppSettings");
+
+        // Соседняя точка показывает вторую роль: сервис получает не DemoAppSettings,
+        // а собственный GreetingServiceArgs, который лежит рядом с ним и про
+        // конфигурацию ничего не знает. Связывает их AddAppServices()
+        demo.MapGet("/greeting/{name}", (string name, IGreetingService greetings) =>
+                Results.Ok(new { greeting = greetings.Greet(name) }))
+            .WithName("GetPersonalGreeting")
+            .WithSummary("Приветствие по имени: сервис с собственным объектом-параметром");
 
         demo.MapGet("/echo", (string message) => Results.Ok(new { message }))
             .WithName("GetEcho")
