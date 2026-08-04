@@ -14,7 +14,7 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
 - Инициализация API окружения
     - политика CORS, настроенная через конфигурацию (`AddConfiguredCorsPolicy()` / `UseConfiguredCorsPolicy()`)
     - разрешительная политика CORS «всё со всех источников» (`AddPermissiveCorsPolicy()` / `UsePermissiveCorsPolicy()`)
-    - саброутинг — базовый путь из конфигурации (`UseConfiguredPathBase()`)
+    - саброутинг — базовый путь из конфигурации (`AddConfiguredPathBase()` / `UseConfiguredPathBase()`)
     - перечисление как сегмент пути со строковой сериализацией (`AddEnumRouteConstraint<T>()`);
       отдельно доступны сериализация перечислений именами (`AddStringEnumJsonSerialization()`)
       и регистрация собственного ограничения маршрута (`AddRouteConstraint<T>(name)`)
@@ -22,9 +22,9 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
       и расширенная (`AddExtendedErrorHandling()`), подключение в конвейер — `UseErrorHandling()`
     - конечная точка проверки жизнеспособности приложения для оркестратора
       (`AddHealthCheckEndpoint()` / `MapHealthCheckEndpoint()`, адрес `/health`)
-- Регистрация конфигураций и аргументов
-    - регистрация валидируемых настроек в DI-контейнере (`AddServiceArgFromValidatedSettingsObject<T>()`)
-    - регистрация готового экземпляра класса в DI-контейнере (`AddServiceArg<T>(instance)`)
+- Регистрация настроек
+    - настройки инфраструктуры, доступные как `IOptions<T>` (`AddValidatedOptions<T, TValidator>()`)
+    - настройки приложения, доступные значением, без `IOptions<T>` (`AddAppSettings<T, TValidator>()`)
 - Взаимодействие с внешними сервисами
     - типизированный API-клиент с адресом из конфигурации (`AddApiClient<TClient, TOptions>()`)
 
@@ -33,10 +33,11 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddConfiguredCorsPolicy();      // добавление политики CORS, настроенной через конфигурацию
+builder.AddConfiguredPathBase();        // регистрация настроек базового пути
 builder.AddExtendedErrorHandling();     // регистрация стандартной обработки ошибок с использованием ProblemDetails
 builder.AddHealthCheckEndpoint();       // регистрация сервисов конечной точки проверки жизнеспособности приложения
 
-builder.AddServiceArgFromValidatedSettingsObject<ExampleSettingsArgs>();    // регистрация валидированного объекта настроек как singleton в DI-контейнере
+builder.AddAppSettings<ExampleAppSettings, ExampleAppSettingsValidator>();  // регистрация настроек приложения: в DI попадает значение, а не IOptions<T>
 
 var app = builder.Build();
 
@@ -52,8 +53,8 @@ app.Run();
 Пакет предлагает две политики, взаимозаменяемые по вызову:
 
 - `AddConfiguredCorsPolicy()` / `UseConfiguredCorsPolicy()` — источники берутся из конфигурации,
-  разрешены любые методы и заголовки. Настройки читаются один раз при регистрации и попадают
-  в DI-контейнер, откуда их берёт `Use*`-метод;
+  разрешены любые методы и заголовки. Настройки попадают в конвейер параметров, откуда
+  их берут и сама политика, и `Use*`-метод;
 - `AddPermissiveCorsPolicy()` / `UsePermissiveCorsPolicy()` — политика `AllowAll`: любой источник,
   любой метод, любой заголовок. Конфигурация не требуется.
 
@@ -143,12 +144,14 @@ builder.Services
        .AddHttpMessageHandler<AuthorizationHandler>();
 ```
 
-### Почему здесь `IOptions`, а не `IValidatableSettingsObject`
-Остальные настройки пакета читаются через `IValidatableSettingsObject` — механизм,
-который существует ровно затем, чтобы не тащить `IOptions<T>` в домен. Конфигурация
-HTTP-клиента доменным знанием не является: это параметр инфраструктурного адаптера,
-и стандартный конвейер параметров здесь уместен. Заодно из коробки достаётся валидация,
-которую иначе пришлось бы писать в каждом классе настроек.
+### Почему здесь `IOptions<T>`, а не развёрнутое значение
+Настройки приложения пакет отдаёт значением, чтобы не тащить `IOptions<T>` в домен —
+см. «Собственные настройки». Конфигурация HTTP-клиента доменным знанием не является:
+это параметр инфраструктурного адаптера, который живёт по ту же сторону границы,
+что и сам `HttpClient`. Разворачивать значение здесь незачем.
+
+Граница проходит именно здесь: `IOptions<T>` напрямую — в инфраструктуре (политика CORS,
+Swagger, базовый путь, настройки API-клиентов), развёрнутое значение — в домене.
 
 ## Перечисление как сегмент пути
 Перечисление в маршруте по умолчанию неинформативно: спецификация OpenAPI объявляет его
@@ -235,8 +238,9 @@ app.MapGet("items/{id:even}", (int id) => id);
 
 ## Секции конфигурации
 Имя секции всегда совпадает с именем типа настроек: привязка выполняется через
-`IConfiguration.CreateValidated<T>()`, который читает секцию `typeof(T).Name`.
-Правило действует и для собственных настроек приложения.
+`BindConfiguration(typeof(T).Name)`. Правило действует и для собственных настроек
+приложения. Если конфигурация уже сложилась иначе, имя задаётся параметром
+`sectionName`.
 
 Политика CORS — секция `CorsPolicy`, оба параметра обязательны:
 ```json
@@ -268,8 +272,8 @@ A-Za-z0-9 - . _ ~
 
 Пустая строка означает, что базовый путь не добавляется. Хвостовой слеш безопасен:
 `UsePathBase` срезает его сам, поэтому `/` и `/api/` валидны. Всё остальное —
-ведущий слеш отсутствует, двойные слеши, посторонние символы — приводит
-к `ArgumentException`; сообщение содержит само значение и описание формата.
+ведущий слеш отсутствует, двойные слеши, посторонние символы — роняет приложение
+на старте; сообщение содержит само значение и описание формата.
 
 | Валидно | Невалидно |
 | --- | --- |
@@ -283,8 +287,9 @@ Percent-encoding не поддерживается: базовый путь ср
 в спецификацию OpenAPI, в конфигурацию обратного прокси и в логи, где становится
 источником двойного кодирования.
 
-`UseConfiguredPathBase()` читает конфигурацию сам, парного `Add*`-метода у него нет —
-это единственный метод пакета, выпадающий из схемы `Add*` / `Use*`.
+Настройки регистрирует `AddConfiguredPathBase()`, подключает в конвейер —
+`UseConfiguredPathBase()`. Без парного `Add*` второй метод падает
+с `InvalidOperationException`, а не включает пустой префикс молча.
 
 ### Когда базовый путь задавать не здесь
 
@@ -297,7 +302,8 @@ Swagger UI. Приложение, не знающее своего внешне�
 
 Каналов два.
 
-**Из собственной конфигурации** — то, что делает `UseConfiguredPathBase()`. Знание
+**Из собственной конфигурации** — то, что делает пара `AddConfiguredPathBase()` /
+`UseConfiguredPathBase()`. Знание
 дублируется: `location /api` в прокси и `PathBaseAppSettings:Path` здесь. Рассинхрон
 ломает приложение тихо. Подходит, когда прокси нет вовсе (локальный запуск,
 docker-compose) или когда он не умеет сообщать префикс.
@@ -328,42 +334,55 @@ app.UseForwardedHeaders();
 в списке серверов (см. `Servers` в README пакета `AndreyAkaSkif.ServiceDefaults.Swagger`).
 
 ## Собственные настройки
-Чтобы подключить свой класс настроек, достаточно реализовать `IValidatableSettingsObject`
-и зарегистрировать его одним вызовом:
+Класс настроек — чистый POCO, правила проверки живут отдельно, в `IValidateOptions<T>`:
 
 ```csharp
-public sealed record DemoAppSettings : IValidatableSettingsObject
+public sealed record DemoAppSettings
 {
     public string Greeting { get; init; } = string.Empty;
-
-    public void Validate()
-    {
-        if (string.IsNullOrWhiteSpace(Greeting))
-            throw new ArgumentException($"Требуется {nameof(DemoAppSettings)}:{nameof(Greeting)}");
-    }
 }
 
-builder.AddServiceArgFromValidatedSettingsObject<DemoAppSettings>();
+internal sealed class DemoAppSettingsValidator : IValidateOptions<DemoAppSettings>
+{
+    public ValidateOptionsResult Validate(string? name, DemoAppSettings options)
+        => string.IsNullOrWhiteSpace(options.Greeting)
+            ? ValidateOptionsResult.Fail(
+                $"Требуется {nameof(DemoAppSettings)}:{nameof(DemoAppSettings.Greeting)}")
+            : ValidateOptionsResult.Success;
+}
+
+builder.AddAppSettings<DemoAppSettings, DemoAppSettingsValidator>();
 ```
 
-Секция конфигурации в этом случае — `DemoAppSettings`. Готовый экземпляр доступен
-из DI-контейнера как singleton. Рабочий образец — `DemoAppSettings` в `samples/`.
+Секция конфигурации в этом случае — `DemoAppSettings`. Значение доступно из DI-контейнера
+как singleton, поэтому сервис объявляет зависимость как `DemoAppSettings`, а не как
+`IOptions<DemoAppSettings>`, и о конвейере параметров не знает. Рабочий образец —
+`DemoAppSettings` в `samples/`.
 
-Если объект уже создан и валидировать его не нужно, используйте `AddServiceArg(instance)`.
+Валидатор — обязательный параметр типа, а не перегрузка: настройки без правил валидации
+зарегистрировать нельзя. Он активируется контейнером, поэтому при необходимости принимает
+зависимости через конструктор. Все нарушения накапливаются в одном
+`ValidateOptionsResult.Fail(...)` — конвейер покажет весь список, а не первое попавшееся.
+
+Настройкам инфраструктуры разворачивать значение незачем: для них есть
+`AddValidatedOptions<T, TValidator>()`, оставляющий в контейнере `IOptions<T>`.
+
+Готовый объект, собранный вручную, конфигурацией не является — это обычная регистрация
+`builder.Services.AddSingleton(arg)`, отдельного API она не требует.
 
 ## Настройки и fail fast
-Методы `Add*`, читающие конфигурацию, привязывают секцию и валидируют объект настроек
-**в момент вызова**, а не при первом разрешении сервиса из DI. В контейнер попадает уже готовый
-экземпляр.
-
-Поэтому некорректная конфигурация роняет приложение на старте, до вызова `builder.Build()`,
+Методы `Add*`, читающие конфигурацию, регистрируют секцию в конвейере параметров
+с `ValidateOnStart()`. Некорректная конфигурация роняет приложение при старте хоста,
 а не отложенно — при первом запросе, которому эти настройки понадобились.
 
-Исключение — `AddApiClient<TClient, TOptions>()`: он живёт на конвейере параметров, поэтому
-адрес проверяется при старте хоста, через `ValidateOnStart()`. Это позже, чем у остальных
-`Add*`, но всё ещё до первого запроса: приложение с неверным адресом внешнего API
-не поднимется. Значение читается один раз, при создании клиента, — изменение конфигурации
-на лету на уже созданные клиенты не влияет.
+Это позже, чем `builder.Build()`, но всё ещё до первого запроса: приложение с пустой
+политикой CORS или неверным адресом внешнего API не поднимется. Тип исключения —
+`OptionsValidationException`, в сообщении перечислены все нарушенные правила.
+
+Правило единое для всего пакета: `AddApiClient<TClient, TOptions>()` живёт по нему же.
+Значение настроек читается один раз, при первом разрешении из контейнера, — изменение
+конфигурации на лету на уже созданные объекты не влияет; за перечитыванием следует
+обращаться к `IOptionsMonitor<T>`.
 
 ## Health Checks
 Пара методов `AddHealthCheckEndpoint()` / `MapHealthCheckEndpoint()` регистрирует минимальную
