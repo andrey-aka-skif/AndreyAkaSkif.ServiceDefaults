@@ -34,6 +34,8 @@ public static class ConfiguredCorsExtensions
     /// роняет приложение при старте хоста, до первого запроса.
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddConfiguredCorsPolicy(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -63,6 +65,8 @@ public static class ConfiguredCorsExtensions
     /// Требует предварительного вызова <see cref="AddConfiguredCorsPolicy"/>:
     /// настройки берутся из DI-контейнера, конфигурация повторно не читается.
     /// </remarks>
+    /// <param name="app">Экземпляр веб-приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="app"/> для поддержки цепочки вызовов</returns>
     /// <exception cref="InvalidOperationException">
     /// Выбрасывается, если <see cref="AddConfiguredCorsPolicy"/> не был вызван.
     /// </exception>

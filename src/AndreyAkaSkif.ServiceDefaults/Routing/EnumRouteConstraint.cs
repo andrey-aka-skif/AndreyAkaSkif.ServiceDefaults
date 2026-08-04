@@ -26,6 +26,14 @@ public sealed class EnumRouteConstraint<TEnum> : IRouteConstraint
     /// <summary>
     /// Проверяет значение параметра маршрута и приводит его к каноническому виду
     /// </summary>
+    /// <param name="httpContext">Контекст запроса; ограничением не используется</param>
+    /// <param name="route">Маршрутизатор; ограничением не используется</param>
+    /// <param name="routeKey">Имя проверяемого параметра маршрута</param>
+    /// <param name="values">Значения параметров маршрута</param>
+    /// <param name="routeDirection">
+    /// Направление сопоставления. Приведение к каноническому имени выполняется только
+    /// для входящего запроса: при генерации URL значение принадлежит вызывающему коду
+    /// </param>
     /// <returns>
     /// <see langword="true"/>, если значение соответствует элементу <typeparamref name="TEnum"/>
     /// </returns>

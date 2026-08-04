@@ -59,6 +59,8 @@ public static class ConfiguredOpenApiViaSwaggerConfigureExtensions
     /// а только Minimal Api.
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddConfiguredOpenApiViaSwagger(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
