@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddConfiguredLoggingViaSerilog();
 
 // Конфигурация, специфичная для приложения. Подробности — в каталоге AppConfiguration
-builder.AddAppSettings();
+builder.AddAllAppSettings();
 builder.AddAppDbContexts();
 builder.AddAppServices();
 builder.AddAppHttpClients();
