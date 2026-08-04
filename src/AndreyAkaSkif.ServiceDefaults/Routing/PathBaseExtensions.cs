@@ -1,8 +1,8 @@
 using AndreyAkaSkif.ServiceDefaults.Settings;
 using Microsoft.AspNetCore.Builder;
-
-// переезд на конвейер параметров выполняется отдельным шагом
-#pragma warning disable CS0618
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
@@ -12,7 +12,7 @@ namespace AndreyAkaSkif.ServiceDefaults.Routing;
 public static class PathBaseExtensions
 {
     /// <summary>
-    /// Добавить базовый путь на основе конфигурации
+    /// Зарегистрировать настройки базового пути
     /// </summary>
     /// <remarks>
     /// <para>
@@ -22,6 +22,7 @@ public static class PathBaseExtensions
     ///   "Path": "/api"
     /// }
     /// </code>
+    /// Секция необязательна: без неё базовый путь пуст и не добавляется.
     /// </para>
     /// <para>
     /// Допустимый формат <see cref="PathBaseAppSettings.Path"/> — пустая строка либо путь
@@ -29,14 +30,36 @@ public static class PathBaseExtensions
     /// <code>
     /// A-Za-z0-9 - . _ ~
     /// </code>
-    /// Пустая строка означает, что базовый путь не добавляется. Хвостовой слеш допустим —
-    /// <c>UsePathBase</c> срезает его сам.
+    /// Хвостовой слеш допустим — <c>UsePathBase</c> срезает его сам.
     /// </para>
     /// <para>
     /// Percent-encoding не поддерживается: базовый путь сравнивается с уже раскодированным
     /// путём запроса, поэтому "%D0%B0" останется буквальными символами. Не-ASCII символы
     /// также запрещены — базовый путь попадает в спецификацию OpenApi, в конфигурацию
     /// обратного прокси и в логи, где становится источником двойного кодирования.
+    /// </para>
+    /// <para>
+    /// Некорректное значение роняет приложение при старте хоста, до первого запроса.
+    /// Подключение в конвейер — <see cref="UseConfiguredPathBase"/>.
+    /// </para>
+    /// </remarks>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
+    public static IHostApplicationBuilder AddConfiguredPathBase(this IHostApplicationBuilder builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        builder.AddValidatedOptions<PathBaseAppSettings, PathBaseAppSettingsValidator>();
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Добавить базовый путь на основе конфигурации
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Требует предварительного вызова <see cref="AddConfiguredPathBase"/>:
+    /// настройки берутся из DI-контейнера, конфигурация повторно не читается.
     /// </para>
     /// <para>
     /// <strong>Важно:</strong>
@@ -57,12 +80,20 @@ public static class PathBaseExtensions
     /// </code>
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentException">
-    /// если значение <see cref="PathBaseAppSettings.Path"/> не проходит валидацию
+    /// <exception cref="InvalidOperationException">
+    /// Выбрасывается, если <see cref="AddConfiguredPathBase"/> не был вызван.
     /// </exception>
     public static WebApplication UseConfiguredPathBase(this WebApplication app)
     {
-        var settings = app.Configuration.CreateValidated<PathBaseAppSettings>();
+        ArgumentNullException.ThrowIfNull(app);
+
+        // без парного Add* конвейер отдал бы пустой путь и саброутинг молча
+        // перестал бы работать, поэтому наличие правил валидации проверяется явно
+        if (app.Services.GetService<IValidateOptions<PathBaseAppSettings>>() is null)
+            throw new InvalidOperationException(
+                $"Требуется вызов {nameof(AddConfiguredPathBase)}()");
+
+        var settings = app.Services.GetRequiredService<IOptions<PathBaseAppSettings>>().Value;
         app.UsePathBase(settings.Path);
 
         return app;

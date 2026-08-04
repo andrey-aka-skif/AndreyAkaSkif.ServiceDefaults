@@ -29,6 +29,9 @@ builder.AddConfiguredOpenApiViaSwagger();
 // Политика CORS. Конфигурация — секция "CorsPolicy"
 builder.AddConfiguredCorsPolicy();
 
+// Базовый путь. Конфигурация — секция "PathBaseAppSettings"
+builder.AddConfiguredPathBase();
+
 // Конечная точка /health и её отображение в Swagger UI
 builder.AddHealthCheckEndpointWithSwagger();
 
