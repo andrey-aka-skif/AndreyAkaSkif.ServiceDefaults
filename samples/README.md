@@ -28,6 +28,7 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 | `/health`                     | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointWithSwagger`                                                                |
 | `/api/health`                 | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`)                                                                     |
 | `/demo/greeting`              | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI                                                                                  |
+| `/demo/greeting/Мир`          | Сервис с собственным объектом-параметром `GreetingServiceArgs` вместо объекта секции                                                                        |
 | `/demo/echo?message=hi`       | Обычный маршрут minimal API                                                                                                                                 |
 | `/demo/channel/CurrentA`      | Перечисление как сегмент пути (`AddEnumRouteConstraint<DemoChannel>`). `currenta` и `0` тоже работают и приводятся к `CurrentA`, `999` и `unknown` дают 404 |
 | `/demo/boom`                  | `ProblemDetails` от `AddExtendedErrorHandling`: в Development с полем `exception`                                                                           |
@@ -37,6 +38,51 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 файлов. Ради консоли отдельный пакет не нужен — её умеет и встроенный провайдер; Serilog
 подключают, когда логи нужно писать куда-то ещё, см. README пакета.
 Политика CORS берётся из секции `CorsPolicy`.
+
+## Как разложен код
+
+```
+Program.cs              подключение пакетов библиотеки и конвейер
+AppConfiguration/       конфигурация, специфичная для приложения
+AppSettings/            объекты секций конфигурации
+Endpoints/              конечные точки и типы, которые в них участвуют
+Services/               сервисы приложения и их объекты-параметры
+```
+
+В `AppConfiguration/` лежат четыре метода расширения — по одному на тему, чтобы
+`Program.cs` не рос по мере развития приложения:
+
+| Метод                      | Что регистрирует                                                      |
+| -------------------------- | --------------------------------------------------------------------- |
+| `AddAppSettings()`         | объекты настроек, здесь — `DemoAppSettings`                           |
+| `AddAppDbContexts()`       | контексты EF Core; в образце выключен, требует запущенного PostgreSQL |
+| `AddAppServices()`         | сервисы приложения, здесь — `GreetingService`                         |
+| `AddAppRouteConstraints()` | ограничения параметров маршрута, здесь — `DemoChannel`                |
+
+### Почему объекты настроек лежат в двух разных местах
+
+За словом «настройки» скрываются две роли, и образец показывает обе.
+
+`DemoAppSettings` — **объект секции конфигурации**. Он знает имя секции (оно равно имени
+типа), реализует `IValidatableSettingsObject` и читается из `appsettings.json`. Это тип
+границы приложения, поэтому он лежит в `AppSettings/` и регистрируется через
+`AddServiceArgFromValidatedSettingsObject<T>()`.
+
+`GreetingServiceArgs` — **объект-параметр сервиса**. Про конфигурацию он не знает ничего
+и наследовать `IValidatableSettingsObject` не обязан; он существует ровно затем, чтобы
+в домен не пришлось тащить `IOptions<T>`. Такой тип принадлежит сервису и лежит рядом
+с ним, в `Services/`.
+
+Переход между ролями происходит в composition root — в `AddAppServices()`, где значение
+из `DemoAppSettings` отображается в `GreetingServiceArgs`. Сам сервис остаётся
+независимым от того, как приложение читает настройки. Разницу видно на паре соседних
+конечных точек: `/demo/greeting` работает с объектом секции, `/demo/greeting/{name}` —
+с сервисом и его собственным аргументом.
+
+Вызовы пакетов — `AddConfiguredCorsPolicy()`, `AddConfiguredOpenApiViaSwagger()`
+и остальные — в `AppConfiguration/` **не** заворачивались и остались в `Program.cs`
+на виду. Обёртка сократила бы `Program.cs`, но спрятала бы ровно то, ради чего образец
+и существует: чтобы увидеть, как подключается CORS, пришлось бы открывать другой файл.
 
 ## Почему адреса в `SwaggerAppSettings.Servers` относительные
 
@@ -59,11 +105,17 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 - **`AndreyAkaSkif.ServiceDefaults.PostgreSQL`** — требует запущенного PostgreSQL, поэтому
   выключен: иначе пример перестал бы запускаться одной командой.
 
-Чтобы включить любой из блоков, нужно раскомментировать `ProjectReference` в
-[csproj](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AndreyAkaSkif.ServiceDefaults.Samples.Api.csproj),
-блок в [Program.cs](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/Program.cs) вместе с его
-`using`-ами, а для PostgreSQL — ещё и секцию `ConnectionStrings` в
-`appsettings.Development.json`. Оба варианта компилируются.
+В обоих случаях нужно раскомментировать `ProjectReference` в
+[csproj](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AndreyAkaSkif.ServiceDefaults.Samples.Api.csproj)
+и соответствующий код вместе с его `using`-ами:
+
+- для OpenApi — блок в [Program.cs](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/Program.cs),
+  это выбор пакета библиотеки, а не прикладная настройка;
+- для PostgreSQL — тело метода и класс `DemoDbContext`
+  в [AppDbContextsConfigureExtensions.cs](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AppConfiguration/AppDbContextsConfigureExtensions.cs),
+  плюс секцию `ConnectionStrings` в `appsettings.Development.json`.
+
+Оба варианта компилируются.
 
 ## Solution
 

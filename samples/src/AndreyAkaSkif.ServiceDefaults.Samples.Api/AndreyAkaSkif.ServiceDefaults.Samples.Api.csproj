@@ -14,7 +14,7 @@
          Пакет является альтернативой AndreyAkaSkif.ServiceDefaults.Swagger -->
     <!-- <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.OpenApi\AndreyAkaSkif.ServiceDefaults.OpenApi.csproj" /> -->
 
-    <!-- Раскомментировать вместе с блоком PostgreSQL в Program.cs -->
+    <!-- Раскомментировать вместе с содержимым AppConfiguration\AppDbContextsConfigureExtensions.cs -->
     <!-- <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.PostgreSQL\AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj" /> -->
   </ItemGroup>
 

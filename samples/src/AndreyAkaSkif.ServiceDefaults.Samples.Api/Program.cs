@@ -2,10 +2,9 @@ using AndreyAkaSkif.ServiceDefaults.Cors;
 using AndreyAkaSkif.ServiceDefaults.ErrorHandling;
 using AndreyAkaSkif.ServiceDefaults.HealthChecking;
 using AndreyAkaSkif.ServiceDefaults.Routing;
+using AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
-using AndreyAkaSkif.ServiceDefaults.Samples.Api.Settings;
 using AndreyAkaSkif.ServiceDefaults.Serilog;
-using AndreyAkaSkif.ServiceDefaults.Settings;
 using AndreyAkaSkif.ServiceDefaults.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,9 +13,11 @@ var builder = WebApplication.CreateBuilder(args);
 // По умолчанию Serilog ставится монопольно: провайдеры по умолчанию не пишут
 builder.AddConfiguredLoggingViaSerilog();
 
-// Настройки приложения: секция "DemoAppSettings" валидируется здесь же,
-// до Build(), и регистрируется в DI
-builder.AddServiceArgFromValidatedSettingsObject<DemoAppSettings>();
+// Конфигурация, специфичная для приложения. Подробности — в каталоге AppConfiguration
+builder.AddAppSettings();
+builder.AddAppDbContexts();
+builder.AddAppServices();
+builder.AddAppRouteConstraints();
 
 // ProblemDetails. В Development в ответ добавляется поле "exception"
 builder.AddExtendedErrorHandling();
@@ -30,11 +31,6 @@ builder.AddConfiguredCorsPolicy();
 // Конечная точка /health и её отображение в Swagger UI
 builder.AddHealthCheckEndpointWithSwagger();
 
-// Перечисление как сегмент пути: ограничение доступно в шаблоне как "demoChannel" —
-// имя по умолчанию от имени типа. Заодно включается сериализация перечислений
-// именами, иначе в теле ответа и в спецификации они выглядели бы как 0, 1, 2
-builder.AddEnumRouteConstraint<DemoChannel>();
-
 // --- OpenApi без Swagger -----------------------------------------------------
 // Альтернатива паре AddConfiguredOpenApiViaSwagger/UseConfiguredOpenApiViaSwagger:
 // встроенная в ASP.NET генерация спецификации без Swagger UI.
@@ -43,16 +39,6 @@ builder.AddEnumRouteConstraint<DemoChannel>();
 // AndreyAkaSkif.ServiceDefaults.OpenApi и убрать вызовы Swagger:
 //
 // builder.AddDefaultOpenApi();
-// -----------------------------------------------------------------------------
-
-// --- PostgreSQL --------------------------------------------------------------
-// Чтобы включить — раскомментировать ProjectReference на
-// AndreyAkaSkif.ServiceDefaults.PostgreSQL в csproj, секцию "ConnectionStrings"
-// в appsettings.Development.json, using-и Microsoft.EntityFrameworkCore и
-// AndreyAkaSkif.ServiceDefaults.PostgreSQL, а также класс DemoDbContext
-// в конце файла. Требуется запущенный PostgreSQL:
-//
-// builder.AddSimplePostgreSQLContext<DemoDbContext>();
 // -----------------------------------------------------------------------------
 
 var app = builder.Build();
@@ -70,10 +56,3 @@ app.MapHealthCheckEndpoint();
 // app.UseDefaultOpenApi();
 
 app.Run();
-
-// Парная часть блока "PostgreSQL". Строка подключения читается из
-// ConnectionStrings:DefaultConnection — имя фиксировано в пакете:
-//
-// internal sealed class DemoDbContext(DbContextOptions<DemoDbContext> options) : DbContext(options)
-// {
-// }
