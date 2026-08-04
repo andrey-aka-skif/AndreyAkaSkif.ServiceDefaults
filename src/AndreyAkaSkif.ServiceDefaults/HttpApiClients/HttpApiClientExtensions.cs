@@ -1,3 +1,4 @@
+using AndreyAkaSkif.ServiceDefaults.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -55,8 +56,8 @@ public static class HttpApiClientExtensions
     /// </para>
     /// <para>
     /// Некорректный или отсутствующий адрес роняет приложение при старте хоста —
-    /// <c>ValidateOnStart</c>, — а не при первом запросе к внешнему API. Это чуть позже,
-    /// чем у остальных <c>Add*</c>-методов пакета: те падают до <c>Build()</c>.
+    /// <c>ValidateOnStart</c>, — а не при первом запросе к внешнему API, как и у остальных
+    /// <c>Add*</c>-методов пакета.
     /// </para>
     /// <para>
     /// Значение читается один раз, при создании клиента. Изменение конфигурации на лету
@@ -87,24 +88,7 @@ public static class HttpApiClientExtensions
         where TClient : class
         where TOptions : class, IHttpApiClientOptions
     {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        if (sectionName is not null && string.IsNullOrWhiteSpace(sectionName))
-            throw new ArgumentException("Не задано имя секции конфигурации", nameof(sectionName));
-
-        var section = sectionName ?? typeof(TOptions).Name;
-
-        builder.Services
-            .AddOptions<TOptions>()
-            .BindConfiguration(section)
-            .Validate(
-                options =>
-                {
-                    return IsHttpAddress(options.BaseAddress);
-                },
-                $"Требуется {section}:{nameof(IHttpApiClientOptions.BaseAddress)} — " +
-                $"абсолютный http- или https-адрес вида \"https://api.example.com/\"")
-            .ValidateOnStart();
+        builder.AddValidatedOptions<TOptions, HttpApiClientOptionsValidator<TOptions>>(sectionName);
 
         builder.Services.AddHttpClient<TClient>((serviceProvider, client) =>
             client.BaseAddress = new Uri(
@@ -113,14 +97,4 @@ public static class HttpApiClientExtensions
 
         return builder;
     }
-
-    /// <summary>
-    /// Проверить, что значение является абсолютным http- или https-адресом
-    /// </summary>
-    private static bool IsHttpAddress(string? value)
-        // Одного UriKind.Absolute мало: в Unix путь вида "/api" разбирается как путь
-        // файловой системы и даёт валидный file:///api, а в Windows — не разбирается
-        // вовсе. Схема проверяется явно, иначе поведение зависело бы от платформы
-        => Uri.TryCreate(value, UriKind.Absolute, out var uri)
-           && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
 }
