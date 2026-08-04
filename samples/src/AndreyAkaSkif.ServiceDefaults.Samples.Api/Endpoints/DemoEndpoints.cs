@@ -1,4 +1,5 @@
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
+using AndreyAkaSkif.ServiceDefaults.Samples.Api.Infrastructure.GitHub;
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.Services;
 
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
@@ -32,6 +33,31 @@ internal static class DemoEndpoints
         demo.MapGet("/echo", (string message) => Results.Ok(new { message }))
             .WithName("GetEcho")
             .WithSummary("Эхо query-параметра");
+
+        // Типизированный API-клиент из Infrastructure/. Его зарегистрировал
+        // AddApiClient<GitHubApiClient, GitHubApiClientOptions>(), адрес пришёл
+        // из секции "GitHubApiClientOptions". Точка требует доступа в интернет
+        demo.MapGet("/repository", async (GitHubApiClient gitHub, CancellationToken cancellationToken) =>
+            {
+                var repository = await gitHub.GetRepositoryAsync(
+                    "andrey-aka-skif",
+                    "AndreyAkaSkif.ServiceDefaults",
+                    cancellationToken);
+
+                // GitHubRepository наружу не отдаётся: это тип внешнего API со своими
+                // именами полей. Ответ сервиса собирается здесь, поэтому snake_case
+                // GitHub не протекает в контракт этой конечной точки
+                return repository is null
+                    ? Results.NotFound()
+                    : Results.Ok(new
+                    {
+                        repository.FullName,
+                        repository.Description,
+                        repository.StargazersCount,
+                    });
+            })
+            .WithName("GetRepository")
+            .WithSummary("Вызов внешнего REST API через типизированный клиент");
 
         // Ограничение "demoChannel" зарегистрировал AddEnumRouteConstraint<DemoChannel>().
         // Значение вне перечисления сюда не доходит: маршрут не выбирается, ответ 404

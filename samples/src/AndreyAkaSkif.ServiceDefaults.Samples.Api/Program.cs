@@ -17,6 +17,7 @@ builder.AddConfiguredLoggingViaSerilog();
 builder.AddAppSettings();
 builder.AddAppDbContexts();
 builder.AddAppServices();
+builder.AddAppHttpClients();
 builder.AddAppRouteConstraints();
 
 // ProblemDetails. В Development в ответ добавляется поле "exception"

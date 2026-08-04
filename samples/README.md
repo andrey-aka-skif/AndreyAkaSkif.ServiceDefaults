@@ -30,6 +30,7 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 | `/demo/greeting`              | Настройки `DemoAppSettings`, провалидированные до `Build()` и взятые из DI                                                                                  |
 | `/demo/greeting/Мир`          | Сервис с собственным объектом-параметром `GreetingServiceArgs` вместо объекта секции                                                                        |
 | `/demo/echo?message=hi`       | Обычный маршрут minimal API                                                                                                                                 |
+| `/demo/repository`            | Типизированный API-клиент к GitHub (`AddApiClient<GitHubApiClient, GitHubApiClientOptions>`). Единственная точка, которой нужен доступ в интернет            |
 | `/demo/channel/CurrentA`      | Перечисление как сегмент пути (`AddEnumRouteConstraint<DemoChannel>`). `currenta` и `0` тоже работают и приводятся к `CurrentA`, `999` и `unknown` дают 404 |
 | `/demo/boom`                  | `ProblemDetails` от `AddExtendedErrorHandling`: в Development с полем `exception`                                                                           |
 
@@ -47,9 +48,10 @@ AppConfiguration/       конфигурация, специфичная для 
 AppSettings/            объекты секций конфигурации
 Endpoints/              конечные точки и типы, которые в них участвуют
 Services/               сервисы приложения и их объекты-параметры
+Infrastructure/         адаптеры к внешнему миру
 ```
 
-В `AppConfiguration/` лежат четыре метода расширения — по одному на тему, чтобы
+В `AppConfiguration/` лежат пять методов расширения — по одному на тему, чтобы
 `Program.cs` не рос по мере развития приложения:
 
 | Метод                      | Что регистрирует                                                      |
@@ -57,7 +59,34 @@ Services/               сервисы приложения и их объект
 | `AddAppSettings()`         | объекты настроек, здесь — `DemoAppSettings`                           |
 | `AddAppDbContexts()`       | контексты EF Core; в образце выключен, требует запущенного PostgreSQL |
 | `AddAppServices()`         | сервисы приложения, здесь — `GreetingService`                         |
+| `AddAppHttpClients()`      | типизированные API-клиенты, здесь — `GitHubApiClient`                 |
 | `AddAppRouteConstraints()` | ограничения параметров маршрута, здесь — `DemoChannel`                |
+
+### Чем `Infrastructure/` отличается от `Services/`
+
+Граница проходит по смыслу, а не по технике. В `Services/` — логика приложения:
+`GreetingService` решает прикладную задачу и ни от чего внешнего не зависит.
+В `Infrastructure/` — адаптеры к внешнему миру: `GitHubApiClient` не решает задач
+приложения, он переводит чужой REST API на язык типов этого сервиса.
+
+Это каталог, а не слой: образец остаётся образцом библиотеки, полного разделения
+на Domain / Application / Infrastructure здесь нет.
+
+Клиент устроен как сгенерированный — интерфейса у него нет, внедряется конкретный класс.
+Внутри он знает адрес конечной точки (`repos/{owner}/{name}`), структуру ответа
+и требования GitHub: тот отвечает `403` на запрос без `User-Agent`, поэтому заголовок
+выставляется в конструкторе клиента, а не в composition root. Наружу тип ответа GitHub
+не отдаётся — конечная точка собирает свой, иначе `full_name` и `stargazers_count`
+протекли бы в спецификацию образца.
+
+Настройки клиента — `GitHubApiClientOptions` — лежат рядом с клиентом, а не в `AppSettings/`:
+там собраны объекты секций на `IValidatableSettingsObject`, а эти настройки живут
+по правилам конвейера параметров и принадлежат адаптеру. Имя секции при этом
+по общему правилу — имя типа настроек.
+
+Вызов `AddApiClient<...>()` — единственный вызов библиотеки, вынесенный из `Program.cs`
+в `AppConfiguration/`: он несёт прикладные аргументы-типы и растёт вместе с приложением,
+в отличие от `AddConfiguredCorsPolicy()` и соседей.
 
 ### Почему объекты настроек лежат в двух разных местах
 

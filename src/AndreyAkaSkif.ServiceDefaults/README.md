@@ -25,6 +25,8 @@ dotnet add package AndreyAkaSkif.ServiceDefaults
 - Регистрация конфигураций и аргументов
     - регистрация валидируемых настроек в DI-контейнере (`AddServiceArgFromValidatedSettingsObject<T>()`)
     - регистрация готового экземпляра класса в DI-контейнере (`AddServiceArg<T>(instance)`)
+- Взаимодействие с внешними сервисами
+    - типизированный API-клиент с адресом из конфигурации (`AddApiClient<TClient, TOptions>()`)
 
 ## Пример
 ```csharp
@@ -68,6 +70,80 @@ RFC 7807 в любой среде.
 у стандартного варианта.
 
 Оба метода требуют вызова `UseErrorHandling()` — см. раздел «⚠️ Важно».
+
+## Типизированные API-клиенты
+API-клиент — инфраструктурный адаптер. Он инкапсулирует знание о внешнем сервисе: адреса
+конечных точек, структуру JSON, типы ответов и требования к запросу вроде обязательных
+заголовков. Прикладной код вызывает метод и получает готовый объект, про HTTP не зная
+ничего. Ближайшая аналогия — клиенты, которые генерируют `openapi-generator`
+или `@hey-api/openapi-ts`, только написанные руками.
+
+Библиотека берёт на себя одно: адрес внешнего сервиса. Настройки клиента реализуют
+`IHttpApiClientOptions`, а сам клиент принимает `HttpClient` через конструктор:
+
+```csharp
+public sealed class GitHubApiClientOptions : IHttpApiClientOptions
+{
+    public string BaseAddress { get; set; } = string.Empty;
+}
+
+internal sealed class GitHubApiClient(HttpClient httpClient)
+{
+    public async Task<GitHubRepository?> GetRepositoryAsync(string owner, string name)
+        => await httpClient.GetFromJsonAsync<GitHubRepository>($"repos/{owner}/{name}");
+}
+
+builder.AddApiClient<GitHubApiClient, GitHubApiClientOptions>();
+```
+
+Секция конфигурации — `GitHubApiClientOptions`:
+
+```json
+"GitHubApiClientOptions": {
+    "BaseAddress": "https://api.github.com/"
+}
+```
+
+Хвостовой слеш в адресе значим: без него последний сегмент будет отброшен при разрешении
+относительного пути запроса. Так устроен `Uri`, а не библиотека.
+
+Наследоваться от базового класса не нужно, интерфейс требует ровно одно свойство. Всё
+остальное — ключи, версии API, идентификаторы — объявляется в том же классе настроек
+и библиотеки не касается: клиент получает свои настройки как `IOptions<T>` обычным
+способом.
+
+### Что настраивается в самом клиенте
+Заголовки, обработчики и прочая настройка `HttpClient` в сигнатуру метода не вынесены.
+Знание о внешнем API принадлежит клиенту, поэтому там ему и место — GitHub, например,
+отвечает `403` на запрос без `User-Agent`:
+
+```csharp
+public GitHubApiClient(HttpClient httpClient)
+{
+    httpClient.DefaultRequestHeaders.UserAgent.Add(
+        new ProductInfoHeaderValue("MyService", "1.0"));
+
+    _httpClient = httpClient;
+}
+```
+
+Если нужен `DelegatingHandler` или политика устойчивости, регистрация дополняется штатным
+API — `AddHttpClient` аддитивен, повторный вызов настраивает того же клиента:
+
+```csharp
+builder.AddApiClient<GitHubApiClient, GitHubApiClientOptions>();
+
+builder.Services
+       .AddHttpClient<GitHubApiClient>()
+       .AddHttpMessageHandler<AuthorizationHandler>();
+```
+
+### Почему здесь `IOptions`, а не `IValidatableSettingsObject`
+Остальные настройки пакета читаются через `IValidatableSettingsObject` — механизм,
+который существует ровно затем, чтобы не тащить `IOptions<T>` в домен. Конфигурация
+HTTP-клиента доменным знанием не является: это параметр инфраструктурного адаптера,
+и стандартный конвейер параметров здесь уместен. Заодно из коробки достаётся валидация,
+которую иначе пришлось бы писать в каждом классе настроек.
 
 ## Перечисление как сегмент пути
 Перечисление в маршруте по умолчанию неинформативно: спецификация OpenAPI объявляет его
@@ -166,6 +242,10 @@ app.MapGet("items/{id:even}", (int id) => id);
     ]
 }
 ```
+
+Правило действует и для настроек API-клиента: секция называется по имени класса настроек,
+для `GitHubApiClientOptions` это `GitHubApiClientOptions`. Если конфигурация уже сложилась
+иначе, имя задаётся параметром: `AddApiClient<GitHubApiClient, GitHubApiClientOptions>("GitHub")`.
 
 Базовый путь — секция `PathBaseAppSettings`:
 ```json
@@ -273,6 +353,12 @@ builder.AddServiceArgFromValidatedSettingsObject<DemoAppSettings>();
 
 Поэтому некорректная конфигурация роняет приложение на старте, до вызова `builder.Build()`,
 а не отложенно — при первом запросе, которому эти настройки понадобились.
+
+Исключение — `AddApiClient<TClient, TOptions>()`: он живёт на конвейере параметров, поэтому
+адрес проверяется при старте хоста, через `ValidateOnStart()`. Это позже, чем у остальных
+`Add*`, но всё ещё до первого запроса: приложение с неверным адресом внешнего API
+не поднимется. Значение читается один раз, при создании клиента, — изменение конфигурации
+на лету на уже созданные клиенты не влияет.
 
 ## Health Checks
 Пара методов `AddHealthCheckEndpoint()` / `MapHealthCheckEndpoint()` регистрирует минимальную
