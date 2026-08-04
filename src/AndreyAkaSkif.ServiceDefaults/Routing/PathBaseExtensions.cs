@@ -43,6 +43,7 @@ public static class PathBaseExtensions
     /// Подключение в конвейер — <see cref="UseConfiguredPathBase"/>.
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
     /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddConfiguredPathBase(this IHostApplicationBuilder builder)
     {
@@ -80,6 +81,8 @@ public static class PathBaseExtensions
     /// </code>
     /// </para>
     /// </remarks>
+    /// <param name="app">Экземпляр веб-приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="app"/> для поддержки цепочки вызовов</returns>
     /// <exception cref="InvalidOperationException">
     /// Выбрасывается, если <see cref="AddConfiguredPathBase"/> не был вызван.
     /// </exception>

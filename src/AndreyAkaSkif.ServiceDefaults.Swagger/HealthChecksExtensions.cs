@@ -13,6 +13,13 @@ public static class HealthChecksExtensions
     /// Добавить сервисы конечной точки проверки жизнеспособности приложения
     /// и её отображение в Swagger
     /// </summary>
+    /// <remarks>
+    /// Пара вызовов <see cref="HealthCheckingExtensions.AddHealthCheckEndpoint(IHostApplicationBuilder)"/>
+    /// и <see cref="AddHealthCheckEndpointSwagger(IHostApplicationBuilder)"/>. Саму конечную
+    /// точку по-прежнему добавляет <c>MapHealthCheckEndpoint()</c>
+    /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddHealthCheckEndpointWithSwagger(this IHostApplicationBuilder builder)
     {
         builder.AddHealthCheckEndpoint();
@@ -39,6 +46,8 @@ public static class HealthChecksExtensions
     /// отдельный вызов <c>AddEndpointsApiExplorer()</c> в приложении не требуется.
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddHealthCheckEndpointSwagger(this IHostApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();

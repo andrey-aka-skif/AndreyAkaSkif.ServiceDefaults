@@ -25,6 +25,8 @@ public static class ErrorHandlingExtensions
     /// При вызове из стороннего сервиса ProblemDetails не будет возвращен.
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddDefaultErrorHandling(this IHostApplicationBuilder builder)
     {
         builder.Services.AddProblemDetails();
@@ -53,6 +55,8 @@ public static class ErrorHandlingExtensions
     /// При вызове из стороннего сервиса ProblemDetails не будет возвращен.
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddExtendedErrorHandling(this IHostApplicationBuilder builder)
     {
         builder.Services.AddProblemDetails(options =>
@@ -90,6 +94,8 @@ public static class ErrorHandlingExtensions
     /// При вызове из стороннего сервиса ProblemDetails не будет возвращен.
     /// </para>
     /// </remarks>
+    /// <param name="app">Экземпляр веб-приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="app"/> для поддержки цепочки вызовов</returns>
     public static WebApplication UseErrorHandling(this WebApplication app)
     {
         app.UseExceptionHandler();

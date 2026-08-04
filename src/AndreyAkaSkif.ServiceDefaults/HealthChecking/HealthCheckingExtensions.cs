@@ -25,6 +25,8 @@ public static class HealthCheckingExtensions
     /// <c>builder.Services.AddHealthChecks()</c>
     /// </para>
     /// </remarks>
+    /// <param name="builder">Построитель приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="builder"/> для поддержки цепочки вызовов</returns>
     public static IHostApplicationBuilder AddHealthCheckEndpoint(this IHostApplicationBuilder builder)
     {
         builder.Services.AddHealthChecks();
@@ -53,6 +55,8 @@ public static class HealthCheckingExtensions
     /// Для таких проверок регистрируйте отдельную конечную точку вызовом <c>app.MapHealthChecks()</c>
     /// </para>
     /// </remarks>
+    /// <param name="app">Экземпляр веб-приложения</param>
+    /// <returns>Тот же экземпляр <paramref name="app"/> для поддержки цепочки вызовов</returns>
     public static WebApplication MapHealthCheckEndpoint(this WebApplication app)
     {
         app.MapHealthChecks(
