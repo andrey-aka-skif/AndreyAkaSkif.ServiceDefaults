@@ -37,7 +37,7 @@ builder.AddConfiguredPathBase();        // регистрация настрое
 builder.AddExtendedErrorHandling();     // регистрация стандартной обработки ошибок с использованием ProblemDetails
 builder.AddHealthCheckEndpoint();       // регистрация сервисов конечной точки проверки жизнеспособности приложения
 
-builder.AddAppSettings<ExampleAppSettings, ExampleAppSettingsValidator>();  // регистрация настроек приложения: в DI попадает значение, а не IOptions<T>
+builder.AddAppSettings<DemoAppSettings, DemoAppSettingsValidator>();       // регистрация настроек приложения: в DI попадает значение, а не IOptions<T>
 
 var app = builder.Build();
 
@@ -208,6 +208,14 @@ builder.AddStringEnumJsonSerialization();
 
 Вызов идемпотентен, поэтому регистрация нескольких перечислений его не дублирует.
 
+Само ограничение — публичный тип `EnumRouteConstraint<TEnum>`; `AddEnumRouteConstraint<T>()`
+всего лишь регистрирует его под именем по умолчанию и включает сериализацию именами.
+Если сериализация именами не нужна, тип регистрируется напрямую:
+
+```csharp
+builder.AddRouteConstraint<EnumRouteConstraint<ChannelType>>("channelType");
+```
+
 ### Собственные ограничения
 `AddEnumRouteConstraint<T>()` построен поверх метода общего назначения, которым
 регистрируется любая реализация `IRouteConstraint`. Сам по себе он задачу не решает —
@@ -256,6 +264,9 @@ app.MapGet("items/{id:even}", (int id) => id);
 для `GitHubApiClientOptions` это `GitHubApiClientOptions`. Если конфигурация уже сложилась
 иначе, имя задаётся параметром: `AddApiClient<GitHubApiClient, GitHubApiClientOptions>("GitHub")`.
 
+Секция базового пути — `PathBaseAppSettings`, она описана в разделе «Базовый путь».
+
+## Базовый путь
 Базовый путь — секция `PathBaseAppSettings`:
 ```json
 "PathBaseAppSettings": {
