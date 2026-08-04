@@ -1,6 +1,9 @@
 using System.Text.RegularExpressions;
 using AndreyAkaSkif.ServiceDefaults.Settings;
 
+// переезд на конвейер параметров выполняется отдельным шагом
+#pragma warning disable CS0618
+
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
 internal sealed partial record PathBaseAppSettings : IValidatableSettingsObject

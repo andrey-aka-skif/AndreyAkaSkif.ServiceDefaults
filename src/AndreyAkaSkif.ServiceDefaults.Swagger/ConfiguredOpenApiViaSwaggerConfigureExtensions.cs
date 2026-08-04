@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
+// переезд на конвейер параметров выполняется отдельным шагом
+#pragma warning disable CS0618
+
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
 /// <summary>

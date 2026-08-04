@@ -16,6 +16,8 @@ public static class ValidatableSettingsObjectFactory
     /// <returns>
     /// Объект настроек типа <see cref="IValidatableSettingsObject"/>, прошедший валидацию.
     /// </returns>
+    [Obsolete("Привязка и валидация достаются от конвейера параметров — " +
+              "см. AddValidatedOptions<T, TValidator>()")]
     public static T CreateValidated<T>(this IConfiguration builder) where T : IValidatableSettingsObject, new()
     {
         var settings = new T();

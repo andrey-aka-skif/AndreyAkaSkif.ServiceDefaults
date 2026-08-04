@@ -1,6 +1,9 @@
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
 using AndreyAkaSkif.ServiceDefaults.Settings;
 
+// переезд на конвейер параметров выполняется отдельным шагом
+#pragma warning disable CS0618
+
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 
 /// <summary>
