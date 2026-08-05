@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+# Документация (DocFX → GitHub Pages): деплой на пуш в master и по ручному запуску.
+# Дока развязана с релизом пакетов — отражает текущий master, включая правки README
+# между релизами. Статьи сайта — это те же README, отдельных копий нет.
+name: docs
+
+on:
+    push:
+        branches: [master]
+    workflow_dispatch:
+
+env:
+    DOTNET_VERSION: '10.0.x'
+
+# Разрешаем один активный деплой Pages за раз; новые пуши в master не отменяют текущий.
+concurrency:
+    group: pages
+    cancel-in-progress: false
+
+jobs:
+    deploy-docs:
+        runs-on: ubuntu-latest
+        permissions:
+            pages: write
+            id-token: write
+            contents: read
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: 🛒 Checkout
+              uses: actions/checkout@v7
+
+            - name: ✨ Setup .NET
+              uses: actions/setup-dotnet@v6
+              with:
+                dotnet-version: ${{ env.DOTNET_VERSION }}
+
+            - name: 🧰 Restore .NET tools
+              run: dotnet tool restore
+
+            # Справочник API строится из проектов src/, поэтому шагу нужен restore
+            - name: 📖 Build documentation
+              run: dotnet docfx docs/docfx.json
+
+            - name: 📄 Setup Pages
+              uses: actions/configure-pages@v6
+
+            - name: 📤 Upload Pages artifact
+              uses: actions/upload-pages-artifact@v5
+              with:
+                path: docs/_site
+
+            - name: 🚀 Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v5
