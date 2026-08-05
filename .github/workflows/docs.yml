@@ -11,7 +11,10 @@ on:
     workflow_dispatch:
 
 env:
-    DOTNET_VERSION: '10.0.x'
+    # Проекты src/ мультитаргетятся; restore разрешает обе ветки
+    DOTNET_VERSION: |
+        9.0.x
+        10.0.x
 
 # Разрешаем один активный деплой Pages за раз; новые пуши в master не отменяют текущий.
 concurrency:
