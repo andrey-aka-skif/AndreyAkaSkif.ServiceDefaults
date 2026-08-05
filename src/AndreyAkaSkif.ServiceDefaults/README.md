@@ -10,6 +10,8 @@
 dotnet add package AndreyAkaSkif.ServiceDefaults
 ```
 
+Поддерживаются `net9.0` и `net10.0`.
+
 ## Возможности
 - Инициализация API окружения
     - политика CORS, настроенная через конфигурацию (`AddConfiguredCorsPolicy()` / `UseConfiguredCorsPolicy()`)

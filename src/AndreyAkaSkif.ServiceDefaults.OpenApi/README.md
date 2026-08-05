@@ -11,6 +11,10 @@
 dotnet add package AndreyAkaSkif.ServiceDefaults.OpenApi
 ```
 
+Поддерживаются `net9.0` и `net10.0`. На `net9.0` подтягивается
+`Microsoft.AspNetCore.OpenApi` 9.x, на `net10.0` — 10.x; публичный API пакета
+на обеих ветках одинаков.
+
 ## Возможности
 - Готовая конфигурация спецификации OpenAPI средствами ASP.NET (`AddOpenApi()`)
   через пару методов `AddDefaultOpenApi()` / `UseDefaultOpenApi()`.
