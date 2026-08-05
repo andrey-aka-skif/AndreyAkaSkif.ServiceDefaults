@@ -426,3 +426,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# DocFX (генерируемая документация)
+docs/_site/
+docs/api/

@@ -1,0 +1,18 @@
+- name: Обзор
+  href: ../../README.md
+
+- name: Пакеты
+  items:
+  - name: ServiceDefaults
+    href: ../../src/AndreyAkaSkif.ServiceDefaults/README.md
+  - name: ServiceDefaults.OpenApi
+    href: ../../src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md
+  - name: ServiceDefaults.Swagger
+    href: ../../src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md
+  - name: ServiceDefaults.PostgreSQL
+    href: ../../src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/README.md
+  - name: ServiceDefaults.Serilog
+    href: ../../src/AndreyAkaSkif.ServiceDefaults.Serilog/README.md
+
+- name: Пример сервиса
+  href: ../../samples/README.md
