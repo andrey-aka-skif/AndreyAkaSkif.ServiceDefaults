@@ -11,6 +11,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- Примеры не поставляются, мультитаргетинг им не нужен. TargetFrameworks
+         из корневого props очищается: при обоих заданных свойствах побеждает
+         множественное -->
+    <TargetFrameworks></TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <!-- Публичный API примеров документировать не требуется -->
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>

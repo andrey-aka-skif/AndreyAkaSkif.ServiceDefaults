@@ -4,20 +4,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Версии пакетов -->
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
-    <!-- Транзитивно из Microsoft.AspNetCore.OpenApi 10.0.10 приходит 2.0.0 с NU1903
-         (GHSA-v5pm-xwqc-g5wc). Первая исправленная версия — 2.7.5 -->
-    <PackageVersion Include="Microsoft.OpenApi" Version="2.11.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.10" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.10" />
+    <!-- Версии пакетов, общие для всех TFM -->
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.10" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <!-- Версии 10.x этих пакетов существуют только для net10.0 -->
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
+    <!-- Транзитивно из Microsoft.AspNetCore.OpenApi 10.0.10 приходит 2.0.0 с NU1903
+         (GHSA-v5pm-xwqc-g5wc). Первая исправленная версия — 2.7.5.
+         На net9.0 перекрытие не нужно и вредно: Microsoft.AspNetCore.OpenApi 9.0.x
+         скомпилирован против Microsoft.OpenApi 1.6.x, подъём до 2.x переживёт
+         restore, но развалится в рантайме на major-break API v1→v2 -->
+    <PackageVersion Include="Microsoft.OpenApi" Version="2.11.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.10" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
