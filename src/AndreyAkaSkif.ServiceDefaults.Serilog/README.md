@@ -29,6 +29,8 @@
 dotnet add package AndreyAkaSkif.ServiceDefaults.Serilog
 ```
 
+Поддерживаются `net9.0` и `net10.0`.
+
 ## Возможности
 - `AddConfiguredLoggingViaSerilog()` — логгер собирается целиком из секции `Serilog`
   конфигурации приложения (`ReadFrom.Configuration`) и подключается к хосту.

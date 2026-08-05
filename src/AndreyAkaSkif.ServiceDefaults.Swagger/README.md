@@ -7,6 +7,8 @@
 dotnet add package AndreyAkaSkif.ServiceDefaults.Swagger
 ```
 
+Поддерживаются `net9.0` и `net10.0`.
+
 ## Возможности
 - конфигурация OpenAPI спецификации и Swagger UI с параметрами по умолчанию (`AddDefaultOpenApiViaSwagger()`, `UseDefaultOpenApiViaSwagger()`);
 - конфигурация OpenAPI спецификации и Swagger UI на основе конфигурации (`AddConfiguredOpenApiViaSwagger()`, `UseConfiguredOpenApiViaSwagger()`)

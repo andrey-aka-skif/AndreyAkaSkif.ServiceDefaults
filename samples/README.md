@@ -9,7 +9,8 @@ API библиотеки можно было проверить руками, а
 
 ## Запуск
 
-Нужен .NET SDK 10. Из корня репозитория:
+Нужен .NET SDK 10: сам пример собирается только под `net10.0`, хотя пакеты
+поддерживают и `net9.0`. Из корня репозитория:
 
 ```bash
 dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api

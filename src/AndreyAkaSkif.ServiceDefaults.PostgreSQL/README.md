@@ -11,6 +11,10 @@
 dotnet add package AndreyAkaSkif.ServiceDefaults.PostgreSQL
 ```
 
+Поддерживаются `net9.0` и `net10.0`. На `net9.0` подтягивается
+`Npgsql.EntityFrameworkCore.PostgreSQL` 9.x (и, соответственно, EF Core 9),
+на `net10.0` — 10.x.
+
 ## Возможности
 - `AddSimplePostgreSQLContext<T>()` — регистрация контекста, производного от `DbContext`,
   через стандартный `AddDbContext<T>()` с провайдером Npgsql и строкой подключения
