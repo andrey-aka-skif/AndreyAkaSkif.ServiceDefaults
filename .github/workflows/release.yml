@@ -16,7 +16,11 @@ on:
                 required: true
 
 env:
-    DOTNET_VERSION: '10.0.x'
+    # Пакеты мультитаргетятся: SDK 10 собирает обе ветки, но для прогона тестов
+    # на net9.0 нужен рантайм 9
+    DOTNET_VERSION: |
+        9.0.x
+        10.0.x
     PACKAGE_OUTPUT_DIR: ./nupkg
 
 jobs:

@@ -16,16 +16,22 @@ jobs:
             - name: 🛒 Checkout
               uses: actions/checkout@v7
 
+            # SDK 10 умеет собирать net9.0, но dotnet test не запустит net9-ветку
+            # без установленного рантайма 9
             - name: ✨ Setup .NET
               uses: actions/setup-dotnet@v6
               with:
-                dotnet-version: '10.0.x'
+                dotnet-version: |
+                  9.0.x
+                  10.0.x
 
             - name: 💾 Cache NuGet packages
               uses: actions/cache@v6
               with:
                 path: ~/.nuget/packages
-                key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+                # Версии живут в Directory.Packages.props и различаются по TFM,
+                # поэтому файл входит в ключ наравне с проектами
+                key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Packages.props') }}
                 restore-keys: ${{ runner.os }}-nuget-
 
             - name: 🚚 Restore
