@@ -135,13 +135,13 @@ Infrastructure/         адаптеры к внешнему миру
   выключен: иначе пример перестал бы запускаться одной командой.
 
 В обоих случаях нужно раскомментировать `ProjectReference` в
-[csproj](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AndreyAkaSkif.ServiceDefaults.Samples.Api.csproj)
+[csproj](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AndreyAkaSkif.ServiceDefaults.Samples.Api.csproj)
 и соответствующий код вместе с его `using`-ами:
 
-- для OpenApi — блок в [Program.cs](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/Program.cs),
+- для OpenApi — блок в [Program.cs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/Program.cs),
   это выбор пакета библиотеки, а не прикладная настройка;
 - для PostgreSQL — тело метода и класс `DemoDbContext`
-  в [AppDbContextsConfigureExtensions.cs](src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AppConfiguration/AppDbContextsConfigureExtensions.cs),
+  в [AppDbContextsConfigureExtensions.cs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AppConfiguration/AppDbContextsConfigureExtensions.cs),
   плюс секцию `ConnectionStrings` в `appsettings.Development.json`.
 
 Оба варианта компилируются.

@@ -1,8 +1,9 @@
 # <img alt="logo" src="./logo/logo.png" width="32"/> Базовая конфигурация WEB-API сервисов ASP.NET
 
-[![GitHub license](https://img.shields.io/github/license/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
 [![CI](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml)
 [![Release](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/release.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/release.yml)
+[![GitHub license](https://img.shields.io/github/license/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
+[![Docs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/docs.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/docs.yml)
 
 Набор вспомогательных библиотек для упрощённой конфигурации ASP.NET Web-API сервисов.  
 Проект предоставляет методы расширения для настройки:
@@ -20,7 +21,7 @@
 
 Идея вдохновлена проектом [eShop.ServiceDefaults](https://github.com/dotnet/eShop/tree/main/src/eShop.ServiceDefaults) из [eShop Reference Application](https://github.com/dotnet/eShop).
 
-## 📦 Состав пакетов
+## Состав пакетов
 
 Репозиторий содержит пять NuGet-пакетов. Базовым является `AndreyAkaSkif.ServiceDefaults`;
 остальные подключаются по мере надобности.
@@ -39,7 +40,7 @@
 
 ---
 
-## 📚 Документация и примеры
+## Документация и примеры
 
 Каждый пакет содержит свой отдельный README с:
 
@@ -47,22 +48,27 @@
 - минимальными примерами интеграции,
 - описанием секций конфигурации.
 
-👉 Запускаемый пример сервиса, собранного на этих пакетах: [`samples/README.md`](./samples/README.md)
+Запускаемый пример сервиса, собранного на этих пакетах: [`samples/README.md`](./samples/README.md)
 
 ---
 
-## 🚧 В планах
+## Просмотр документации
 
-- [документация DocFX](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues/22).
+Документация проекта создана с помощью инструмента [DocFX](https://github.com/dotnet/docfx).
+Сгенерированная документация расположена на сервисе
+[github.io](https://andrey-aka-skif.github.io/AndreyAkaSkif.ServiceDefaults/): те же статьи
+плюс справочник API, собранный из XML-комментариев.
+
+Для просмотра локальной документации использовать команды
+(docfx подключён как локальный инструмент):
+
+```shell
+dotnet tool restore
+dotnet docfx docs/docfx.json --serve
+```
 
 ---
 
-## 🐞 Сообщить о проблеме
+## Лицензия
 
-https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/issues
-
----
-
-## 📄 Лицензия
-
-[MIT](./LICENSE)
+[MIT](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
