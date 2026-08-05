@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <!-- Настройки компиляции -->
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Мультитаргетинг: пакеты должны ставиться и на net9.0, и на net10.0.
+         LangVersion=latest резолвится по TFM (C# 13 для net9.0, C# 14 для net10.0),
+         поэтому конструкции C# 14 в общем коде дадут ошибку сборки net9-ветки -->
+    <TargetFrameworks>net10.0;net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>

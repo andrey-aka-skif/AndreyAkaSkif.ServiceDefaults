@@ -18,8 +18,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <!-- Явная ссылка ради версии: транзитивно приходит Microsoft.OpenApi 2.0.0
-         с NU1903 (GHSA-v5pm-xwqc-g5wc), первая исправленная версия — 2.7.5 -->
-    <PackageReference Include="Microsoft.OpenApi" />
+         с NU1903 (GHSA-v5pm-xwqc-g5wc), первая исправленная версия — 2.7.5.
+         Типы Microsoft.OpenApi в коде не используются, поэтому на net9.0, где
+         приходит ветка 1.6.x, ссылка не нужна -->
+    <PackageReference Include="Microsoft.OpenApi" Condition="'$(TargetFramework)' == 'net10.0'" />
   </ItemGroup>
 
 </Project>
