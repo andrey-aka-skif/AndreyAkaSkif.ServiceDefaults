@@ -1,7 +1,7 @@
 # <img alt="logo" src="./logo/logo.png" width="32"/> Базовая конфигурация WEB-API сервисов ASP.NET
 
 [![CI](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml)
-[![Release](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/release.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/release.yml)
+[![Publish](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/publish.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/publish.yml)
 [![GitHub license](https://img.shields.io/github/license/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
 [![Docs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/docs.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/docs.yml)
 
@@ -78,6 +78,13 @@
 dotnet tool restore
 dotnet docfx docs/docfx.json --serve
 ```
+
+---
+
+## Разработка
+
+Внутреннее устройство репозитория — сборка, проверки, порядок выпуска и токены
+реестров: [CONTRIBUTING.md](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/CONTRIBUTING.md)
 
 ---
 

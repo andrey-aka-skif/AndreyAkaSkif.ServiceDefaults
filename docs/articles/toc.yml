@@ -16,3 +16,6 @@
 
 - name: Пример сервиса
   href: ../../samples/README.md
+
+- name: Разработка
+  href: ../../CONTRIBUTING.md
