@@ -1,48 +1,71 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+#
+# CI: валидация на пуш в любую ветку (теги не триггерят — их обрабатывает publish.yml).
+# pull_request намеренно не используется: пуш фиче-ветки уже даёт прогон, и его статус
+# виден в PR — так избегаем двойных прогонов.
+#
+# Сборка документации идёт здесь же как проверка: битые ссылки и невалидный toc.yml
+# роняют шаг до того, как правка попадёт в master, где её ждёт деплой Pages (docs.yml).
+# Шаги docfx стоят последними намеренно — приоритет у библиотеки: к моменту их
+# запуска сборка, тесты и упаковка уже отработали, и падение доки не отменяет их
+# результат.
 
-name: Continuous Integration
+name: CI
 
 on:
-    push:
-        branches: ['**']
-    pull_request:
-        types: [opened, synchronize, reopened]
-    workflow_call: {}
+  push:
+    branches: ['**']
+
+env:
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  # SDK 10 умеет собирать net9.0, но dotnet test требует рантайм 9
+  DOTNET_VERSION: |
+    9.0.x
+    10.0.x
 
 jobs:
-    run-ci:
-        runs-on: ubuntu-latest
-        steps:
-            - name: 🛒 Checkout
-              uses: actions/checkout@v7
+  build:
+    runs-on: ubuntu-latest
 
-            # SDK 10 умеет собирать net9.0, но dotnet test не запустит net9-ветку
-            # без установленного рантайма 9
-            - name: ✨ Setup .NET
-              uses: actions/setup-dotnet@v6
-              with:
-                dotnet-version: |
-                  9.0.x
-                  10.0.x
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
 
-            - name: 💾 Cache NuGet packages
-              uses: actions/cache@v6
-              with:
-                path: ~/.nuget/packages
-                # Версии живут в Directory.Packages.props и различаются по TFM,
-                # поэтому файл входит в ключ наравне с проектами
-                key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Packages.props') }}
-                restore-keys: ${{ runner.os }}-nuget-
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          # Версии живут в Directory.Packages.props и различаются по TFM,
+          # поэтому файл входит в ключ наравне с проектами
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Packages.props') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-            - name: 🚚 Restore
-              run: dotnet restore
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-            - name: 🛠️ Build
-              run: dotnet build --configuration Release --no-restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-            - name: 🧪 Test
-              run: dotnet test --configuration Release --no-build --verbosity normal
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-            # Отдельный solution: корневой restore его не видит, поэтому без --no-restore
-            - name: 🧩 Build samples
-              run: dotnet build samples/AndreyAkaSkif.ServiceDefaults.Samples.slnx --configuration Release
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+
+      - name: Pack (validate packaging)
+        run: dotnet pack --configuration Release --no-build --output ./nupkg
+
+      # Отдельный solution: корневой restore его не видит, поэтому без --no-restore.
+      # Ломающие изменения публичного API ловятся именно здесь
+      - name: Build samples
+        run: dotnet build samples/AndreyAkaSkif.ServiceDefaults.Samples.slnx --configuration Release
+
+      - name: Restore .NET tools
+        run: dotnet tool restore
+
+      # Проверка, а не выкладка: сайт с master публикует docs.yml
+      - name: Build documentation
+        run: dotnet docfx docs/docfx.json
