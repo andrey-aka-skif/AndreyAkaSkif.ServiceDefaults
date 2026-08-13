@@ -6,6 +6,7 @@
     <File Path="nuget.config" />
     <File Path="README.md" />
     <File Path="CONTRIBUTING.md" />
+    <File Path="CHANGELOG.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/AndreyAkaSkif.ServiceDefaults.OpenApi/AndreyAkaSkif.ServiceDefaults.OpenApi.csproj" />
