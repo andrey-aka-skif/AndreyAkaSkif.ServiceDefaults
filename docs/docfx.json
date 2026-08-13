@@ -30,6 +30,7 @@
         "src": "..",
         "files": [
           "README.md",
+          "CONTRIBUTING.md",
           "samples/README.md",
           "src/*/README.md"
         ],
