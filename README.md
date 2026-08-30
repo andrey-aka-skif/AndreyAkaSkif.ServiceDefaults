@@ -1,8 +1,8 @@
 # <img alt="logo" src="./logo/logo.png" width="32"/> Базовая конфигурация WEB-API сервисов ASP.NET
 
+[![License](https://img.shields.io/github/license/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults.svg?label=License)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
 [![CI](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/ci.yml)
 [![Publish](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/publish.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/publish.yml)
-[![GitHub license](https://img.shields.io/github/license/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/LICENSE)
 [![Docs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/docs.yml/badge.svg)](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/actions/workflows/docs.yml)
 
 Набор вспомогательных библиотек для упрощённой конфигурации ASP.NET Web-API сервисов.  
@@ -15,7 +15,7 @@
 - конечной точки проверки жизнеспособности (`/health`),
 - объектов настроек с обязательной валидацией, проверяемых до первого запроса,
 - типизированных API-клиентов к внешним REST-сервисам,
-- спецификации OpenAPI — без UI и через Swagger UI,
+- спецификации OpenAPI — генерация встроенными средствами ASP.NET и показ через Swagger UI,
 - контекста PostgreSQL на Entity Framework Core,
 - логирования через Serilog.
 
@@ -29,14 +29,15 @@
 | Пакет                                      | Назначение                                                                                                  | README                                                             |
 | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | `AndreyAkaSkif.ServiceDefaults`            | CORS, обработка ошибок, PathBase, ограничения маршрутов, Health Checks, настройки с валидацией, API-клиенты | [README](./src/AndreyAkaSkif.ServiceDefaults/README.md)            |
-| `AndreyAkaSkif.ServiceDefaults.OpenApi`    | Спецификация OpenAPI средствами ASP.NET, без UI                                                             | [README](./src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md)    |
-| `AndreyAkaSkif.ServiceDefaults.Swagger`    | Спецификация OpenAPI и Swagger UI                                                                           | [README](./src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md)    |
+| `AndreyAkaSkif.ServiceDefaults.OpenApi`    | Спецификация OpenAPI средствами ASP.NET: атрибуция, доступность, `/health`                                  | [README](./src/AndreyAkaSkif.ServiceDefaults.OpenApi/README.md)    |
+| `AndreyAkaSkif.ServiceDefaults.Swagger`    | Показ спецификации OpenAPI через Swagger UI                                                                 | [README](./src/AndreyAkaSkif.ServiceDefaults.Swagger/README.md)    |
 | `AndreyAkaSkif.ServiceDefaults.PostgreSQL` | Простой контекст PostgreSQL на EF Core                                                                      | [README](./src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/README.md) |
 | `AndreyAkaSkif.ServiceDefaults.Serilog`    | Логирование через Serilog: запись в файл, в JSON и во внешние системы                                       | [README](./src/AndreyAkaSkif.ServiceDefaults.Serilog/README.md)    |
 
-Зависимость от базового пакета есть только у `.Swagger`: он описывает в спецификации
-конечную точку `/health` и берёт её адрес из константы `HealthCheckDefaults.Endpoint`.
-Остальные пакеты ставятся независимо друг от друга.
+Зависимостей между пакетами нет: каждый ставится сам по себе. `.OpenApi` и `.Swagger`
+делят между собой одну задачу — первый спецификацию генерирует, второй показывает, —
+но знают друг о друге только через адрес документа в конфигурации, поэтому применяются
+и вместе, и порознь.
 
 ---
 

@@ -23,10 +23,10 @@ dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
 
 | Адрес                         | Что демонстрирует                                                                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                           | Редирект на Swagger UI (`UseConfiguredOpenApiViaSwagger`)                                                                                                   |
-| `/swagger`                    | Swagger UI, только в Development                                                                                                                            |
-| `/swagger/1.0.0/swagger.json` | Спецификация из секции `SwaggerAppSettings`                                                                                                                 |
-| `/health`                     | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointWithSwagger`                                                                |
+| `/`                           | Редирект на Swagger UI (`UseSwaggerUi`)                                                                                                                     |
+| `/swagger`                    | Swagger UI; вне Production, если не сказано иное                                                                                                             |
+| `/openapi/v1.json`            | Спецификация из секции `OpenApi`, сгенерированная средствами ASP.NET                                                                                        |
+| `/health`                     | `MapHealthCheckEndpoint`; в спецификацию точку добавляет `AddHealthCheckEndpointDescription`                                                                |
 | `/api/health`                 | Тот же обработчик через базовый путь из `PathBaseAppSettings` (`UseConfiguredPathBase`)                                                                     |
 | `/demo/greeting`              | Настройки `DemoAppSettings`, провалидированные на старте хоста и взятые из DI голым типом                                                                   |
 | `/demo/greeting/Мир`          | Сервис с собственным объектом-параметром `GreetingServiceArgs` вместо объекта секции                                                                        |
@@ -109,12 +109,12 @@ Infrastructure/         адаптеры к внешнему миру
 конечных точек: `/demo/greeting` работает с объектом секции, `/demo/greeting/{name}` —
 с сервисом и его собственным аргументом.
 
-Вызовы пакетов — `AddConfiguredCorsPolicy()`, `AddConfiguredOpenApiViaSwagger()`
+Вызовы пакетов — `AddConfiguredCorsPolicy()`, `AddConfiguredOpenApi()`
 и остальные — в `AppConfiguration/` **не** заворачивались и остались в `Program.cs`
 на виду. Обёртка сократила бы `Program.cs`, но спрятала бы ровно то, ради чего образец
 и существует: чтобы увидеть, как подключается CORS, пришлось бы открывать другой файл.
 
-## Почему адреса в `SwaggerAppSettings.Servers` относительные
+## Почему адреса в `OpenApi:Servers` относительные
 
 В примере это `"/"` и `"/api"`, а не абсолютные URL. Swagger UI берёт базовый адрес
 запросов из `servers[0]` спецификации, поэтому абсолютный адрес ломает всё, что открыто
@@ -128,24 +128,61 @@ Infrastructure/         адаптеры к внешнему миру
 Список необязателен: при пустом или отсутствующем `Servers` пакет подставляет `"/"`.
 В примере он задан явно, чтобы был виден и сам параметр, и формат адресов.
 
+## Спецификация как файл в репозитории
+
+Рядом с проектом лежит [openapi/openapi.json](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/openapi/openapi.json) —
+та же спецификация, что отдаётся по `/openapi/v1.json`, но собранная при сборке проекта.
+Делает это пакет `Microsoft.Extensions.ApiDescription.Server`; методы библиотеки в сборке
+файла не участвуют, они лишь наполняют документ:
+
+```xml
+<PropertyGroup>
+  <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/openapi</OpenApiDocumentsDirectory>
+  <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
+</PropertyGroup>
+```
+
+Файл коммитится, и CI отдельным шагом сверяет собранный с зафиксированным: изменение
+контракта либо видно в диффе PR, либо роняет прогон. По этому же файлу генерируются
+клиенты — сервис для этого запускать не нужно.
+
+Обратная сторона: документ собирается запуском приложения в отдельном режиме, поэтому
+конфигурация должна быть валидна и на машине сборки — без `OpenApi:Title` упадёт не
+сервис, а сборка.
+
+## Показ UI и раздача спецификации управляются раздельно
+
+`OpenApi:Visibility` определяет доступность документа, `Swagger:Visibility` — показ UI.
+У обоих ключей три состояния: `ByEnvironment` (умолчание — везде, кроме `Production`),
+`Always`, `Never`. В примере ключи не заданы: поведение задаёт среда.
+
+Проверить перебор среды можно переменными окружения:
+
+```bash
+ASPNETCORE_ENVIRONMENT=Production OpenApi__Visibility=Always Swagger__Visibility=Always   dotnet run --project samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api
+```
+
+Включить нужно оба: пакеты друг о друге не знают, и с одним лишь `Swagger__Visibility`
+страница UI откроется, а документ по своему адресу вернёт `404`.
+
+Там же видно, что заголовок документа и подпись в UI — разные значения. В шапке страницы
+Swagger UI стоит `OpenApi:Title` («ServiceDefaults Samples API»): он приходит из самого
+документа. В списке документов — `Swagger:Name` («Спецификация примера»): его задаёт
+показывающая сторона, и в спецификацию он не попадает. В примере значения намеренно
+различаются — совпадающие создают впечатление, что настройка одна.
+
 ## Что закомментировано
 
-- **`AndreyAkaSkif.ServiceDefaults.OpenApi`** — альтернатива пакету `.Swagger`: спецификация
-  средствами ASP.NET, без Swagger UI. Одновременно с `.Swagger` в примере не показывается.
 - **`AndreyAkaSkif.ServiceDefaults.PostgreSQL`** — требует запущенного PostgreSQL, поэтому
   выключен: иначе пример перестал бы запускаться одной командой.
 
-В обоих случаях нужно раскомментировать `ProjectReference` в
-[csproj](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AndreyAkaSkif.ServiceDefaults.Samples.Api.csproj)
-и соответствующий код вместе с его `using`-ами:
+Нужно раскомментировать `ProjectReference` в
+[csproj](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AndreyAkaSkif.ServiceDefaults.Samples.Api.csproj),
+тело метода и класс `DemoDbContext`
+в [AppDbContextsConfigureExtensions.cs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AppConfiguration/AppDbContextsConfigureExtensions.cs),
+плюс секцию `ConnectionStrings` в `appsettings.Development.json`.
 
-- для OpenApi — блок в [Program.cs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/Program.cs),
-  это выбор пакета библиотеки, а не прикладная настройка;
-- для PostgreSQL — тело метода и класс `DemoDbContext`
-  в [AppDbContextsConfigureExtensions.cs](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/AppConfiguration/AppDbContextsConfigureExtensions.cs),
-  плюс секцию `ConnectionStrings` в `appsettings.Development.json`.
-
-Оба варианта компилируются.
+Вариант компилируется.
 
 ## Solution
 

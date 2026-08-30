@@ -25,8 +25,8 @@ dotnet restore
 
 ```
 src/AndreyAkaSkif.ServiceDefaults/             базовый пакет
-src/AndreyAkaSkif.ServiceDefaults.OpenApi/     спецификация OpenAPI без UI
-src/AndreyAkaSkif.ServiceDefaults.Swagger/     спецификация OpenAPI и Swagger UI
+src/AndreyAkaSkif.ServiceDefaults.OpenApi/     генерация спецификации OpenAPI
+src/AndreyAkaSkif.ServiceDefaults.Swagger/     показ спецификации через Swagger UI
 src/AndreyAkaSkif.ServiceDefaults.PostgreSQL/  контекст PostgreSQL на EF Core
 src/AndreyAkaSkif.ServiceDefaults.Serilog/     логирование через Serilog
 tests/                                         тесты, xUnit v3
@@ -36,8 +36,9 @@ docs/                                          исходники сайта д�
 ```
 
 Упаковываемых проектов пять, и выпускаются они одной версией: держать пять линий
-версий ради независимых пакетов — лишняя работа, а зависимость между ними всё
-равно есть (`.Swagger` берёт адрес `/health` из базового пакета).
+версий ради независимых пакетов — лишняя работа. Зависимостей между пакетами нет
+вовсе, и общая версия остаётся ради простоты выпуска, а не потому, что её требует
+граф зависимостей.
 
 Пример сервиса — отдельное решение
 ([samples/AndreyAkaSkif.ServiceDefaults.Samples.slnx](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/blob/master/samples/AndreyAkaSkif.ServiceDefaults.Samples.slnx)),
