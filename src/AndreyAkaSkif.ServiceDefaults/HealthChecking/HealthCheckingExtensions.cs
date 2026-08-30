@@ -45,8 +45,10 @@ public static class HealthCheckingExtensions
     /// </para>
     /// <para>
     /// Адрес конечной точки задан константой <see cref="HealthCheckDefaults.Endpoint"/>
-    /// и не конфигурируется: то же значение использует фильтр документации Swagger
-    /// из пакета <c>AndreyAkaSkif.ServiceDefaults.Swagger</c>
+    /// и не конфигурируется. То же значение по умолчанию берёт
+    /// <c>AddHealthCheckEndpointDescription()</c> из пакета
+    /// <c>AndreyAkaSkif.ServiceDefaults.OpenApi</c>, описывающий эту конечную точку
+    /// в спецификации
     /// </para>
     /// <para>
     /// Проверки, добавленные через стандартный API <c>builder.Services.AddHealthChecks()</c>,

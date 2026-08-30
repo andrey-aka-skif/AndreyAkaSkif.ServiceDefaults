@@ -5,109 +5,55 @@ namespace AndreyAkaSkif.ServiceDefaults.Tests;
 public class SwaggerAppSettingsValidatorTests
 {
     [Fact]
-    public void Validate_ShouldSucceed_WhenSettingsAreValid()
+    public void Validate_ShouldSucceed_WhenSectionIsMissing()
     {
         // Arrange
-        var settings = CreateValid();
-
-        // Act
-        var result = Validate(settings);
-
-        // Assert
-        Assert.True(result.Succeeded);
-    }
-
-    [Fact]
-    public void Validate_ShouldSucceed_WhenServersAreEmpty()
-    {
-        // Arrange
-        // список серверов необязателен: пустой заполняется в PostConfigure
-        var settings = CreateValid() with { Servers = [] };
-
-        // Act
-        var result = Validate(settings);
-
-        // Assert
-        Assert.True(result.Succeeded);
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public void Validate_ShouldFail_WhenTitleIsBlank(string? title)
-    {
-        // Arrange
-        var settings = CreateValid() with { Title = title! };
-
-        // Act
-        var result = Validate(settings);
-
-        // Assert
-        Assert.True(result.Failed);
-        Assert.Contains(nameof(SwaggerAppSettings.Title), result.FailureMessage);
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public void Validate_ShouldFail_WhenDescriptionIsBlank(string? description)
-    {
-        // Arrange
-        var settings = CreateValid() with { Description = description! };
-
-        // Act
-        var result = Validate(settings);
-
-        // Assert
-        Assert.True(result.Failed);
-        Assert.Contains(nameof(SwaggerAppSettings.Description), result.FailureMessage);
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("version")]
-    [InlineData("1")]
-    public void Validate_ShouldFail_WhenApiVersionIsNotAVersion(string? apiVersion)
-    {
-        // Arrange
-        var settings = CreateValid() with { ApiVersion = apiVersion! };
-
-        // Act
-        var result = Validate(settings);
-
-        // Assert
-        Assert.True(result.Failed);
-        Assert.Contains(nameof(SwaggerAppSettings.ApiVersion), result.FailureMessage);
-    }
-
-    [Fact]
-    public void Validate_ShouldReportAllFailures_WhenSettingsAreEmpty()
-    {
-        // Arrange
+        // ни один ключ секции не обязателен: адрес спецификации имеет умолчание
         var settings = new SwaggerAppSettings();
 
         // Act
         var result = Validate(settings);
 
         // Assert
-        Assert.Collection(
-            result.Failures!,
-            failure => Assert.Contains(nameof(SwaggerAppSettings.Title), failure),
-            failure => Assert.Contains(nameof(SwaggerAppSettings.Description), failure),
-            failure => Assert.Contains(nameof(SwaggerAppSettings.ApiVersion), failure));
+        Assert.True(result.Succeeded);
     }
 
-    private static SwaggerAppSettings CreateValid()
-        => new()
-        {
-            Title = "Title",
-            Description = "Description",
-            ApiVersion = "1.0",
-            Servers = ["/"],
-        };
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Validate_ShouldFail_WhenUrlIsBlank(string? url)
+    {
+        // Arrange
+        var settings = new SwaggerAppSettings { Url = url! };
+
+        // Act
+        var result = Validate(settings);
+
+        // Assert
+        Assert.True(result.Failed);
+        Assert.Contains(nameof(SwaggerAppSettings.Url), result.FailureMessage);
+    }
+
+    [Fact]
+    public void DisplayName_ShouldFallBackToUrl_WhenNameIsMissing()
+    {
+        // Arrange
+        var settings = new SwaggerAppSettings { Url = "/openapi/internal.json" };
+
+        // Act & Assert
+        Assert.Equal("/openapi/internal.json", settings.DisplayName);
+    }
+
+    [Fact]
+    public void DisplayName_ShouldBeName_WhenNameIsSet()
+    {
+        // Arrange
+        var settings = new SwaggerAppSettings { Name = "Demo API" };
+
+        // Act & Assert
+        Assert.Equal("Demo API", settings.DisplayName);
+    }
 
     private static ValidateOptionsResult Validate(SwaggerAppSettings settings)
         => new SwaggerAppSettingsValidator().Validate(Options.DefaultName, settings);
