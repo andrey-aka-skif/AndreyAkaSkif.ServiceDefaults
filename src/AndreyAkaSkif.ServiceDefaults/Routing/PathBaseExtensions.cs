@@ -71,13 +71,12 @@ public static class PathBaseExtensions
     /// </list>
     /// </para>
     /// <para>
-    /// Пример явного добавления базового пути ("/api") в спецификацию OpenApi при конфигурировании Swagger:
+    /// Базовый путь добавляется в спецификацию списком серверов. Для пакета
+    /// <c>AndreyAkaSkif.ServiceDefaults.OpenApi</c> это секция конфигурации:
     /// <code>
-    /// builder.Services.AddSwaggerGen(options =>
-    /// {
-    ///     options.SwaggerDoc(/**/);
-    ///     options.AddServer(new OpenApiServer { Url = "http://127.0.0.1:5005/api" });
-    /// });
+    /// "OpenApi": {
+    ///     "Servers": [ "/api" ]
+    /// }
     /// </code>
     /// </para>
     /// </remarks>

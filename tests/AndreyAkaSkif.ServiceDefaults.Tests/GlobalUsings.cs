@@ -1,5 +1,6 @@
 global using AndreyAkaSkif.ServiceDefaults.Cors;
 global using AndreyAkaSkif.ServiceDefaults.HttpApiClients;
+global using AndreyAkaSkif.ServiceDefaults.OpenApi;
 global using AndreyAkaSkif.ServiceDefaults.Routing;
 global using AndreyAkaSkif.ServiceDefaults.Settings;
 global using AndreyAkaSkif.ServiceDefaults.Swagger;

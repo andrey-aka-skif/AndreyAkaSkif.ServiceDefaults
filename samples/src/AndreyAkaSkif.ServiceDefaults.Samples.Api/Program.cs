@@ -1,6 +1,7 @@
 using AndreyAkaSkif.ServiceDefaults.Cors;
 using AndreyAkaSkif.ServiceDefaults.ErrorHandling;
 using AndreyAkaSkif.ServiceDefaults.HealthChecking;
+using AndreyAkaSkif.ServiceDefaults.OpenApi;
 using AndreyAkaSkif.ServiceDefaults.Routing;
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 using AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
@@ -23,8 +24,13 @@ builder.AddAppRouteConstraints();
 // ProblemDetails. В Development в ответ добавляется поле "exception"
 builder.AddExtendedErrorHandling();
 
-// OpenApi через Swagger. Конфигурация — секция "SwaggerAppSettings"
-builder.AddConfiguredOpenApiViaSwagger();
+// Генерация спецификации OpenApi. Конфигурация — секция "OpenApi"
+builder.AddConfiguredOpenApi();
+
+// Показ спецификации в Swagger UI. Конфигурация — секция "Swagger".
+// Пакет отвечает только за показ: спецификацию он берёт по адресу из конфигурации.
+// Чтобы обойтись без UI, достаточно убрать эту пару вызовов и ссылку на пакет
+builder.AddSwaggerUi();
 
 // Политика CORS. Конфигурация — секция "CorsPolicy"
 builder.AddConfiguredCorsPolicy();
@@ -32,31 +38,20 @@ builder.AddConfiguredCorsPolicy();
 // Базовый путь. Конфигурация — секция "PathBaseAppSettings"
 builder.AddConfiguredPathBase();
 
-// Конечная точка /health и её отображение в Swagger UI
-builder.AddHealthCheckEndpointWithSwagger();
-
-// --- OpenApi без Swagger -----------------------------------------------------
-// Альтернатива паре AddConfiguredOpenApiViaSwagger/UseConfiguredOpenApiViaSwagger:
-// встроенная в ASP.NET генерация спецификации без Swagger UI.
-// Чтобы включить — раскомментировать ProjectReference на
-// AndreyAkaSkif.ServiceDefaults.OpenApi в csproj, using
-// AndreyAkaSkif.ServiceDefaults.OpenApi и убрать вызовы Swagger:
-//
-// builder.AddDefaultOpenApi();
-// -----------------------------------------------------------------------------
+// Конечная точка /health и её описание в спецификации. Саму точку добавляет
+// MapHealthCheckEndpoint(), описание живёт в пакете спецификации
+builder.AddHealthCheckEndpoint();
+builder.AddHealthCheckEndpointDescription();
 
 var app = builder.Build();
 
 app.MapDemoEndpoints();
 
 app.UseErrorHandling();
-app.UseConfiguredOpenApiViaSwagger();
+app.UseConfiguredOpenApi();
+app.UseSwaggerUi();
 app.UseConfiguredCorsPolicy();
 app.UseConfiguredPathBase();
 app.MapHealthCheckEndpoint();
-
-// Парная часть блока "OpenApi без Swagger":
-//
-// app.UseDefaultOpenApi();
 
 app.Run();
