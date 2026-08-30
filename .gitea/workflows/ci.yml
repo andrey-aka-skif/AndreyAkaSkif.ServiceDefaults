@@ -62,6 +62,11 @@ jobs:
       - name: Build samples
         run: dotnet build samples/AndreyAkaSkif.ServiceDefaults.Samples.slnx --configuration Release
 
+      # Спецификация примера собирается предыдущим шагом и лежит в репозитории:
+      # расхождение означает незамеченное изменение контракта
+      - name: Check generated specification
+        run: git diff --exit-code -- samples/src/AndreyAkaSkif.ServiceDefaults.Samples.Api/openapi
+
       - name: Restore .NET tools
         run: dotnet tool restore
 

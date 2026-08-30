@@ -1,0 +1,217 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "ServiceDefaults Samples API",
+    "description": "Демонстрационный сервис для пакетов AndreyAkaSkif.ServiceDefaults",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "/"
+    },
+    {
+      "url": "/api"
+    }
+  ],
+  "paths": {
+    "/demo/greeting": {
+      "get": {
+        "tags": [
+          "Demo"
+        ],
+        "summary": "Приветствие из секции конфигурации DemoAppSettings",
+        "operationId": "GetGreeting",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/demo/greeting/{name}": {
+      "get": {
+        "tags": [
+          "Demo"
+        ],
+        "summary": "Приветствие по имени: сервис с собственным объектом-параметром",
+        "operationId": "GetPersonalGreeting",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/demo/echo": {
+      "get": {
+        "tags": [
+          "Demo"
+        ],
+        "summary": "Эхо query-параметра",
+        "operationId": "GetEcho",
+        "parameters": [
+          {
+            "name": "message",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/demo/repository": {
+      "get": {
+        "tags": [
+          "Demo"
+        ],
+        "summary": "Вызов внешнего REST API через типизированный клиент",
+        "operationId": "GetRepository",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/demo/channel/{channel}": {
+      "get": {
+        "tags": [
+          "Demo"
+        ],
+        "summary": "Перечисление как сегмент пути: /demo/channel/CurrentA",
+        "operationId": "GetChannel",
+        "parameters": [
+          {
+            "name": "channel",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/DemoChannel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/demo/boom": {
+      "get": {
+        "tags": [
+          "Demo"
+        ],
+        "summary": "Необработанное исключение: демонстрация ProblemDetails",
+        "operationId": "GetBoom",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "description": "Проверка жизнеспособности приложения для оркестратора. Отображение конечной точки, добавляемой через HealthCheck middleware",
+        "responses": {
+          "200": {
+            "description": "Healthy",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "enum": [
+                    "Healthy"
+                  ],
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DemoChannel": {
+        "enum": [
+          "CurrentA",
+          "VoltageA",
+          "Torque"
+        ]
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Demo"
+    }
+  ]
+}

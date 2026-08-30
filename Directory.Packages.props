@@ -10,6 +10,8 @@
     <!-- От Swashbuckle нужен только показ UI: спецификацию генерируют встроенные
          средства ASP.NET, поэтому SwaggerGen и аннотации не подключаются -->
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
+    <!-- Только для примера сервиса: генерация файла спецификации при сборке -->
+    <PackageVersion Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.11" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
