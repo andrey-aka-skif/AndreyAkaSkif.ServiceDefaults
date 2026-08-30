@@ -5,6 +5,19 @@
     <Description>Демонстрационный Web-API, использующий пакеты AndreyAkaSkif.ServiceDefaults</Description>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Спецификация собирается в файл при каждой сборке и коммитится в репозиторий:
+         так изменение контракта видно в диффе, а расхождение ловит CI.
+         Каталог задаётся относительно файла проекта -->
+    <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/openapi</OpenApiDocumentsDirectory>
+    <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Пакет нужен только сборке: генерацию файла спецификации выполняет его MSBuild-цель -->
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" PrivateAssets="all" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\..\src\AndreyAkaSkif.ServiceDefaults.OpenApi\AndreyAkaSkif.ServiceDefaults.OpenApi.csproj" />
