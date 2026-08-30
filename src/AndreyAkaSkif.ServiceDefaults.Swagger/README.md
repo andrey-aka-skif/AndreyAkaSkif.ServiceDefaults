@@ -1,6 +1,10 @@
 # AndreyAkaSkif.ServiceDefaults.Swagger
 
-Расширение для `AndreyAkaSkif.ServiceDefaults`, добавляющее единообразную конфигурацию OpenAPI спецификации с использованием Swagger UI.
+Показ спецификации OpenAPI через Swagger UI.
+
+Пакет только показывает спецификацию и не участвует в её создании: ему задают адрес,
+по которому документ доступен, а чем и где документ сгенерирован — ему безразлично.
+Зависимость у пакета одна — `Swashbuckle.AspNetCore.SwaggerUI`.
 
 ## Установка
 ```sh
@@ -10,98 +14,113 @@ dotnet add package AndreyAkaSkif.ServiceDefaults.Swagger
 Поддерживаются `net9.0` и `net10.0`.
 
 ## Возможности
-- конфигурация OpenAPI спецификации и Swagger UI с параметрами по умолчанию (`AddDefaultOpenApiViaSwagger()`, `UseDefaultOpenApiViaSwagger()`);
-- конфигурация OpenAPI спецификации и Swagger UI на основе конфигурации (`AddConfiguredOpenApiViaSwagger()`, `UseConfiguredOpenApiViaSwagger()`)
-- отображение конечной точки проверки жизнеспособности в Swagger UI (`AddHealthCheckEndpointSwagger()`);
-- совместная регистрация сервисов конечной точки проверки жизнеспособности и её отображения
-  в Swagger UI одним вызовом (`AddHealthCheckEndpointWithSwagger()`).
+- Swagger UI для спецификации по указанному адресу (`AddSwaggerUi()`, `UseSwaggerUi()`);
+- перенаправление с корня приложения на страницу UI;
+- управление показом по средам.
 
 ## Пример использования
+Обычный сценарий — рядом с пакетом `AndreyAkaSkif.ServiceDefaults.OpenApi`, который
+спецификацию генерирует и раздаёт:
+
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddDefaultOpenApiViaSwagger();
+// генерация спецификации: пакет AndreyAkaSkif.ServiceDefaults.OpenApi
+builder.AddConfiguredOpenApi();
 
-// раздельная регистрация сервисов конечной точки и её отображения в Swagger UI
-builder.AddHealthCheckEndpoint();
-builder.AddHealthCheckEndpointSwagger();
-
-// или единая регистрация сервисов конечной точки и её отображения в Swagger UI
-builder.AddHealthCheckEndpointWithSwagger();
+// показ: этот пакет
+builder.AddSwaggerUi();
 
 var app = builder.Build();
 
-app.UseDefaultOpenApiViaSwagger();
-
-// добавление конечной точки проверки жизнеспособности в конвейер обработки запросов
-app.MapHealthCheckEndpoint();
+app.UseConfiguredOpenApi();
+app.UseSwaggerUi();
 
 app.Run();
+```
+
+Спецификацию может отдавать и любой другой источник — собственный обработчик приложения,
+статический файл, раздаваемый по HTTP, сторонний сервис. Пакету достаточно адреса, по
+которому документ доступен браузеру:
+
+```json
+"Swagger": {
+    "Url": "https://api.example.com/openapi/v1.json",
+    "Name": "Example API"
+}
 ```
 
 ## Особенности
 ### Конфигурация
-Требует наличия в конфигурации секции "SwaggerAppSettings" со следующей структурой:
+Секция `Swagger` необязательна целиком: без неё UI показывает документ по адресу
+`/openapi/v1.json` — тому, по которому его раздаёт `MapOpenApi()` при имени документа
+по умолчанию.
+
 ```json
-"SwaggerAppSettings": {
-    "Title": "string",            // Название API
-    "Description": "string",      // Описание API
-    "ApiVersion": "string",       // Версия API
-    "Servers": [                  // Массив адресов серверов, необязательный
-        "string"
-    ]
+"Swagger": {
+    "Url": "/openapi/v1.json",
+    "Name": "Demo API",
+    "Visibility": "ByEnvironment"
 }
 ```
 
-В случае отсутствия обязательных параметров или невалидных данных в секции конфигурации приложение не поднимется: на старте хоста будет выброшено исключение `OptionsValidationException` со списком всех нарушенных правил.
-**Следует обратить внимание,** что при использовании файлов конфигурации секция должна быть указана в основном файле `appsettings.json`.
-**Не следует** выносить секцию в файлы, содержащие среду. Например, в `appsettings.Development.json`.
+| Ключ | По умолчанию | Что это |
+| --- | --- | --- |
+| `Url` | `/openapi/v1.json` | Адрес спецификации |
+| `Name` | значение `Url` | Имя документа в интерфейсе |
+| `Visibility` | `ByEnvironment` | Показ UI |
 
-### Адреса серверов
-Адреса в `Servers` следует задавать относительными: `"/"`, `"/api"`.
+Заданный пустым `Url` роняет приложение на старте хоста: UI поднялся бы, но спецификацию
+не нашёл.
 
-Swagger UI берёт базовый адрес запросов из первого элемента списка, поэтому абсолютный адрес ломает работу UI везде, кроме прописанного адреса: за reverse proxy, на другом хосте, а также при открытии страницы по https рядом с http-адресом в конфигурации — браузер режет такой запрос как mixed content и отвечает `Failed to fetch` на каждой конечной точке.
+### Показ UI
 
-Относительный адрес допускается OpenAPI 3, и UI резолвит его от адреса страницы: запрос остаётся same-origin, то есть CORS не участвует.
+| Значение `Visibility` | Поведение |
+| --- | --- |
+| `ByEnvironment` (умолчание) | Вне `Production` UI показывается, в `Production` — нет |
+| `Always` | Показывается в любой среде |
+| `Never` | Не показывается ни в какой |
 
-Список необязателен. Если он пуст или отсутствует, подставляется адрес `"/"`.
+В среде, где UI не показывается, не формируется и перенаправление с корня: `/` вернёт
+`404 Not Found`, как и `/swagger`.
 
-### ApiExplorer
-Генерация спецификации строится поверх ApiExplorer, а для Minimal Api он не регистрируется сам.
-`Add*`-методы пакета регистрируют его самостоятельно, поэтому отдельный вызов `AddEndpointsApiExplorer()` не требуется.
-Если приложение вызывает этот метод для собственных задач, повторная регистрация безопасна: метод идемпотентен.
+### Показ и раздача документа управляются раздельно
+Этот пакет отвечает только за страницу UI. Доступность самого документа определяет тот,
+кто его раздаёт: у пакета `AndreyAkaSkif.ServiceDefaults.OpenApi` это ключ
+`OpenApi:Visibility` с такими же тремя состояниями.
 
-### Транзитивные зависимости
-При использовании методов из библиотеки `ServiceDefaults.Swagger` всегда устанавливается пакет `Swashbuckle.AspNetCore.Annotations`.
-Даже, если в проекте не используются MVC контроллеры, а только Minimal Api.
+Из этого следует практическое правило: **чтобы открыть UI в `Production`, включить нужно
+оба ключа**. При включённом `Swagger:Visibility` и выключенном `OpenApi:Visibility`
+страница откроется, но документ по своему адресу вернёт `404`, и UI останется пустым.
 
-### Отображение конечной точки проверки жизнеспособности в Swagger UI
-Метод `AddHealthCheckEndpointSwagger()` только добавляет описание конечной точки в документацию Swagger.
-Для функционирования конечной точки необходимо включить HealthCheck сервисы и добавить HealthCheck middleware в конвейер обработки запросов
-В ином случае конечная точка будет неактивна. Соответствующий пункт Swagger UI будет возвращать ошибку `404 Not Found`.
-Включение HealthCheck сервисов осуществляется с помощью метода `AddHealthCheckEndpoint()` из пакета `AndreyAkaSkif.ServiceDefaults`.
-Добавление HealthCheck middleware осуществляется с помощью метода `MapHealthCheckEndpoint()` из пакета `AndreyAkaSkif.ServiceDefaults`:
-```csharp
-var builder = WebApplication.CreateBuilder(args);
+### Адрес спецификации
+`Url` — это адрес, который запрашивает браузер, а не путь в файловой системе.
 
-builder.AddHealthCheckEndpoint();
-builder.AddHealthCheckEndpointSwagger();
+Относительный адрес (`/openapi/v1.json`) резолвится браузером от адреса страницы, поэтому
+работает и за reverse proxy, и на любом хосте.
 
-var app = builder.Build();
+Абсолютный адрес допустим — так показывают чужую спецификацию, — но запрос к ней уходит
+кросс-доменным, и отдающая сторона должна разрешать его через CORS.
 
-app.MapHealthCheckEndpoint();
+Путь в файловой системе и схема `file://` не работают ни в какой ОС: Swagger UI считает
+такое значение относительным адресом и достраивает его к адресу страницы — получается
+запрос вида `/swagger/file:///D:/.../openapi.json` и ответ `404`. Чтобы показать файл,
+его нужно раздать по HTTP — например `UseStaticFiles()` — и указать сетевой адрес.
+Отсюда и имя ключа: `Url`, а не `Uri`. Поддерживается именно сетевой адрес, а не
+произвольный идентификатор ресурса; так же называют этот параметр Swagger UI
+(`urls[].url`) и Swashbuckle (`SwaggerEndpoint(url, name)`).
 
-app.Run();
-```
+### Аннотации Swashbuckle не поставляются
+Пакет не содержит генератор Swashbuckle, а значит и `Swashbuckle.AspNetCore.Annotations`:
+атрибуты вроде `[SwaggerOperation]` в спецификацию не попадут. Описания операций задаются
+средствами фреймворка — `[EndpointSummary]`, `[EndpointDescription]`, `.WithSummary()`,
+`.WithDescription()`: они лежат в метаданных и не зависят от того, чем сгенерирована
+спецификация.
 
-Альтернативно, можно использовать единый метод `AddHealthCheckEndpointWithSwagger()`, который включает регистрацию HealthCheck сервисов.
-
-В Swagger UI описывается конечная точка `/health` (константа `HealthCheckDefaults.Endpoint`
-из пакета `AndreyAkaSkif.ServiceDefaults`) с единственным ответом `200 Healthy`: конечная точка
-не выполняет зарегистрированные проверки и отвечает успехом самим фактом ответа приложения.
-Адрес не конфигурируется — он должен совпадать с адресом, который регистрирует
-`MapHealthCheckEndpoint()`.
-Подробнее о контракте — в README пакета `AndreyAkaSkif.ServiceDefaults`.
+### Конечная точка проверки жизнеспособности
+Конечную точку `/health` описывает в документе тот, кто документ генерирует. Для пакета
+`AndreyAkaSkif.ServiceDefaults.OpenApi` это `AddHealthCheckEndpointDescription()` — см.
+его README.
 
 ## Документация пакета
 Полное описание пакета и другие примеры:
