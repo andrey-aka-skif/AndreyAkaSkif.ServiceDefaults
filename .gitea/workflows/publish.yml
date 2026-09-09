@@ -32,12 +32,7 @@ env:
 
 jobs:
   publish:
-    # Метку node-24 раннер отображает на образ node:24-bookworm. Нода здесь
-    # нужна не проекту, а раннеру: act_runner исполняет JavaScript-экшены
-    # (checkout, setup-dotnet) внутри контейнера задания системным node, и в
-    # образе без него падает первый же шаг. .NET целиком ставит setup-dotnet —
-    # как на GitHub-стороне. Подробности в CONTRIBUTING.md.
-    runs-on: node-24
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout по тегу релиза
