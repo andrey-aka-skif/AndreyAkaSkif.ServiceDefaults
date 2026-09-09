@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
 
 /// <summary>
-/// Настройки приложения. Секция конфигурации называется так же, как тип
+/// Описывает настройки приложения. Секция конфигурации называется так же, как тип
 /// </summary>
 /// <remarks>
 /// Чистый POCO: ни интерфейсов, ни атрибутов, ни ссылки на пакет ServiceDefaults.

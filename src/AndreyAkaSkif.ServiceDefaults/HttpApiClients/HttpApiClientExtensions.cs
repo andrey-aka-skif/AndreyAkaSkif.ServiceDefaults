@@ -6,12 +6,12 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.HttpApiClients;
 
 /// <summary>
-/// Методы расширения для регистрации типизированных API-клиентов
+/// Предоставляет методы расширения для регистрации типизированных API-клиентов
 /// </summary>
 public static class HttpApiClientExtensions
 {
     /// <summary>
-    /// Зарегистрировать типизированный API-клиент с адресом из конфигурации
+    /// Регистрирует типизированный API-клиент с адресом из конфигурации
     /// </summary>
     /// <typeparam name="TClient">
     /// Тип клиента. Принимает <c>HttpClient</c> через конструктор и регистрируется

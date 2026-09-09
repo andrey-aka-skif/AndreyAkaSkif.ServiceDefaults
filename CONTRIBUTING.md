@@ -99,6 +99,50 @@ dotnet docfx docs/docfx.json --serve
 
 Каталоги `docs/_site/` и `docs/api/` в репозиторий не попадают.
 
+## Стиль XML-документации
+
+`<summary>` типа и метода пишется в изъявительном наклонении, третьим лицом: тип
+говорит, чем он является или что предоставляет («Предоставляет методы расширения
+для…», «Представляет…», «Определяет…»), метод — что он делает («Регистрирует…»,
+«Добавляет…», «Подключает…»). Ни инфинитива («Зарегистрировать…»), ни
+отглагольного существительного («Использование конечной точки…»).
+
+Глагол-действие принадлежит имени метода, а `<summary>` говорит, что метод делает.
+Того же требует и Microsoft: авторитетные правила описания символов вынесены в
+[.NET API docs wiki](https://github.com/dotnet/dotnet-api-docs/wiki/Summary), на
+которую ссылается раздел «Descriptions» руководства
+[How to write /// docs for .NET API ref](https://learn.microsoft.com/en-us/contribute/content/dotnet/api-documentation#descriptions).
+
+> [!NOTE]
+> Begin with a present-tense, third-person verb, except for exception classes,
+> enum members, abstract members, and virtual members.
+>
+> — [dotnet/dotnet-api-docs wiki, Summary](https://github.com/dotnet/dotnet-api-docs/wiki/Summary)
+
+То же видно и в поставке: в `System.Runtime.xml` из `Microsoft.NETCore.App.Ref`
+описания начинаются с `Returns`, `Gets`, `Provides`, `Represents`; голого
+императива нет ни одного.
+
+Описания свойств, полей, констант и элементов перечислений — именные: «Имя секции
+конфигурации», «Адрес спецификации, используемый при отсутствии значения в
+конфигурации». Элементы перечислений и сам Microsoft выводит из-под правила о
+глаголе, а свойства и поля именные по существу.
+
+Точка в конце `<summary>` не ставится. Здесь репозиторий расходится с
+[рекомендациями по XML-тегам](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags).
+
+> [!NOTE]
+> Write documentation text using complete sentences that end with full stops.
+>
+> — [Recommended XML documentation tags](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/recommended-tags)
+
+Расхождение осознанное: описания здесь — короткие именные и глагольные группы,
+а не предложения, и точка в них лишняя.
+
+Форма важна не только внутри исходников: страницы API-справочника на сайте
+строятся ровно из этих тегов, и разнобой наклонений виден там списком на одной
+странице.
+
 ## Версии и публикация
 
 Версия в исходниках не хранится. Её проставляет CI из git-тега вида `v1.2.3`,

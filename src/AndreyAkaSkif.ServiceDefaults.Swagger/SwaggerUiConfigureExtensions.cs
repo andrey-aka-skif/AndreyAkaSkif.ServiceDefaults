@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
 /// <summary>
-/// Предоставляет методы расширения для показа спецификации OpenAPI через Swagger UI.
+/// Предоставляет методы расширения для показа спецификации OpenAPI через Swagger UI
 /// </summary>
 /// <remarks>
 /// Пакет только показывает спецификацию и не участвует в её создании: чем и где документ
@@ -19,7 +19,7 @@ public static class SwaggerUiConfigureExtensions
     private const string SwaggerUiPath = "/swagger";
 
     /// <summary>
-    /// Добавляет настройки Swagger UI из секции "Swagger".
+    /// Добавляет настройки Swagger UI из секции "Swagger"
     /// </summary>
     /// <remarks>
     /// <para>
@@ -61,7 +61,7 @@ public static class SwaggerUiConfigureExtensions
     }
 
     /// <summary>
-    /// Подключает Swagger UI для спецификации, заданной секцией "Swagger".
+    /// Подключает Swagger UI для спецификации, заданной секцией "Swagger"
     /// </summary>
     /// <remarks>
     /// <para>

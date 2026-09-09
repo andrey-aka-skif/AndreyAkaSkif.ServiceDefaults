@@ -8,12 +8,12 @@ using CorsOptions = Microsoft.AspNetCore.Cors.Infrastructure.CorsOptions;
 namespace AndreyAkaSkif.ServiceDefaults.Cors;
 
 /// <summary>
-/// Методы расширения для регистрации конфигурируемых политик CORS в DI-контейнере
+/// Предоставляет методы расширения для регистрации конфигурируемых политик CORS в DI-контейнере
 /// </summary>
 public static class ConfiguredCorsExtensions
 {
     /// <summary>
-    /// Добавить политику CORS, настроенную через конфигурацию
+    /// Добавляет политику CORS, настроенную через конфигурацию
     /// </summary>
     /// <remarks>
     /// <para>
@@ -59,7 +59,7 @@ public static class ConfiguredCorsExtensions
     }
 
     /// <summary>
-    /// Использовать политику CORS, настроенную через конфигурацию
+    /// Применяет политику CORS, настроенную через конфигурацию
     /// </summary>
     /// <remarks>
     /// Требует предварительного вызова <see cref="AddConfiguredCorsPolicy"/>:

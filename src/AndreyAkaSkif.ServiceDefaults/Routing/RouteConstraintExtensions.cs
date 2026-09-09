@@ -5,12 +5,12 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
 /// <summary>
-/// Методы расширения для регистрации ограничений параметров маршрута в DI-контейнере
+/// Предоставляет методы расширения для регистрации ограничений параметров маршрута в DI-контейнере
 /// </summary>
 public static class RouteConstraintExtensions
 {
     /// <summary>
-    /// Зарегистрировать произвольное ограничение параметра маршрута под указанным именем
+    /// Регистрирует произвольное ограничение параметра маршрута под указанным именем
     /// </summary>
     /// <typeparam name="TConstraint">Тип ограничения</typeparam>
     /// <param name="builder">Строитель приложения</param>
@@ -88,7 +88,7 @@ public static class RouteConstraintExtensions
     }
 
     /// <summary>
-    /// Зарегистрировать ограничение параметра маршрута значениями перечисления
+    /// Регистрирует ограничение параметра маршрута значениями перечисления
     /// </summary>
     /// <typeparam name="TEnum">Тип перечисления, допустимый в сегменте пути</typeparam>
     /// <param name="builder">Строитель приложения</param>

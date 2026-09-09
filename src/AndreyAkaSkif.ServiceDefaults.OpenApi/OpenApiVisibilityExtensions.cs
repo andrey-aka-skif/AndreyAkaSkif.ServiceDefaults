@@ -3,12 +3,12 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.OpenApi;
 
 /// <summary>
-/// Разрешение правила доступности в конкретной среде выполнения
+/// Разрешает правило доступности в конкретной среде выполнения
 /// </summary>
 internal static class OpenApiVisibilityExtensions
 {
     /// <summary>
-    /// Доступна ли спецификация в среде <paramref name="environment"/>
+    /// Определяет, доступна ли спецификация в среде <paramref name="environment"/>
     /// </summary>
     /// <remarks>
     /// Отсутствующий ключ конфигурации даёт <see cref="OpenApiVisibility.ByEnvironment"/> —

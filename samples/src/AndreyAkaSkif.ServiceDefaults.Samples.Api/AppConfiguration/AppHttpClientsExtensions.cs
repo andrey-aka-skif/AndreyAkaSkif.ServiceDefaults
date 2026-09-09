@@ -4,12 +4,12 @@ using AndreyAkaSkif.ServiceDefaults.Samples.Api.Infrastructure.GitHub;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 
 /// <summary>
-/// Типизированные API-клиенты приложения
+/// Предоставляет методы расширения для регистрации типизированных API-клиентов приложения
 /// </summary>
 internal static class AppHttpClientsExtensions
 {
     /// <summary>
-    /// Зарегистрировать типизированные API-клиенты
+    /// Регистрирует типизированные API-клиенты
     /// </summary>
     /// <remarks>
     /// <para>

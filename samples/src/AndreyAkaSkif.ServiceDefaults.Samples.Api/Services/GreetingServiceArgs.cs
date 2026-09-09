@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Services;
 
 /// <summary>
-/// Аргументы <see cref="GreetingService"/>
+/// Представляет аргументы <see cref="GreetingService"/>
 /// </summary>
 /// <remarks>
 /// Лежит рядом с сервисом, а не среди объектов настроек: это часть домена. Тип не знает

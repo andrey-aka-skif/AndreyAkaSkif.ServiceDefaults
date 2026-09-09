@@ -3,7 +3,7 @@ using AndreyAkaSkif.ServiceDefaults.HttpApiClients;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Infrastructure.GitHub;
 
 /// <summary>
-/// Настройки клиента GitHub API
+/// Описывает настройки клиента GitHub API
 /// </summary>
 /// <remarks>
 /// <para>

@@ -6,12 +6,12 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.Settings;
 
 /// <summary>
-/// Методы расширения для регистрации настроек в DI-контейнере.
+/// Предоставляет методы расширения для регистрации настроек в DI-контейнере
 /// </summary>
 public static class SettingsExtensions
 {
     /// <summary>
-    /// Зарегистрировать настройки в конвейере параметров с обязательной валидацией
+    /// Регистрирует настройки в конвейере параметров с обязательной валидацией
     /// </summary>
     /// <typeparam name="T">Тип настроек</typeparam>
     /// <typeparam name="TValidator">
@@ -71,7 +71,7 @@ public static class SettingsExtensions
     }
 
     /// <summary>
-    /// Зарегистрировать настройки приложения как значение, с обязательной валидацией
+    /// Регистрирует настройки приложения как значение, с обязательной валидацией
     /// </summary>
     /// <typeparam name="T">Тип настроек</typeparam>
     /// <typeparam name="TValidator">

@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Infrastructure.GitHub;
 
 /// <summary>
-/// Типизированный клиент GitHub API
+/// Предоставляет типизированный доступ к GitHub API
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,7 +22,7 @@ internal sealed class GitHubApiClient
     private readonly HttpClient _httpClient;
 
     /// <summary>
-    /// Создать клиент GitHub API
+    /// Создаёт клиент GitHub API
     /// </summary>
     /// <param name="httpClient">
     /// Клиент с уже подставленным <c>BaseAddress</c> из секции
@@ -40,7 +40,7 @@ internal sealed class GitHubApiClient
     }
 
     /// <summary>
-    /// Получить сведения о репозитории
+    /// Получает сведения о репозитории
     /// </summary>
     /// <param name="owner">Владелец репозитория</param>
     /// <param name="name">Имя репозитория</param>

@@ -7,12 +7,13 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
 /// <summary>
-/// Методы расширения для регистрации middleware, добавляющего базовый путь в DI-контейнере.
+/// Предоставляет методы расширения для регистрации middleware, добавляющего базовый путь
+/// в DI-контейнере
 /// </summary>
 public static class PathBaseExtensions
 {
     /// <summary>
-    /// Зарегистрировать настройки базового пути
+    /// Регистрирует настройки базового пути
     /// </summary>
     /// <remarks>
     /// <para>
@@ -55,7 +56,7 @@ public static class PathBaseExtensions
     }
 
     /// <summary>
-    /// Добавить базовый путь на основе конфигурации
+    /// Добавляет базовый путь на основе конфигурации
     /// </summary>
     /// <remarks>
     /// <para>

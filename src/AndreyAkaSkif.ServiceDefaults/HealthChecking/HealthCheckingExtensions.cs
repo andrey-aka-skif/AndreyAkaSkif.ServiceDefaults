@@ -6,12 +6,12 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.HealthChecking;
 
 /// <summary>
-/// Методы расширения для добавления HealthCheck конечных точек
+/// Предоставляет методы расширения для добавления HealthCheck конечных точек
 /// </summary>
 public static class HealthCheckingExtensions
 {
     /// <summary>
-    /// Добавить сервисы, необходимые для конечной точки проверки жизнеспособности приложения
+    /// Добавляет сервисы, необходимые для конечной точки проверки жизнеспособности приложения
     /// </summary>
     /// <remarks>
     /// <para>
@@ -35,7 +35,7 @@ public static class HealthCheckingExtensions
     }
 
     /// <summary>
-    /// Добавить конечную точку проверки жизнеспособности приложения по адресу <c>/health</c>
+    /// Добавляет конечную точку проверки жизнеспособности приложения по адресу <c>/health</c>
     /// </summary>
     /// <remarks>
     /// <para>

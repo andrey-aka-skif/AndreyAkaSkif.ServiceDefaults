@@ -1,12 +1,12 @@
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 
 /// <summary>
-/// Контексты базы данных
+/// Предоставляет методы расширения для регистрации контекстов базы данных
 /// </summary>
 internal static class AppDbContextsConfigureExtensions
 {
     /// <summary>
-    /// Зарегистрировать контексты базы данных
+    /// Регистрирует контексты базы данных
     /// </summary>
     /// <remarks>
     /// <para>

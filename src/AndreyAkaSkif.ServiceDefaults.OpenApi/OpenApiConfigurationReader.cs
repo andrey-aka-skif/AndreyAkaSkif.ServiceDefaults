@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 namespace AndreyAkaSkif.ServiceDefaults.OpenApi;
 
 /// <summary>
-/// Чтение тех значений секции <c>OpenApi</c>, которые нужны раньше конвейера параметров
+/// Читает значения секции <c>OpenApi</c>, которые нужны раньше конвейера параметров
 /// </summary>
 internal static class OpenApiConfigurationReader
 {

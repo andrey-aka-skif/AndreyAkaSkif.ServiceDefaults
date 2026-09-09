@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
 
 /// <summary>
-/// Демонстрационный тип канала: используется как сегмент пути
+/// Определяет демонстрационный тип канала, используемый как сегмент пути
 /// </summary>
 internal enum DemoChannel
 {

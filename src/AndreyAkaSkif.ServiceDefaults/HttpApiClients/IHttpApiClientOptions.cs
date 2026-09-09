@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.HttpApiClients;
 
 /// <summary>
-/// Минимальный контракт настроек типизированного API-клиента
+/// Описывает минимальный контракт настроек типизированного API-клиента
 /// </summary>
 /// <remarks>
 /// <para>

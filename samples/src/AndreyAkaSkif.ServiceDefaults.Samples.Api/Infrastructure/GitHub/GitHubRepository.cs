@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Infrastructure.GitHub;
 
 /// <summary>
-/// Репозиторий GitHub — часть ответа <c>GET /repos/{owner}/{name}</c>
+/// Представляет репозиторий GitHub — часть ответа <c>GET /repos/{owner}/{name}</c>
 /// </summary>
 /// <remarks>
 /// <para>

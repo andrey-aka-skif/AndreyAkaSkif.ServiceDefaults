@@ -4,12 +4,12 @@ using AndreyAkaSkif.ServiceDefaults.Samples.Api.Services;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 
 /// <summary>
-/// Сервисы приложения
+/// Предоставляет методы расширения для регистрации сервисов приложения
 /// </summary>
 internal static class AppServicesConfigureExtensions
 {
     /// <summary>
-    /// Зарегистрировать сервисы приложения
+    /// Регистрирует сервисы приложения
     /// </summary>
     /// <remarks>
     /// <para>
