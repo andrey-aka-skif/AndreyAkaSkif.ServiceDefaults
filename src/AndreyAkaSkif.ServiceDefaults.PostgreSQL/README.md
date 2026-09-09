@@ -16,9 +16,10 @@ dotnet add package AndreyAkaSkif.ServiceDefaults.PostgreSQL
 на `net10.0` — 10.x.
 
 ## Возможности
-- `AddSimplePostgreSQLContext<T>()` — регистрация контекста, производного от `DbContext`,
-  через стандартный `AddDbContext<T>()` с провайдером Npgsql и строкой подключения
-  из конфигурации.
+- `AddSimplePostgreSQLContext<T>(connectionName)` — регистрация контекста, производного
+  от `DbContext`, через стандартный `AddDbContext<T>()` с провайдером Npgsql и строкой
+  подключения из конфигурации. Имя строки подключения необязательно и по умолчанию
+  равно `DefaultConnection`.
 
 ## Пример
 ```csharp
@@ -32,14 +33,34 @@ app.Run();
 ```
 
 ## Конфигурация
-Строка подключения берётся из раздела `ConnectionStrings` под именем `DefaultConnection`.
-Имя не конфигурируется:
+Строка подключения берётся из раздела `ConnectionStrings`. По умолчанию читается имя
+`DefaultConnection` — соглашение шаблонов .NET:
 
 ```json
 "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Database=mydb;Username=user;Password=pass"
 }
 ```
+
+Имя строки подключения — конвенция приложения, а не пакета. Если строки подключения
+названы по контексту, имя передаётся параметром, и переименовывать строку подключения
+в `appsettings`, в переменных окружения развёртывания и в конфигурации миграций
+не требуется:
+
+```csharp
+builder.AddSimplePostgreSQLContext<CatalogContext>("Catalog");
+builder.AddSimplePostgreSQLContext<ReportingContext>("Reporting");
+```
+
+```json
+"ConnectionStrings": {
+    "Catalog": "Host=localhost;Database=catalog;Username=user;Password=pass",
+    "Reporting": "Host=localhost;Database=reporting;Username=user;Password=pass"
+}
+```
+
+Пустое имя отвергается с `ArgumentException` при регистрации: иначе строка подключения
+молча оказалась бы пустой, и ошибка всплыла бы только при первом обращении к базе.
 
 ## Особенности
 ### Логирование чувствительных данных
