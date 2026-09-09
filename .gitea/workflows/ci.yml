@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 #
 # Зеркало .github/workflows/ci.yml для внутреннего инстанса Gitea.
-# Отличие от GitHub-версии одно — образ раннера в runs-on.
+# Отличие от GitHub-версии одно — сайт документации здесь только собирается
+# как проверка и никуда не выкладывается: Pages у Gitea нет.
 
 name: CI
 
@@ -19,12 +20,7 @@ env:
 
 jobs:
   build:
-    # Метку node-24 раннер отображает на образ node:24-bookworm. Нода здесь
-    # нужна не проекту, а раннеру: act_runner исполняет JavaScript-экшены
-    # (checkout, cache, setup-dotnet) внутри контейнера задания системным node,
-    # и в образе без него падает первый же шаг. .NET целиком ставит
-    # setup-dotnet — как на GitHub-стороне. Подробности в CONTRIBUTING.md.
-    runs-on: node-24
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
