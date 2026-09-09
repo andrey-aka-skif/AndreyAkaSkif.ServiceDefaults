@@ -5,12 +5,12 @@ using AndreyAkaSkif.ServiceDefaults.Samples.Api.Services;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
 
 /// <summary>
-/// Демонстрационные конечные точки приложения
+/// Предоставляет методы расширения для добавления демонстрационных конечных точек
 /// </summary>
 internal static class DemoEndpoints
 {
     /// <summary>
-    /// Добавить демонстрационные конечные точки
+    /// Добавляет демонстрационные конечные точки
     /// </summary>
     public static IEndpointRouteBuilder MapDemoEndpoints(this IEndpointRouteBuilder app)
     {

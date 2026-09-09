@@ -6,7 +6,7 @@ namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.Services;
 internal interface IGreetingService
 {
     /// <summary>
-    /// Поприветствовать по имени
+    /// Приветствует по имени
     /// </summary>
     /// <param name="name">Имя адресата</param>
     string Greet(string name);

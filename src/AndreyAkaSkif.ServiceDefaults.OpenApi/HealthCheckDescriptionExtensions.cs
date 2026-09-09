@@ -4,7 +4,8 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.OpenApi;
 
 /// <summary>
-/// Методы расширения для описания конечной точки проверки жизнеспособности в спецификации
+/// Предоставляет методы расширения для описания конечной точки проверки жизнеспособности
+/// в спецификации
 /// </summary>
 public static class HealthCheckDescriptionExtensions
 {
@@ -19,7 +20,7 @@ public static class HealthCheckDescriptionExtensions
     public const string DefaultHealthCheckEndpoint = "/health";
 
     /// <summary>
-    /// Добавить в спецификацию описание конечной точки проверки жизнеспособности
+    /// Добавляет в спецификацию описание конечной точки проверки жизнеспособности
     /// </summary>
     /// <remarks>
     /// <para>

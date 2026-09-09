@@ -4,12 +4,13 @@ using AndreyAkaSkif.ServiceDefaults.Samples.Api.Endpoints;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppConfiguration;
 
 /// <summary>
-/// Ограничения параметров маршрута, специфичные для приложения
+/// Предоставляет методы расширения для регистрации ограничений параметров маршрута,
+/// специфичных для приложения
 /// </summary>
 internal static class AppRouteConstraintsConfigureExtensions
 {
     /// <summary>
-    /// Зарегистрировать ограничения параметров маршрута
+    /// Регистрирует ограничения параметров маршрута
     /// </summary>
     /// <remarks>
     /// <para>

@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
 /// <summary>
-/// Правило показа Swagger UI
+/// Определяет правило показа Swagger UI
 /// </summary>
 internal enum SwaggerUiVisibility
 {

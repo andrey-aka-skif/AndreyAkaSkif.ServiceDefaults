@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.HttpApiClients;
 
 /// <summary>
-/// Правила валидации настроек типизированного API-клиента
+/// Определяет правила валидации настроек типизированного API-клиента
 /// </summary>
 /// <typeparam name="TOptions">Тип настроек клиента</typeparam>
 internal sealed class HttpApiClientOptionsValidator<TOptions> : IValidateOptions<TOptions>
@@ -23,7 +23,7 @@ internal sealed class HttpApiClientOptionsValidator<TOptions> : IValidateOptions
     }
 
     /// <summary>
-    /// Проверить, что значение является абсолютным http- или https-адресом
+    /// Проверяет, что значение является абсолютным http- или https-адресом
     /// </summary>
     private static bool IsHttpAddress(string? value)
         // Одного UriKind.Absolute мало: в Unix путь вида "/api" разбирается как путь

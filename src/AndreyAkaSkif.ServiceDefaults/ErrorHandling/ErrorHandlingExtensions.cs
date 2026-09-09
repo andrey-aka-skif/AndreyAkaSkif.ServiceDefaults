@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.ErrorHandling;
 
 /// <summary>
-/// Методы расширения для создания сведений о неудачных запросах
+/// Предоставляет методы расширения для создания сведений о неудачных запросах
 /// </summary>
 public static class ErrorHandlingExtensions
 {

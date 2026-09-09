@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.OpenApi;
 
 /// <summary>
-/// Правило доступности спецификации OpenAPI
+/// Определяет правило доступности спецификации OpenAPI
 /// </summary>
 internal enum OpenApiVisibility
 {

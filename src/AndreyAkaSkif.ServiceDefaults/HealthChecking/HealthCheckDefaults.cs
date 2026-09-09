@@ -1,7 +1,7 @@
 namespace AndreyAkaSkif.ServiceDefaults.HealthChecking;
 
 /// <summary>
-/// Значения по умолчанию для HealthCheck
+/// Определяет значения по умолчанию для HealthCheck
 /// </summary>
 public static class HealthCheckDefaults
 {

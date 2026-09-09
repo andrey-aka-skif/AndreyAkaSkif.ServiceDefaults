@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Routing;
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
 /// <summary>
-/// Ограничение параметра маршрута значениями перечисления <typeparamref name="TEnum"/>
+/// Ограничивает значения параметра маршрута элементами перечисления <typeparamref name="TEnum"/>
 /// </summary>
 /// <typeparam name="TEnum">Тип перечисления, допустимый в сегменте пути</typeparam>
 /// <remarks>

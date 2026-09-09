@@ -3,12 +3,12 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.Swagger;
 
 /// <summary>
-/// Разрешение правила показа в конкретной среде выполнения
+/// Разрешает правило показа в конкретной среде выполнения
 /// </summary>
 internal static class SwaggerUiVisibilityExtensions
 {
     /// <summary>
-    /// Показывается ли UI в среде <paramref name="environment"/>
+    /// Определяет, показывается ли UI в среде <paramref name="environment"/>
     /// </summary>
     /// <remarks>
     /// Отсутствующий ключ конфигурации даёт <see cref="SwaggerUiVisibility.ByEnvironment"/> —

@@ -5,14 +5,14 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.Cors;
 
 /// <summary>
-/// Методы расширения для регистрации разрешительных политик CORS в DI-контейнере
+/// Предоставляет методы расширения для регистрации разрешительных политик CORS в DI-контейнере
 /// </summary>
 public static class PermissiveCorsExtensions
 {
     private const string ALLOW_ALL_POLICY_NAME = "AllowAll";
 
     /// <summary>
-    /// Добавить политику CORS, разрешающую все источники
+    /// Добавляет политику CORS, разрешающую все источники
     /// </summary>
     /// <remarks>
     /// Политика предназначена для локальной разработки. В продуктовой среде список
@@ -38,7 +38,7 @@ public static class PermissiveCorsExtensions
     }
 
     /// <summary>
-    /// Использовать политику CORS, разрешающую все источники
+    /// Применяет политику CORS, разрешающую все источники
     /// </summary>
     /// <remarks>
     /// Требует предварительного вызова

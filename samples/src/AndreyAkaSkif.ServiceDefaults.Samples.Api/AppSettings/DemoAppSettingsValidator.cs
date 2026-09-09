@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.Samples.Api.AppSettings;
 
 /// <summary>
-/// Правила валидации <see cref="DemoAppSettings"/>
+/// Определяет правила валидации <see cref="DemoAppSettings"/>
 /// </summary>
 /// <remarks>
 /// Валидатор активируется контейнером, поэтому при необходимости может принимать

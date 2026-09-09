@@ -7,12 +7,12 @@ using Microsoft.Extensions.Options;
 namespace AndreyAkaSkif.ServiceDefaults.OpenApi;
 
 /// <summary>
-/// Предоставляет методы расширения для настройки OpenAPI в приложении.
+/// Предоставляет методы расширения для настройки OpenAPI в приложении
 /// </summary>
 public static class OpenApiConfigureExtensions
 {
     /// <summary>
-    /// Добавляет стандартную конфигурацию OpenAPI в приложение.
+    /// Добавляет стандартную конфигурацию OpenAPI в приложение
     /// </summary>
     /// <remarks>
     /// <para>
@@ -39,7 +39,7 @@ public static class OpenApiConfigureExtensions
     }
 
     /// <summary>
-    /// Использование конечной точки OpenApi.
+    /// Подключает конечную точку OpenApi
     /// </summary>
     /// <remarks>
     /// <para>
@@ -67,7 +67,7 @@ public static class OpenApiConfigureExtensions
     }
 
     /// <summary>
-    /// Добавляет конфигурацию OpenAPI с атрибуцией документа из секции "OpenApi".
+    /// Добавляет конфигурацию OpenAPI с атрибуцией документа из секции "OpenApi"
     /// </summary>
     /// <remarks>
     /// <para>
@@ -133,7 +133,7 @@ public static class OpenApiConfigureExtensions
     }
 
     /// <summary>
-    /// Использование конечной точки OpenApi, настроенной секцией "OpenApi".
+    /// Подключает конечную точку OpenApi, настроенную секцией "OpenApi"
     /// </summary>
     /// <remarks>
     /// <para>

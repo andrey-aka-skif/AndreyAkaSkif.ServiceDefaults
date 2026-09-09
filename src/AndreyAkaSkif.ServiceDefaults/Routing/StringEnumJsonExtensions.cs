@@ -7,12 +7,12 @@ using MvcJsonOptions = Microsoft.AspNetCore.Mvc.JsonOptions;
 namespace AndreyAkaSkif.ServiceDefaults.Routing;
 
 /// <summary>
-/// Методы расширения для сериализации перечислений именами элементов
+/// Предоставляет методы расширения для сериализации перечислений именами элементов
 /// </summary>
 public static class StringEnumJsonExtensions
 {
     /// <summary>
-    /// Сериализовать перечисления именами элементов вместо числовых значений
+    /// Сериализует перечисления именами элементов вместо числовых значений
     /// </summary>
     /// <param name="builder">Строитель приложения</param>
     /// <remarks>

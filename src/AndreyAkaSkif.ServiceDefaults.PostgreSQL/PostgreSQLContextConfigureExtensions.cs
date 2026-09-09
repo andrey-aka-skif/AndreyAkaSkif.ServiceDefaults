@@ -6,7 +6,8 @@ using Microsoft.Extensions.Hosting;
 namespace AndreyAkaSkif.ServiceDefaults.PostgreSQL;
 
 /// <summary>
-/// Методы расширения для регистрации контекста Entity Framework Core с провайдером PostgreSQL
+/// Предоставляет методы расширения для регистрации контекста Entity Framework Core
+/// с провайдером PostgreSQL
 /// </summary>
 public static class PostgreSQLContextConfigureExtensions
 {

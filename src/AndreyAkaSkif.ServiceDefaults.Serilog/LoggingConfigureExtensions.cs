@@ -5,7 +5,7 @@ using Serilog;
 namespace AndreyAkaSkif.ServiceDefaults.Serilog;
 
 /// <summary>
-/// Предоставляет методы расширения для настройки логирования Serilog в приложении.
+/// Предоставляет методы расширения для настройки логирования Serilog в приложении
 /// </summary>
 public static class LoggingConfigureExtensions
 {
