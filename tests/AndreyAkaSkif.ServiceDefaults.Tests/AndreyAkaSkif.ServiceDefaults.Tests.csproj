@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults\AndreyAkaSkif.ServiceDefaults.csproj" />
     <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults.OpenApi\AndreyAkaSkif.ServiceDefaults.OpenApi.csproj" />
+    <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults.PostgreSQL\AndreyAkaSkif.ServiceDefaults.PostgreSQL.csproj" />
     <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults.Serilog\AndreyAkaSkif.ServiceDefaults.Serilog.csproj" />
     <ProjectReference Include="..\..\src\AndreyAkaSkif.ServiceDefaults.Swagger\AndreyAkaSkif.ServiceDefaults.Swagger.csproj" />
   </ItemGroup>
