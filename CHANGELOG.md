@@ -6,6 +6,21 @@
 Журнал ведётся с версии 0.0.46. Заметки к более ранним выпускам —
 в [Releases](https://github.com/andrey-aka-skif/AndreyAkaSkif.ServiceDefaults/releases).
 
+## [0.0.49] - 2026-09-09
+
+Выпуск снимает жёсткую привязку контекста PostgreSQL к имени строки подключения
+`DefaultConnection`. Прежние вызовы работают без правок.
+
+### Добавлено
+
+- `AddSimplePostgreSQLContext<T>`: необязательный параметр `connectionName` — имя
+  строки подключения в разделе `ConnectionStrings`, по умолчанию `DefaultConnection`
+
+### Изменено
+
+- `AddSimplePostgreSQLContext<T>` проверяет аргументы: `null` в `builder` и пустое
+  `connectionName` отвергаются при регистрации
+
 ## [0.0.48] - 2026-08-30
 
 Выпуск переводит спецификацию на встроенную генерацию и разводит пакеты по ролям:
